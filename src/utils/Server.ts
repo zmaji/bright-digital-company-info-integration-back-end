@@ -2,6 +2,7 @@ import type { Express } from 'express';
 
 import express from 'express';
 
+import installRoutes from '../routes/Install';
 import userRoutes from '../routes/User';
 import authRoutes from '../routes/Auth';
 
@@ -10,10 +11,7 @@ const createServer = () => {
 
   app.use(express.json());
 
-  app.get('/', (req, res) => {
-    res.send('Hello World!');
-  });
-
+  app.use('/', installRoutes);
   app.use('/users', userRoutes);
   app.use('/auth', authRoutes);
 
