@@ -1,7 +1,9 @@
 import type { Express } from 'express';
 
 import express from 'express';
+
 import userRoutes from '../routes/User';
+import authRoutes from '../routes/Auth';
 
 const createServer = () => {
   const app: Express = express();
@@ -13,6 +15,7 @@ const createServer = () => {
   });
 
   app.use('/users', userRoutes);
+  app.use('/auth', authRoutes);
 
   return app;
 };

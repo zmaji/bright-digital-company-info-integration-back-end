@@ -1,43 +1,50 @@
-import type { User } from '../typings/User';
-
+import { User } from '../typings/User';
+import { PrismaClient } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
 
-import connectClient from '../database/Client';
+const prisma = new PrismaClient({
+    log: ['query', 'info', 'warn', 'error'],
+});
 
 const createUser = async (userData: User): Promise<User | string> => {
     try {
-        const client = await connectClient();
         const { emailAddress, password } = userData;
-        // const existingUser = await 
 
-        // if (!existingUser) {
-        userData.userID = uuidv4();
-        userData.secret = uuidv4();
+        // Check if user with the same email exists
+        const existingUser = await prisma.user.findUnique({
+            where: {
+                emailAddress: emailAddress,
+            },
+        });
 
-        const newUser = userData
-        newUser.password = bcrypt.hashSync(userData.password, 12);
-        newUser.roles = ['Gebruiker'];
+        if (existingUser) {
+            return 'This email address is already in use';
+        }
 
-        const query = 'INSERT INTO users (userID, emailAddress, password, roles) VALUES ($1, $2, $3, $4) RETURNING *';
-        const values = [userData.userID, userData.emailAddress, userData.password, userData.roles];
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 12);
 
-        const result = await client.query(query, values);
-        client.release();
+        // Create the user using Prisma
+        const newUser = await prisma.user.create({
+            data: {
+                emailAddress: emailAddress,
+                password: hashedPassword,
+                secret: uuidv4(),
+                roles: ['Gebruiker'],
+            },
+        });
+        console.log('newUser');
+        console.log(newUser);
 
-        return result.rows[0];
-        // } else {
-        //     return 'This username is already in use';
-        // }
+        return newUser;
     } catch (error) {
         throw error;
     }
-}
+};
 
 const userController = {
     createUser,
-  };
-  
+};
+
 export default userController;
-  
-  
