@@ -20,3 +20,13 @@ model User {
   secret     String
   roles      String[]
 }
+
+model HubToken {
+  id           Int       @id @default(autoincrement())
+  portal_id    Int    @unique
+  access_token String
+  refresh_token String
+  created_at   DateTime  @default(now())
+  expires_in   Int
+  updated_at   DateTime?
+}

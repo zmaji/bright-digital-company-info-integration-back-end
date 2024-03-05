@@ -1,4 +1,4 @@
 export interface ExchangeResponse {
     accessToken: string;
-    portalId: string;
+    portalId: number;
  }
