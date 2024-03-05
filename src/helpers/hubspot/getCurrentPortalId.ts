@@ -1,7 +1,8 @@
 import axios, { AxiosResponse } from 'axios';
+import logger from '../../utils/Logger';
 
 export const getCurrentPortal = async (accessToken: string): Promise<number | null> => {
-  console.log(`Retrieving portal ID based on access token..`);
+  logger.info(`Retrieving portal ID based on access token..`);
   try {
     const response: AxiosResponse = await axios.get(`https://api.hubapi.com/integrations/v1/me`, {
       headers: {
@@ -9,11 +10,11 @@ export const getCurrentPortal = async (accessToken: string): Promise<number | nu
       },
     });
     const portalId: number = response.data.portalId;
-    console.log(`Successfully retrieved portal ID: ${portalId}`);
+    logger.info(`Successfully retrieved portal ID: ${portalId}`);
 
     return portalId;
   } catch (error) {
-    console.log(`Could not get Portal ID: ${error}..`);
+    logger.info(`Could not get Portal ID: ${error}..`);
 
     return null;
   }

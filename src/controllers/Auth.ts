@@ -8,6 +8,7 @@ import bcrypt from 'bcrypt';
 import { exchangeTokens } from '../helpers/hubspot/exchangeTokens';
 import { storeTokens } from '../helpers/database/storeTokens';
 import { getCurrentPortal } from '../helpers/hubspot/getCurrentPortalId';
+import logger from '../utils/Logger';
 
 const HUBSPOT_CLIENT_ID = process.env.HUBSPOT_CLIENT_ID;
 const HUBSPOT_CLIENT_SECRET = process.env.HUBSPOT_CLIENT_SECRET;
@@ -16,6 +17,14 @@ const HUBSPOT_REDIRECT_URL = process.env.HUBSPOT_REDIRECT_URL;
 const prisma = new PrismaClient({
   log: ['query', 'info', 'warn', 'error'],
 });
+
+const generateAuthToken = (user: User): string => {
+  return jwt.sign({
+    id: user.id,
+    emailAddress: user.emailAddress,
+    roles: user.roles,
+  }, user.secret);
+}
 
 const authenticateUser = async (emailAddress: string, password: string): Promise<string | null> => {
   try {
@@ -30,11 +39,7 @@ const authenticateUser = async (emailAddress: string, password: string): Promise
         const matchedPassword = bcrypt.compareSync(password, existingUser.password);
 
         if (matchedPassword) {
-          return jwt.sign({
-            id: existingUser.id,
-            emailAddress: existingUser.emailAddress,
-            roles: existingUser.roles,
-          }, existingUser.secret);
+          return generateAuthToken(existingUser);
         } else {
           return null;
         }
@@ -59,7 +64,6 @@ const authenticateHubSpotUser = async (hubSpotCode: string): Promise<HubToken | 
         redirect_uri: HUBSPOT_REDIRECT_URL,
         code: hubSpotCode,
       };
-
       const hubToken: HubToken | null = await exchangeTokens(params);
 
       if (hubToken) {
@@ -68,15 +72,15 @@ const authenticateHubSpotUser = async (hubSpotCode: string): Promise<HubToken | 
         if (portalId) {
           await storeTokens(hubToken, portalId);
         } else {
-          console.error('Could not store Hubtoken, no portal ID available');
+          logger.error('Could not store Hubtoken, no portal ID available');
         }
       } else {
-        console.error('Could not retrieve HubToken');
+        logger.error('Could not retrieve HubToken');
       }
 
       return hubToken;
     } else {
-      console.error('App environment variables are missing or incorrect');
+      logger.error('App environment variables are missing or incorrect');
 
       return null;
     }

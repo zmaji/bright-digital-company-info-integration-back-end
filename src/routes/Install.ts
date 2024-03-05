@@ -1,6 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import dotenv from 'dotenv';
+import logger from '../utils/Logger';
 
 const router = Router();
 
@@ -31,7 +32,7 @@ router.get('/', async (req: Request, res: Response) => {
 
 router.get('/install', async (req: Request, res: Response) => {
   try {
-    console.log('Initializing new HubSpot installation..');
+    logger.info('Initializing new HubSpot installation..');
     res.redirect(authURL);
   } catch (error) {
     res
@@ -42,7 +43,7 @@ router.get('/install', async (req: Request, res: Response) => {
 
 router.get('/success', async (req: Request, res: Response) => {
   try {
-    console.log('Sucessfully finished installed the app!');
+    logger.info('Sucessfully finished installed the app!');
     res.send(`<h2>Sucessfully installed the app!</h2><a href=""><h3>Continue</h3></a>`);
   } catch (error) {
     res

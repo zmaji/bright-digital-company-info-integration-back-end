@@ -1,5 +1,7 @@
 export interface User {
-    id: int,
+    id: number,
+    hubSpotPortalId?: number,
+    companyInfoId?: number,
     emailAddress: string,
     password: string,
     secret: string,

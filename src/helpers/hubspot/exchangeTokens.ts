@@ -2,9 +2,10 @@ import type { ExchangeProof } from '../../typings/ExchangeProof';
 import type { HubToken } from '../../typings/HubToken';
 
 import axios, { AxiosResponse } from 'axios';
+import logger from '../../utils/Logger';
 
 export const exchangeTokens = async (exchangeProof: ExchangeProof): Promise<HubToken | null> => {
-  console.log(`Exchanging tokens with HubSpot..`);
+  logger.info(`Exchanging tokens with HubSpot..`);
   try {
     const response: AxiosResponse<HubToken> = await axios.post('https://api.hubapi.com/oauth/v1/token', exchangeProof, {
       headers: {
@@ -16,7 +17,7 @@ export const exchangeTokens = async (exchangeProof: ExchangeProof): Promise<HubT
 
     return hubToken;
   } catch (error) {
-    console.log(error);
+    logger.info(error);
 
     return null;
   }

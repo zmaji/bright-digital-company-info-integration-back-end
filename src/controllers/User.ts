@@ -1,4 +1,5 @@
-import { User } from '../typings/User';
+import type { User } from '../typings/User';
+
 import { PrismaClient } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
@@ -38,8 +39,35 @@ const createUser = async (userData: User): Promise<User | string> => {
   }
 };
 
+const updateUser = async (accessToken: string, userId: number): Promise<User | null> => {
+  try {
+    const existingToken = await prisma.hubToken.findUnique({
+      where: {
+        accessToken: accessToken,
+      },
+    });
+    
+    if (existingToken) {
+      const updatedUser = await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          portalId: existingToken.portalId,
+        },
+      });
+      return updatedUser;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
 const userController = {
   createUser,
+  updateUser,
 };
 
 export default userController;

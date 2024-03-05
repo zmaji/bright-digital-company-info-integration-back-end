@@ -15,6 +15,7 @@ datasource db {
 
 model User {
   id        Int      @id @default(autoincrement())
+  portalId    Int?    @unique
   emailAddress  String   @unique
   password   String
   secret     String
@@ -23,10 +24,10 @@ model User {
 
 model HubToken {
   id           Int       @id @default(autoincrement())
-  portal_id    Int    @unique
-  access_token String
-  refresh_token String
-  created_at   DateTime  @default(now())
-  expires_in   Int
-  updated_at   DateTime?
+  portalId    Int?   @unique
+  accessToken String   @unique
+  refreshToken String
+  createdAt   DateTime  @default(now())
+  expiresIn   Int
+  updatedAt   DateTime?
 }
