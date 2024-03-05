@@ -47,8 +47,6 @@ router.get('/oauth-callback', async (req, res) => {
     }
 
     const hubToken: HubToken | null = await authController.authenticateHubSpotUser(hubSpotCode);
-    console.log('hubToken')
-    console.log(hubToken)
 
     if (hubToken && hubToken.message) {
       logger.error(`Error while retrieving tokens: ${hubToken.message}`);
