@@ -38,7 +38,7 @@ router.get('/oauth-callback', async (req, res) => {
     const hubSpotCode: string | undefined = typeof req.query.code === 'string' ? req.query.code : undefined;
     // @ts-ignore
     // const userId: number | undefined = req.user?.id;
-    const userId: number | undefined = 2
+    const userId: number = 1;
 
     if (!hubSpotCode) {
       return res
