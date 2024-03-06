@@ -7,5 +7,5 @@ const app: Express = createServer();
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
-  logger.info(`Company.info intgration back-end listening on port ${port}`);
+  logger.info(`Company.info integration back-end listening on port ${port}`);
 });

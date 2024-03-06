@@ -5,7 +5,7 @@ import { HubToken } from '../typings/HubToken';
 
 import logger from '../utils/Logger';
 import isLoggedIn from '../middleware/IsLoggedIn';
-import userController from '../controllers/User';
+import userController from '../controllers/Users';
 import { User } from '../typings/User';
 
 const router = Router();
@@ -35,34 +35,34 @@ router.post('', async (req: Request, res: Response) => {
 router.get('/oauth-callback', async (req, res) => {
   try {
     logger.info('User has been prompted to install the integration..');
-    const hubSpotCode: string | undefined = typeof req.query.code === 'string' ? req.query.code : undefined;
+    const hubSpotCode: string | undefined = req.query.code === 'string' ? req.query.code : undefined;
     // @ts-ignore
     // const userId: number | undefined = req.user?.id;
     const userId: number = 1;
 
-    if (!hubSpotCode) {
-      return res
-          .status(StatusCodes.BAD_REQUEST)
-          .json({ error: 'Code parameter missing or invalid' });
-    }
+    if (hubSpotCode) {
+      const hubToken: HubToken | null = await authController.authenticateHubSpotUser(hubSpotCode);
 
-    const hubToken: HubToken | null = await authController.authenticateHubSpotUser(hubSpotCode);
-
-    if (hubToken && hubToken.message) {
-      logger.error(`Error while retrieving tokens: ${hubToken.message}`);
-
-      return res.redirect(`/error?msg=${hubToken.message}`);
-    }
-
-    if (hubToken && userId) {
-      await userController.updateUser(hubToken.access_token, userId);
-
-      return res.redirect(`/success`);
+      if (hubToken && hubToken.message) {
+        logger.error(`Error while retrieving tokens: ${hubToken.message}`);
+  
+        return res.redirect(`/error?msg=${hubToken.message}`);
+      }
+  
+      if (hubToken && userId) {
+        await userController.updateUser(hubToken.access_token, userId);
+  
+        return res.redirect(`/success`);
+      } else {
+        return res
+            .status(StatusCodes.UNAUTHORIZED)
+            .json({ error: 'Authentication failed' });
+      }
     } else {
-      return res
-          .status(StatusCodes.UNAUTHORIZED)
-          .json({ error: 'Authentication failed' });
-    }``
+       res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: 'Code parameter missing or invalid' });
+    }
   } catch (error) {
     logger.error(`An error occurred: ${error}`);
 
@@ -73,4 +73,5 @@ router.get('/oauth-callback', async (req, res) => {
 });
 
 export default router;
+
 

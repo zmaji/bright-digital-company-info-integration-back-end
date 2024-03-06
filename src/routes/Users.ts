@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import userController from '../controllers/User';
+import userController from '../controllers/Users';
 import isLoggedIn from '../middleware/IsLoggedIn';
 
 const router = Router();

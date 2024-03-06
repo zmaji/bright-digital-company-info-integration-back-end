@@ -89,10 +89,10 @@ const updateUser = async (accessToken: string, userId: number): Promise<User | n
   }
 }
 
-const userController = {
+const usersController = {
   getUser,
   createUser,
   updateUser,
 };
 
-export default userController;
+export default usersController;
