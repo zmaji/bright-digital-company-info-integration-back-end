@@ -3,6 +3,8 @@ import axios, { AxiosResponse } from 'axios';
 import * as soap from 'soap';
 
 import logger from '../utils/Logger';
+import type { Company } from '../typings/Company';
+
 import { formatCompanyData } from '../helpers/hubspot/formatCompanyData';
 import { CompanyInfoProperties } from '../typings/CompanyInfoProperties';
 
@@ -12,8 +14,7 @@ const COMPANY_INFO_TEST_PASSWORD = process.env.COMPANY_INFO_TEST_PASSWORD;
 const companyInfoURL = 'https://ws1.webservices.nl/soap_doclit?wsdl';
 const headerArguments = { username: COMPANY_INFO_TEST_USERNAME, password: COMPANY_INFO_TEST_PASSWORD };
 
-// TODO: fix type
-const getCompanies = async (tradeName: string): Promise<any> => {
+const getCompanies = async (tradeName: string): Promise<Company[] | null> => {
   try {
     const client = await soap.createClientAsync(companyInfoURL);
     const soapHeader = {
@@ -26,12 +27,11 @@ const getCompanies = async (tradeName: string): Promise<any> => {
       trade_name: tradeName
     };
 
-    // TODO: fix type
     const result: any = await client.dutchBusinessSearchParametersV2Async(searchParameters);
 
     if (result && result[0]?.out?.results) {
       logger.info(`Successfully found companies with trade name ${tradeName}`);
-      return result[0].out.results;
+      return result[0].out.results as Company[];
     } else {
       return null;
     }
@@ -63,10 +63,6 @@ const getCompanyInfo = async (dossierNumber: number): Promise<CompanyInfoPropert
         }
       });
     });
-
-    const filteredProperties = await formatCompanyData(result.out);
-    console.log('filteredProperties');
-    console.log(filteredProperties);
 
     if (result && result.out) {
       logger.info(`Successfully found company with dossier number ${dossierNumber}`);
