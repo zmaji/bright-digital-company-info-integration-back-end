@@ -1,12 +1,11 @@
-// import type { Company } from '../typings/User';
+import type { Company } from '../typings/Company';
+import type { CompanyDetail } from '../typings/CompanyDetail';
+
 import axios, { AxiosResponse } from 'axios';
 import * as soap from 'soap';
-
 import logger from '../utils/Logger';
-import type { Company } from '../typings/Company';
-
 import { formatCompanyData } from '../helpers/hubspot/formatCompanyData';
-import { CompanyInfoProperties } from '../typings/CompanyInfoProperties';
+
 
 const COMPANY_INFO_TEST_USERNAME = process.env.COMPANY_INFO_TEST_USERNAME;
 const COMPANY_INFO_TEST_PASSWORD = process.env.COMPANY_INFO_TEST_PASSWORD;
@@ -41,7 +40,7 @@ const getCompanies = async (tradeName: string): Promise<Company[] | null> => {
   }
 };
 
-const getCompanyInfo = async (dossierNumber: number): Promise<CompanyInfoProperties | null> => {
+const getCompanyInfo = async (dossierNumber: number): Promise<CompanyDetail | null> => {
   try {
     const client = await soap.createClientAsync(companyInfoURL);
     const soapHeader = {
@@ -66,7 +65,7 @@ const getCompanyInfo = async (dossierNumber: number): Promise<CompanyInfoPropert
 
     if (result && result.out) {
       logger.info(`Successfully found company with dossier number ${dossierNumber}`);
-      return result.out as CompanyInfoProperties;
+      return result.out as Company;
     } else {
       return null;
     }
@@ -77,7 +76,7 @@ const getCompanyInfo = async (dossierNumber: number): Promise<CompanyInfoPropert
 };
 
 // TODO: fix type
-const updateCompany = async (companyId: string, companyData: CompanyInfoProperties): Promise<any> => {
+const updateCompany = async (companyId: string, companyData: CompanyDetail): Promise<any> => {
   try {
     logger.info('Updating HubSpot company..');
     const hubSpotProperties = await formatCompanyData(companyData);

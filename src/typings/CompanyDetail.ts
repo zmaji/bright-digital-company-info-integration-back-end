@@ -1,4 +1,4 @@
-export type CompanyInfoProperties = {
+export type CompanyDetail = {
     dossier_number?: string;
     establishment_number?: string;
     number_of_establishments?: string;

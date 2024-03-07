@@ -1,6 +1,6 @@
-import { CompanyInfoProperties } from "../../typings/CompanyInfoProperties";
+import { CompanyDetail } from "../../typings/CompanyDetail";
 
-export const formatCompanyData = async (companyData: CompanyInfoProperties) => {
+export const formatCompanyData = async (companyData: CompanyDetail) => {
   const formatAddress = (address: any) => {
       if (address && address.official) {
           return `${address.official.street || ''} ${address.official.house_number || ''}${address.official.house_number_addition || ''} ${address.official.postcode || ''} ${address.official.city || ''} ${address.official.country || ''}`;
