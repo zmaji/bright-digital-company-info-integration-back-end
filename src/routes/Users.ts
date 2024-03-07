@@ -9,7 +9,7 @@ const router = Router();
 router.get('', async (req: Request, res: Response) => {
   try {
     // const userId: number | undefined = req.user?.id;
-    const userId: number = 1;
+    const userId: number = 4;
     const result = await userController.getUser(userId);
 
     if (result) {

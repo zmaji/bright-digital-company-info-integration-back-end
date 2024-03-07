@@ -67,7 +67,7 @@ const updateUser = async (accessToken: string, userId: number): Promise<User | n
   try {
     const existingToken = await prisma.hubToken.findUnique({
       where: {
-        accessToken: accessToken,
+        access_token: accessToken,
       },
     });
     
@@ -77,7 +77,7 @@ const updateUser = async (accessToken: string, userId: number): Promise<User | n
           id: userId,
         },
         data: {
-          portalId: existingToken.portalId,
+          hubSpotPortalId: existingToken.portal_id,
         },
       });
       return updatedUser;

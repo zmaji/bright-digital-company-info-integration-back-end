@@ -35,10 +35,11 @@ router.post('', async (req: Request, res: Response) => {
 router.get('/oauth-callback', async (req, res) => {
   try {
     logger.info('User has been prompted to install the integration..');
-    const hubSpotCode: string | undefined = req.query.code === 'string' ? req.query.code : undefined;
+    const hubSpotCode: string | undefined = typeof req.query.code === 'string' ? req.query.code : undefined;
+    
     // @ts-ignore
     // const userId: number | undefined = req.user?.id;
-    const userId: number = 1;
+    const userId: number = 4;
 
     if (hubSpotCode) {
       const hubToken: HubToken | null = await authController.authenticateHubSpotUser(hubSpotCode);

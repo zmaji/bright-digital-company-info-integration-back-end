@@ -1,8 +1,10 @@
 export interface HubToken {
-    token_type?: string;
-    refresh_token: string;
+    id: number;
+    portal_id: number | null;
     access_token: string;
+    refresh_token: string;
     expires_in: number;
-    updated_at?: Date | null;
+    created_at: Date;
+    updated_at: Date | null;
     message?: string;
 }

@@ -6,7 +6,7 @@ import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { exchangeTokens } from '../helpers/hubspot/exchangeTokens';
-import { storeTokens } from '../helpers/database/storeTokens';
+import { storeHubTokens } from '../helpers/database/storeHubToken';
 import { getCurrentPortal } from '../helpers/hubspot/getCurrentPortalId';
 import logger from '../utils/Logger';
 
@@ -26,6 +26,41 @@ const generateAuthToken = (user: User): string => {
   }, user.secret);
 }
 
+// TODO: logs
+const refreshAccessToken = async (portalId: number, refreshToken: string): Promise<HubToken | null> => {
+  try {
+    if (HUBSPOT_CLIENT_ID && HUBSPOT_CLIENT_SECRET && HUBSPOT_REDIRECT_URL) {
+      const params: ExchangeProof = {
+        grant_type: 'refresh_token',
+        client_id: HUBSPOT_CLIENT_ID,
+        client_secret: HUBSPOT_CLIENT_SECRET,
+        redirect_uri: HUBSPOT_REDIRECT_URL,
+        refresh_token: refreshToken,
+      };
+      const hubToken: HubToken | null = await exchangeTokens(params);
+
+      if (hubToken) {
+        await storeHubTokens(hubToken, portalId);
+        return hubToken;
+      } else {
+        return null;
+      }
+    } else {
+      logger.error('HubSpot client configuration is incomplete');
+      return null;
+    }
+  } catch (error) {
+    logger.error('Error refreshing access token:', error);
+    throw error;
+  }
+}
+
+const isTokenExpired = (hubToken: HubToken) => {
+  // @ts-ignore
+  return Date.now() >= Date.parse(hubToken.updated_at) + Number(hubToken.expires_in) * 1000;
+};
+
+// TODO: logs
 const authenticateUser = async (emailAddress: string, password: string): Promise<string | null> => {
   try {
     if (emailAddress && password) {
@@ -70,14 +105,13 @@ const authenticateHubSpotUser = async (hubSpotCode: string): Promise<HubToken | 
         const portalId: number | null = await getCurrentPortal(hubToken.access_token);
 
         if (portalId) {
-          await storeTokens(hubToken, portalId);
+          await storeHubTokens(hubToken, portalId);
         } else {
           logger.error('Could not store Hubtoken, no portal ID available');
         }
       } else {
         logger.error('Could not retrieve HubToken');
       }
-
       return hubToken;
     } else {
       logger.error('App environment variables are missing or incorrect');
@@ -89,9 +123,40 @@ const authenticateHubSpotUser = async (hubSpotCode: string): Promise<HubToken | 
   }
 };
 
+// TODO: logs
+export const retrieveHubToken = async (portalId: number): Promise<HubToken | null> => {
+  logger.info('Retrieving HubSpot user linked to current user..');
+  try {
+    const hubToken: HubToken | null = await prisma.hubToken.findUnique({
+      where: {
+        portal_id: portalId,
+      },
+    });
+
+    if (hubToken) {
+      logger.info(`Retrieved HubToken from user with portal id ${portalId}`)
+
+      if (isTokenExpired(hubToken)){
+        logger.info('Token is expired..')
+        const newToken: HubToken | null = await refreshAccessToken(portalId, hubToken.refresh_token);
+
+        if (newToken && newToken.access_token) {
+          logger.info('Successfully refreshed access token..')
+          return newToken;
+        }
+      }
+    }
+    return hubToken;
+  } catch (error) {
+    logger.error('Error while retrieving HubSpot token:', error);
+    return null;
+  }
+};
+
 const authController = {
   authenticateUser,
   authenticateHubSpotUser,
+  retrieveHubToken,
 };
 
 export default authController;

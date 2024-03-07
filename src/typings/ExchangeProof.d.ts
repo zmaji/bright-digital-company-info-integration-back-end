@@ -3,5 +3,6 @@ export interface ExchangeProof {
     client_id: string;
     client_secret: string;
     redirect_uri: string;
-    code: string;
+    code?: string;
+    refresh_token?: string;
 }

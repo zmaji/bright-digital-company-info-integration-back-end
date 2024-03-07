@@ -7,12 +7,12 @@ const prisma = new PrismaClient({
   log: ['query', 'info', 'warn', 'error'],
 });
 
-export const storeTokens = async (tokens: HubToken, portalId: number): Promise<any> => {
+export const storeHubTokens = async (tokens: HubToken, portalId: number): Promise<any> => {
   logger.info('Checking if portal ID is already present..');
   try {
     const existingToken = await prisma.hubToken.findUnique({
       where: {
-        portalId: portalId,
+        portal_id: portalId,
       },
     });
 
@@ -23,10 +23,11 @@ export const storeTokens = async (tokens: HubToken, portalId: number): Promise<a
           id: existingToken.id,
         },
         data: {
-          accessToken: tokens.access_token,
-          refreshToken: tokens.refresh_token,
-          expiresIn: tokens.expires_in,
-          updatedAt: new Date(),
+          portal_id: portalId,
+          access_token: tokens.access_token,
+          refresh_token: tokens.refresh_token,
+          expires_in: tokens.expires_in,
+          updated_at: new Date(),
         },
       });
       logger.info('Tokens updated successfully!');
@@ -36,10 +37,11 @@ export const storeTokens = async (tokens: HubToken, portalId: number): Promise<a
       logger.info('Record not found, creating a new record..');
       const newToken = await prisma.hubToken.create({
         data: {
-          portalId: portalId,
-          accessToken: tokens.access_token,
-          refreshToken: tokens.refresh_token,
-          expiresIn: tokens.expires_in,
+          portal_id: portalId,
+          access_token: tokens.access_token,
+          refresh_token: tokens.refresh_token,
+          expires_in: tokens.expires_in,
+          updated_at: new Date(),
         },
       });
       

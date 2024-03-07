@@ -6,6 +6,13 @@ import logger from '../../utils/Logger';
 
 export const exchangeTokens = async (exchangeProof: ExchangeProof): Promise<HubToken | null> => {
   logger.info(`Exchanging tokens with HubSpot..`);
+
+console.log('exchangeProof')
+console.log('exchangeProof')
+console.log('exchangeProof')
+console.log('exchangeProof')
+console.log(exchangeProof)
+
   try {
     const response: AxiosResponse<HubToken> = await axios.post('https://api.hubapi.com/oauth/v1/token', exchangeProof, {
       headers: {
