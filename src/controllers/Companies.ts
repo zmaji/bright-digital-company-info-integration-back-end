@@ -4,6 +4,7 @@ import * as soap from 'soap';
 
 import logger from '../utils/Logger';
 import { formatCompanyData } from '../helpers/hubspot/formatCompanyData';
+import { CompanyInfoProperties } from '../typings/CompanyInfoProperties';
 
 const COMPANY_INFO_TEST_USERNAME = process.env.COMPANY_INFO_TEST_USERNAME;
 const COMPANY_INFO_TEST_PASSWORD = process.env.COMPANY_INFO_TEST_PASSWORD;
@@ -12,7 +13,7 @@ const companyInfoURL = 'https://ws1.webservices.nl/soap_doclit?wsdl';
 const headerArguments = { username: COMPANY_INFO_TEST_USERNAME, password: COMPANY_INFO_TEST_PASSWORD };
 
 // TODO: fix type
-const getCompany = async (tradeName: string): Promise<any> => {
+const getCompanies = async (tradeName: string): Promise<any> => {
   try {
     const client = await soap.createClientAsync(companyInfoURL);
     const soapHeader = {
@@ -28,12 +29,9 @@ const getCompany = async (tradeName: string): Promise<any> => {
     // TODO: fix type
     const result: any = await client.dutchBusinessSearchParametersV2Async(searchParameters);
 
-    logger.info('result');
-    logger.info(result.out.results);
-
-    if (result.out.results) {
-      logger.info('Successfully found ......');
-      return result.out.results;
+    if (result && result[0]?.out?.results) {
+      logger.info(`Successfully found companies with trade name ${tradeName}`);
+      return result[0].out.results;
     } else {
       return null;
     }
@@ -43,8 +41,7 @@ const getCompany = async (tradeName: string): Promise<any> => {
   }
 };
 
-// TODO: fix type
-const getCompanyInfo = async (dossierNumber: string): Promise<any> => {
+const getCompanyInfo = async (dossierNumber: number): Promise<CompanyInfoProperties | null> => {
   try {
     const client = await soap.createClientAsync(companyInfoURL);
     const soapHeader = {
@@ -57,33 +54,41 @@ const getCompanyInfo = async (dossierNumber: string): Promise<any> => {
       dossier_number: dossierNumber
     };
 
-    // TODO: fix type
-    const result: any = await client.dutchBusinessGetDossierV3(searchParameters);
+    const result: any = await new Promise((resolve: any, reject: any) => {
+      client.dutchBusinessGetDossierV3(searchParameters, (err: any, result: any) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    });
 
-    logger.info('result');
-    logger.info(result);
+    const filteredProperties = await formatCompanyData(result.out);
+    console.log('filteredProperties');
+    console.log(filteredProperties);
 
-    if (result.out) {
-      logger.info('Successfully found ......');
-      return result.out.results;
+    if (result && result.out) {
+      logger.info(`Successfully found company with dossier number ${dossierNumber}`);
+      return result.out as CompanyInfoProperties;
     } else {
       return null;
     }
   } catch (error) {
-    logger.error('Something went wrong getting information', error);
+    logger.error('Something went wrong getting company information', error);
     throw error;
   }
 };
 
 // TODO: fix type
-const updateCompany = async (companyId: any, companyData: any): Promise<any> => {
+const updateCompany = async (companyId: string, companyData: CompanyInfoProperties): Promise<any> => {
   try {
     logger.info('Updating HubSpot company..');
     const hubSpotProperties = await formatCompanyData(companyData);
 
     if (hubSpotProperties) {
     // TODO: Type and fix hubspot env
-    const response: AxiosResponse<any> = await axios.patch(`https://api.hubapi.com/crm/v3/objects/company/${companyId}`, companyData, {
+    const response: AxiosResponse<any> = await axios.patch(`https://api.hubapi.com/crm/v3/objects/company/${companyId}`, hubSpotProperties, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${process.env.HUBSPOT_TOKEN}`
@@ -113,7 +118,7 @@ const updateCompany = async (companyId: any, companyData: any): Promise<any> => 
 
 
 const companiesController = {
-  getCompany,
+  getCompanies,
   getCompanyInfo,
   updateCompany,
 };

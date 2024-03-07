@@ -11,7 +11,7 @@ router.get('', async (req: Request, res: Response) => {
     const tradeName = req.query.tradeName ? String(req.query.tradeName) : undefined;
 
     if (tradeName) {
-      const result = await companiesController.getCompany(tradeName);
+      const result = await companiesController.getCompanies(tradeName);
 
       if (result) {
         res
@@ -37,7 +37,7 @@ router.get('', async (req: Request, res: Response) => {
 // router.get('', isLoggedIn async (req: Request, res: Response) => {
   router.get('/info', async (req: Request, res: Response) => {
     try {
-      const dossierNumber = req.query.dossierNumber ? String(req.query.dossierNumber) : undefined;
+      const dossierNumber = req.query.dossierNumber ? Number(req.query.dossierNumber) : undefined;
   
       if (dossierNumber) {
         const result = await companiesController.getCompanyInfo(dossierNumber);
