@@ -16,7 +16,6 @@ const authURL = `https://app-eu1.hubspot.com/oauth/authorize?` +
   `&redirect_uri=${HUBSPOT_REDIRECT_URL}` +
   `&scope=${HUBSPOT_SCOPE}`;
 
-
 router.get('/', async (req: Request, res: Response) => {
   try {
     res.send(`

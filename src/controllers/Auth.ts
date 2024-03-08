@@ -24,7 +24,7 @@ const generateAuthToken = (user: User): string => {
     emailAddress: user.emailAddress,
     roles: user.roles,
   }, user.secret);
-}
+};
 
 // TODO: logs
 const refreshAccessToken = async (portalId: number, refreshToken: string): Promise<HubToken | null> => {
@@ -41,22 +41,24 @@ const refreshAccessToken = async (portalId: number, refreshToken: string): Promi
 
       if (hubToken) {
         await storeHubTokens(hubToken, portalId);
+
         return hubToken;
       } else {
         return null;
       }
     } else {
       logger.error('HubSpot client configuration is incomplete');
+
       return null;
     }
   } catch (error) {
     logger.error('Error refreshing access token:', error);
     throw error;
   }
-}
+};
 
 const isTokenExpired = (hubToken: HubToken) => {
-  // @ts-ignore
+  // @ts-expect-error
   return Date.now() >= Date.parse(hubToken.updated_at) + Number(hubToken.expires_in) * 1000;
 };
 
@@ -112,6 +114,7 @@ const authenticateHubSpotUser = async (hubSpotCode: string): Promise<HubToken | 
       } else {
         logger.error('Could not retrieve HubToken');
       }
+
       return hubToken;
     } else {
       logger.error('App environment variables are missing or incorrect');
@@ -134,21 +137,24 @@ export const retrieveHubToken = async (portalId: number): Promise<HubToken | nul
     });
 
     if (hubToken) {
-      logger.info(`Retrieved HubToken from user with portal id ${portalId}`)
+      logger.info(`Retrieved HubToken from user with portal id ${portalId}`);
 
-      if (isTokenExpired(hubToken)){
-        logger.info('Token is expired..')
+      if (isTokenExpired(hubToken)) {
+        logger.info('Token is expired..');
         const newToken: HubToken | null = await refreshAccessToken(portalId, hubToken.refresh_token);
 
         if (newToken && newToken.access_token) {
-          logger.info('Successfully refreshed access token..')
+          logger.info('Successfully refreshed access token..');
+
           return newToken;
         }
       }
     }
+
     return hubToken;
   } catch (error) {
     logger.error('Error while retrieving HubSpot token:', error);
+
     return null;
   }
 };

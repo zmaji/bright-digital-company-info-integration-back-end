@@ -19,9 +19,11 @@ const getUser = async (userId: number): Promise<User | null> => {
 
     if (existingUser) {
       logger.info('User successfully found: ', existingUser);
+
       return existingUser;
     } else {
       logger.error(`Could not find an existing user with id: ${userId}`);
+
       return null;
     }
   } catch (error) {
@@ -29,7 +31,6 @@ const getUser = async (userId: number): Promise<User | null> => {
     throw error;
   }
 };
-
 
 const createUser = async (userData: User): Promise<User | null> => {
   try {
@@ -43,6 +44,7 @@ const createUser = async (userData: User): Promise<User | null> => {
 
     if (existingUser) {
       logger.warn('This email address is already in use');
+
       return null;
     }
 
@@ -70,7 +72,7 @@ const updateUser = async (accessToken: string, userId: number): Promise<User | n
         access_token: accessToken,
       },
     });
-    
+
     if (existingToken) {
       const updatedUser = await prisma.user.update({
         where: {
@@ -80,6 +82,7 @@ const updateUser = async (accessToken: string, userId: number): Promise<User | n
           hubSpotPortalId: existingToken.portal_id,
         },
       });
+
       return updatedUser;
     } else {
       return null;
@@ -87,7 +90,7 @@ const updateUser = async (accessToken: string, userId: number): Promise<User | n
   } catch (error) {
     throw error;
   }
-}
+};
 
 const usersController = {
   getUser,

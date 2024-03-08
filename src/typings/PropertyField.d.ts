@@ -8,5 +8,5 @@ export interface PropertyField {
     displayOrder: number;
     hasUniqueValue: boolean;
     formField: boolean;
-    options?: Array<{ label: string; value: string; displayOrder: number; hidden: boolean }>;
+    options?: PropertyOption[];
 }

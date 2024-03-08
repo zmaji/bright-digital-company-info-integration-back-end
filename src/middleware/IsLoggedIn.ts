@@ -6,8 +6,8 @@ import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 
 const prisma = new PrismaClient({
-    log: ['query', 'info', 'warn', 'error'],
-  });
+  log: ['query', 'info', 'warn', 'error'],
+});
 
 const isLoggedIn = async (req: Request, res: Response, next: NextFunction) => {
   const userToken = getTokenFromRequest(req);
@@ -23,8 +23,8 @@ const isLoggedIn = async (req: Request, res: Response, next: NextFunction) => {
     }
   }
   res
-    .status(StatusCodes.UNAUTHORIZED)
-    .send({ error: 'Authentication required' });
+      .status(StatusCodes.UNAUTHORIZED)
+      .send({ error: 'Authentication required' });
 };
 
 const getTokenFromRequest = (req: Request) => {
@@ -33,6 +33,7 @@ const getTokenFromRequest = (req: Request) => {
   if (authHeader) {
     return authHeader.split(' ')[1];
   }
+
   return false;
 };
 

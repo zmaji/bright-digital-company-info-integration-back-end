@@ -44,7 +44,7 @@ export const storeHubTokens = async (tokens: HubToken, portalId: number): Promis
           updated_at: new Date(),
         },
       });
-      
+
       logger.info('New tokens created successfully!');
 
       return newToken;

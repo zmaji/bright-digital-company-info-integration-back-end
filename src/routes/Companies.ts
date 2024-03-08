@@ -24,8 +24,8 @@ router.get('', async (req: Request, res: Response) => {
       }
     } else {
       res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: 'Trade name has not been provided' });
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .json({ error: 'Trade name has not been provided' });
     }
   } catch {
     res
@@ -35,32 +35,32 @@ router.get('', async (req: Request, res: Response) => {
 });
 
 // router.get('', isLoggedIn async (req: Request, res: Response) => {
-  router.get('/info', async (req: Request, res: Response) => {
-    try {
-      const dossierNumber = req.query.dossierNumber ? Number(req.query.dossierNumber) : undefined;
-  
-      if (dossierNumber) {
-        const result = await companiesController.getCompanyInfo(dossierNumber);
-  
-        if (result) {
-          res
-              .status(StatusCodes.OK)
-              .json(result);
-        } else {
-          res
-              .status(StatusCodes.NOT_FOUND)
-              .json({ error: `Unable to get information with dossier number ${dossierNumber}` });
-        }
+router.get('/info', async (req: Request, res: Response) => {
+  try {
+    const dossierNumber = req.query.dossierNumber ? Number(req.query.dossierNumber) : undefined;
+
+    if (dossierNumber) {
+      const result = await companiesController.getCompanyInfo(dossierNumber);
+
+      if (result) {
+        res
+            .status(StatusCodes.OK)
+            .json(result);
       } else {
         res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: 'Dossier number has not been provided' });
+            .status(StatusCodes.NOT_FOUND)
+            .json({ error: `Unable to get information with dossier number ${dossierNumber}` });
       }
-    } catch {
+    } else {
       res
           .status(StatusCodes.INTERNAL_SERVER_ERROR)
-          .json({ error: 'An error occurred retrieving info' });
+          .json({ error: 'Dossier number has not been provided' });
     }
-  });
+  } catch {
+    res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: 'An error occurred retrieving info' });
+  }
+});
 
 export default router;

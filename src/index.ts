@@ -1,6 +1,6 @@
 import type { Express } from 'express';
-import logger from '../src/utils/Logger';
 
+import logger from '../src/utils/Logger';
 import createServer from './utils/Server';
 
 const app: Express = createServer();

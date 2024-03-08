@@ -2,7 +2,6 @@ import { Router, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import authController from '../controllers/Auth';
 import { HubToken } from '../typings/HubToken';
-
 import logger from '../utils/Logger';
 import isLoggedIn from '../middleware/IsLoggedIn';
 import userController from '../controllers/Users';
@@ -36,7 +35,7 @@ router.get('/oauth-callback', async (req, res) => {
   try {
     logger.info('User has been prompted to install the integration..');
     const hubSpotCode: string | undefined = typeof req.query.code === 'string' ? req.query.code : undefined;
-    
+
     // @ts-ignore
     // const userId: number | undefined = req.user?.id;
     const userId: number = 4;
@@ -46,13 +45,13 @@ router.get('/oauth-callback', async (req, res) => {
 
       if (hubToken && hubToken.message) {
         logger.error(`Error while retrieving tokens: ${hubToken.message}`);
-  
+
         return res.redirect(`/error?msg=${hubToken.message}`);
       }
-  
+
       if (hubToken && userId) {
         await userController.updateUser(hubToken.access_token, userId);
-  
+
         return res.redirect(`/success`);
       } else {
         return res
@@ -60,9 +59,9 @@ router.get('/oauth-callback', async (req, res) => {
             .json({ error: 'Authentication failed' });
       }
     } else {
-       res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ error: 'Code parameter missing or invalid' });
+      res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ error: 'Code parameter missing or invalid' });
     }
   } catch (error) {
     logger.error(`An error occurred: ${error}`);
@@ -74,5 +73,4 @@ router.get('/oauth-callback', async (req, res) => {
 });
 
 export default router;
-
 

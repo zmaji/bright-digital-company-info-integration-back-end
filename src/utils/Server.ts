@@ -1,7 +1,6 @@
 import type { Express } from 'express';
 
 import express from 'express';
-
 import installRoutes from '../routes/Install';
 import authRoutes from '../routes/Auth';
 import userRoutes from '../routes/Users';

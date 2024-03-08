@@ -28,27 +28,27 @@ router.post('', async (req: Request, res: Response): Promise<any | null> => {
         const hubSpotGroups = await groupsController.getGroups(hubToken.access_token);
 
         if (hubSpotGroups) {
-            const existingGroup = await groupsController.searchGroup(hubSpotGroups, groupName);
+          const existingGroup = await groupsController.searchGroup(hubSpotGroups, groupName);
 
-            if (!existingGroup) {
-                const result = await groupsController.createGroup(hubToken.access_token);
+          if (!existingGroup) {
+            const result = await groupsController.createGroup(hubToken.access_token);
 
-                if (result) {
-                    res
-                    .status(StatusCodes.OK)
-                    .json(result);
-                } else {
-                    res
-                    .status(StatusCodes.INTERNAL_SERVER_ERROR)
-                    .json({ error: `Unable to create group` });
+            if (result) {
+              res
+                  .status(StatusCodes.OK)
+                  .json(result);
+            } else {
+              res
+                  .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                  .json({ error: `Unable to create group` });
             }
-        } else {
+          } else {
             res
                 .status(StatusCodes.OK)
                 .json({ message: 'Group already exists', group: existingGroup });
+          }
         }
-    }
-}
+      }
     }
   } catch {
     res
