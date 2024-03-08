@@ -48,6 +48,7 @@ module.exports = {
     {
       files: ['src/__tests__/**/*'],
       rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
         'import/order': importOrderRule,
         '@typescript-eslint/ban-ts-comment': 'off',
@@ -65,6 +66,12 @@ module.exports = {
       rules: {
         'max-len': 'off',
         'require-jsdoc': 'off',
+      },
+    },
+    {
+      files: ['./src/helpers/hubspot/formatCompanyData.ts'],
+      rules: {
+        '@typescript-eslint/ban-ts-comment': 'off',
       },
     },
   ],

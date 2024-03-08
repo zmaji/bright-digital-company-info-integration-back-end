@@ -8,12 +8,13 @@ const getGroups = async (accessToken: string): Promise<Group[] | null> => {
   try {
     logger.info('Getting all company groups..');
 
-    const response: AxiosResponse<Group[]> = await axios.get(`https://api.hubspot.com/crm/v3/properties/company/groups`, {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    const response: AxiosResponse<Group[]> = await axios.get(
+        `https://api.hubspot.com/crm/v3/properties/company/groups`, {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
 
     const result: Group[] = response.data;
 
@@ -33,7 +34,7 @@ const getGroups = async (accessToken: string): Promise<Group[] | null> => {
 };
 
 const searchGroup = async (groups: Group[], groupName: string): Promise<Group | null> => {
-  // @ts-ignore
+  // @ts-expect-error Ignoring results on Group object
   const foundGroup = groups.results.find((group) => group.name === groupName);
 
   if (foundGroup) {
@@ -57,12 +58,14 @@ const createGroup = async (accessToken: string): Promise<Group | null> => {
       'displayOrder': -1,
     };
 
-    const response: AxiosResponse<Group> = await axios.post('https://api.hubapi.com/crm/v3/properties/company/groups', payload, {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    const response: AxiosResponse<Group> = await axios.post(
+        'https://api.hubapi.com/crm/v3/properties/company/groups',
+        payload, {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
 
     const result: Group = response.data;
 

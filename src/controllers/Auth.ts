@@ -26,7 +26,6 @@ const generateAuthToken = (user: User): string => {
   }, user.secret);
 };
 
-// TODO: logs
 const refreshAccessToken = async (portalId: number, refreshToken: string): Promise<HubToken | null> => {
   try {
     if (HUBSPOT_CLIENT_ID && HUBSPOT_CLIENT_SECRET && HUBSPOT_REDIRECT_URL) {
@@ -44,6 +43,8 @@ const refreshAccessToken = async (portalId: number, refreshToken: string): Promi
 
         return hubToken;
       } else {
+        logger.info('Hubtoken could not be retrieved');
+
         return null;
       }
     } else {
@@ -58,8 +59,13 @@ const refreshAccessToken = async (portalId: number, refreshToken: string): Promi
 };
 
 const isTokenExpired = (hubToken: HubToken) => {
-  // @ts-expect-error
-  return Date.now() >= Date.parse(hubToken.updated_at) + Number(hubToken.expires_in) * 1000;
+  if (hubToken.updated_at && hubToken.expires_in) {
+    return Date.now() >= Date.parse(hubToken.updated_at.toString()) + Number(hubToken.expires_in) * 1000;
+  } else {
+    logger.info('No hubtoken retrieved');
+
+    return false;
+  }
 };
 
 // TODO: logs

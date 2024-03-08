@@ -7,7 +7,7 @@ const prisma = new PrismaClient({
   log: ['query', 'info', 'warn', 'error'],
 });
 
-export const storeHubTokens = async (tokens: HubToken, portalId: number): Promise<any> => {
+export const storeHubTokens = async (tokens: HubToken, portalId: number): Promise<HubToken | null> => {
   logger.info('Checking if portal ID is already present..');
   try {
     const existingToken = await prisma.hubToken.findUnique({
@@ -52,7 +52,7 @@ export const storeHubTokens = async (tokens: HubToken, portalId: number): Promis
   } catch (error) {
     logger.error('Error while storing tokens:', error);
 
-    return false;
+    return null;
   }
 };
 

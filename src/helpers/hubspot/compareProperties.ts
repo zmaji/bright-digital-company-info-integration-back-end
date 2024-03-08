@@ -2,10 +2,11 @@ import type { PropertyField } from '../../typings/PropertyField';
 
 import logger from '../../utils/Logger';
 
+// eslint-disable-next-line
 export const compareProperties = async (currentProperties: any, propertyFields: PropertyField[]): Promise<void> => {
   const missingFields = propertyFields.filter((propertyField) => {
-    // @ts-ignore
-    return !currentProperties.some((currentProperty) => currentProperty.name === propertyField.name);
+    // eslint-disable-next-line
+    return !currentProperties.some((currentProperty: any) => currentProperty.name === propertyField.name);
   });
 
   if (missingFields.length === 0) {

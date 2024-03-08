@@ -11,12 +11,14 @@ const getProperties = async (accessToken: string): Promise<any | null> => {
     logger.info(`Getting HubSpot properties..`);
 
     // TODO: type
-    const response: AxiosResponse<any> = await axios.get('https://api.hubapi.com/crm/v3/properties/company/', {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    const response: AxiosResponse<any> = await axios.get(
+        'https://api.hubapi.com/crm/v3/properties/company/',
+        {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
 
     // TODO: type
     const result: any = response.data.results;
@@ -46,12 +48,14 @@ const createProperties = async (accessToken: string): Promise<any | null> => {
     };
 
     // TODO: type
-    const response: AxiosResponse<any> = await axios.post('https://api.hubapi.com/crm/v3/properties/company/batch/create', payload, {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    const response: AxiosResponse<any> = await axios.post(
+        'https://api.hubapi.com/crm/v3/properties/company/batch/create',
+        payload, {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
 
     // TODO: type
     const result: any = response.data.results;

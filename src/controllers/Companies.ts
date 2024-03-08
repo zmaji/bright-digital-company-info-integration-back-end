@@ -25,8 +25,7 @@ const getCompanies = async (tradeName: string): Promise<Company[] | null> => {
       trade_name: tradeName,
     };
 
-    // @ts-ignore
-    const result: any = await client.dutchBusinessSearchParametersV2Async(searchParameters);
+    const result = await client.dutchBusinessSearchParametersV2Async(searchParameters);
 
     if (result && result[0]?.out?.results) {
       logger.info(`Successfully found companies with trade name ${tradeName}`);
@@ -54,8 +53,9 @@ const getCompanyInfo = async (dossierNumber: number): Promise<CompanyDetail | nu
       dossier_number: dossierNumber,
     };
 
-    // @ts-ignore
+    // eslint-disable-next-line
     const result: any = await new Promise((resolve: any, reject: any) => {
+      // eslint-disable-next-line
       client.dutchBusinessGetDossierV3(searchParameters, (err: any, result: any) => {
         if (err) {
           reject(err);
@@ -68,7 +68,7 @@ const getCompanyInfo = async (dossierNumber: number): Promise<CompanyDetail | nu
     if (result && result.out) {
       logger.info(`Successfully found company with dossier number ${dossierNumber}`);
 
-      return result.out as Company;
+      return result.out;
     } else {
       return null;
     }
@@ -84,26 +84,31 @@ const updateCompany = async (companyId: string, companyData: CompanyDetail): Pro
     const hubSpotProperties = await formatCompanyData(companyData);
 
     if (hubSpotProperties) {
-    // TODO: Type and fix hubspot env
-      const response: AxiosResponse<any> = await axios.patch(`https://api.hubapi.com/crm/v3/objects/company/${companyId}`, hubSpotProperties, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.HUBSPOT_TOKEN}`,
-        },
-      });
+      // TODO: Type
+      const response: AxiosResponse<any> = await axios.patch(
+          `https://api.hubapi.com/crm/v3/objects/company/${companyId}`,
+          hubSpotProperties, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${process.env.HUBSPOT_TOKEN}`,
+            },
+          });
 
       // TODO: Type
       const result: any = response;
 
       if (result) {
         logger.info('HubSpot company has successfully been updated');
+
         return result;
       } else {
         logger.error('HubSpot company has not been updated');
+
         return null;
       }
     } else {
       logger.error('HubSpot company could not be updated');
+
       return null;
     }
   } catch (error) {
