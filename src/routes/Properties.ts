@@ -31,12 +31,13 @@ router.post('', async (req: Request, res: Response): Promise<any | null> => {
       if (hubToken) {
         const currentProperties = await propertiesController.getProperties(hubToken.access_token);
 
-        // if (currentProperties) {
-        //     const propertyFields = await generatePropertyFields(groupName);
-        //     await compareProperties(currentProperties, propertyFields);
-        //     } else {
-        //       const result = await propertiesController.createProperties(hubToken.access_token);
-        //     }
+        if (currentProperties) {
+          const propertyFields = await generatePropertyFields(groupName);
+          await compareProperties(currentProperties, propertyFields);
+        } else {
+          const result = await propertiesController.createProperties(hubToken.access_token);
+        }
+
         const result = await propertiesController.createProperties(hubToken.access_token);
 
         if (result) {

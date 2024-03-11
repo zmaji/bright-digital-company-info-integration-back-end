@@ -4,13 +4,15 @@ import type { CompanyDetail } from '../typings/CompanyDetail';
 import axios, { AxiosResponse } from 'axios';
 import * as soap from 'soap';
 import logger from '../utils/Logger';
-import { formatCompanyData } from '../helpers/hubspot/formatCompanyData';
+import { getHubSpotProperties } from '../helpers/hubspot/formatCompanyData';
 
 const COMPANY_INFO_TEST_USERNAME = process.env.COMPANY_INFO_TEST_USERNAME;
 const COMPANY_INFO_TEST_PASSWORD = process.env.COMPANY_INFO_TEST_PASSWORD;
 
 const companyInfoURL = 'https://ws1.webservices.nl/soap_doclit?wsdl';
 const headerArguments = { username: COMPANY_INFO_TEST_USERNAME, password: COMPANY_INFO_TEST_PASSWORD };
+
+const groupName = 'company_info_integration';
 
 const getCompanies = async (tradeName: string): Promise<Company[] | null> => {
   try {
@@ -81,36 +83,37 @@ const getCompanyInfo = async (dossierNumber: number): Promise<CompanyDetail | nu
 const updateCompany = async (companyId: string, companyData: CompanyDetail): Promise<Company | null> => {
   try {
     logger.info('Updating HubSpot company..');
-    const hubSpotProperties = await formatCompanyData(companyData);
+    // // const hubSpotProperties = await getHubSpotProperties(groupName);
 
-    if (hubSpotProperties) {
-      // TODO: Type
-      const response: AxiosResponse<any> = await axios.patch(
-          `https://api.hubapi.com/crm/v3/objects/company/${companyId}`,
-          hubSpotProperties, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${process.env.HUBSPOT_TOKEN}`,
-            },
-          });
+    // if (hubSpotProperties) {
+    //   // TODO: Type
+    //   const response: AxiosResponse<any> = await axios.patch(
+    //       `https://api.hubapi.com/crm/v3/objects/company/${companyId}`,
+    //       hubSpotProperties, {
+    //         headers: {
+    //           'Content-Type': 'application/json',
+    //           'Authorization': `Bearer ${process.env.HUBSPOT_TOKEN}`,
+    //         },
+    //       });
 
-      // TODO: Type
-      const result: any = response;
+    //   // TODO: Type
+    //   const result: any = response;
 
-      if (result) {
-        logger.info('HubSpot company has successfully been updated');
+    //   if (result) {
+    //     logger.info('HubSpot company has successfully been updated');
 
-        return result;
-      } else {
-        logger.error('HubSpot company has not been updated');
+    //     return result;
+    //   } else {
+    //     logger.error('HubSpot company has not been updated');
 
-        return null;
-      }
-    } else {
-      logger.error('HubSpot company could not be updated');
+    //     return null;
+    //   }
+    // } else {
+    //   logger.error('HubSpot company could not be updated');
 
-      return null;
-    }
+    //   return null;
+    // }
+    return null;
   } catch (error) {
     logger.error('Something went wrong updating a HubSpot company', error);
     throw error;
