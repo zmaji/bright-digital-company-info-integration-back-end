@@ -2,7 +2,7 @@ import type { User } from '../typings/User';
 import type { ExchangeProof } from '../typings/ExchangeProof';
 import type { HubToken } from '../typings/HubToken';
 
-import { PrismaClient } from '@prisma/client';
+import prisma from '../database/Client'
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { exchangeTokens } from '../helpers/hubspot/exchangeTokens';
@@ -13,10 +13,6 @@ import logger from '../utils/Logger';
 const HUBSPOT_CLIENT_ID = process.env.HUBSPOT_CLIENT_ID;
 const HUBSPOT_CLIENT_SECRET = process.env.HUBSPOT_CLIENT_SECRET;
 const HUBSPOT_REDIRECT_URL = process.env.HUBSPOT_REDIRECT_URL;
-
-const prisma = new PrismaClient({
-  log: ['query', 'info', 'warn', 'error'],
-});
 
 const generateAuthToken = (user: User): string => {
   return jwt.sign({

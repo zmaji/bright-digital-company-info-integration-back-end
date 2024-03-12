@@ -2,12 +2,8 @@ import type { User } from '../typings/User';
 
 import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../database/Client'
 import jwt from 'jsonwebtoken';
-
-const prisma = new PrismaClient({
-  log: ['query', 'info', 'warn', 'error'],
-});
 
 const isLoggedIn = async (req: Request, res: Response, next: NextFunction) => {
   const userToken = getTokenFromRequest(req);

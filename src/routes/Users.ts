@@ -30,16 +30,24 @@ router.get('', async (req: Request, res: Response) => {
 
 router.post('', async (req: Request, res: Response) => {
   try {
-    const result = await userController.createUser(req.body);
+    const existingUser = await userController.getUserEmail(req.body);
 
-    if (result) {
-      res
-          .status(StatusCodes.CREATED)
-          .json(result);
+    if (!existingUser) {
+      const result = await userController.createUser(req.body);
+
+      if (result) {
+        res
+            .status(StatusCodes.CREATED)
+            .json(result);
+      } else {
+        res
+            .status(StatusCodes.BAD_REQUEST)
+            .json(result);
+      }
     } else {
       res
-          .status(StatusCodes.BAD_REQUEST)
-          .json(result);
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ error: 'User already exists' });
     }
   } catch (error) {
     res

@@ -1,11 +1,7 @@
 import type { HubToken } from '../../typings/HubToken';
 
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../database/Client'
 import logger from '../../utils/Logger';
-
-const prisma = new PrismaClient({
-  log: ['query', 'info', 'warn', 'error'],
-});
 
 export const storeHubTokens = async (tokens: HubToken, portalId: number): Promise<HubToken | null> => {
   logger.info('Checking if portal ID is already present..');

@@ -1,13 +1,9 @@
 import type { User } from '../typings/User';
 
-import { PrismaClient } from '@prisma/client';
+import prisma from '../database/Client'
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
 import logger from '../utils/Logger';
-
-const prisma = new PrismaClient({
-  log: ['query', 'info', 'warn', 'error'],
-});
 
 const getUser = async (userId: number): Promise<User | null> => {
   try {
@@ -32,21 +28,45 @@ const getUser = async (userId: number): Promise<User | null> => {
   }
 };
 
-const createUser = async (userData: User): Promise<User | null> => {
+//TODO: CHANGE TO GET ON PARAMATER
+const getUserEmail = async (userData: User): Promise<User | null> => {
   try {
-    const { emailAddress, password } = userData;
-
     const existingUser = await prisma.user.findUnique({
       where: {
-        emailAddress: emailAddress,
+        emailAddress: userData.emailAddress,
       },
     });
 
     if (existingUser) {
-      logger.warn('This email address is already in use');
+      logger.info('User successfully found: ', existingUser);
+
+      return existingUser;
+    } else {
+      logger.error(`Could not find an existing user with email: ${userData.emailAddress}`);
 
       return null;
     }
+  } catch (error) {
+    logger.error('Something went wrong getting a user');
+    throw error;
+  }
+};
+
+const createUser = async (userData: User): Promise<User | null> => {
+  try {
+    const { emailAddress, password } = userData;
+
+    // const existingUser = await prisma.user.findUnique({
+    //   where: {
+    //     emailAddress: emailAddress,
+    //   },
+    // });
+
+    // if (existingUser) {
+    //   logger.warn('This email address is already in use');
+
+    //   return null;
+    // }
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -96,6 +116,7 @@ const usersController = {
   getUser,
   createUser,
   updateUser,
+  getUserEmail
 };
 
 export default usersController;
