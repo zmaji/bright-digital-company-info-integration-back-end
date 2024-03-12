@@ -12,6 +12,38 @@ import isLoggedIn from '../middleware/IsLoggedIn';
 
 const router = Router();
 
+// router.get('', isLoggedIn async (req: Request, res: Response) => {
+router.get('', async (req: Request, res: Response) => {
+  try {
+        // TODO: Change to retrieving logged in user from request
+    // const currentUser: User = req.user;
+    const userId: number = 1;
+    const currentUser: User | null = await usersController.getUser(userId);
+
+    if (currentUser && currentUser.hubSpotPortalId) {
+      const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
+
+      if (hubToken) {
+        const result: Group | null = await groupsController.getGroup(hubToken.access_token);
+    if (result) {
+      res
+          .status(StatusCodes.OK)
+          .json(result);
+    } else {
+      res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ error: `No group has been found` });
+    }
+  }
+}
+  } catch (error) {
+    res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: 'An error occurred' });
+  }
+});
+
+
 // router.post('', isLoggedIn async (req: Request, res: Response) => {
 router.post('', async (req: Request, res: Response) => {
   try {
@@ -24,7 +56,6 @@ router.post('', async (req: Request, res: Response) => {
       const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
       if (hubToken) {
-        // TODO: type
         const existingGroup: Group | null = await groupsController.getGroup(hubToken.access_token);
 
           if (!existingGroup) {
@@ -52,5 +83,37 @@ router.post('', async (req: Request, res: Response) => {
         .json({ error: 'An error occurred creating a group' });
   }
 });
+
+// router.delete('', isLoggedIn async (req: Request, res: Response) => {
+  router.delete('', async (req: Request, res: Response) => {
+  try {
+        // TODO: Change to retrieving logged in user from request
+    // const currentUser: User = req.user;
+    const userId: number = 1;
+    const currentUser: User | null = await usersController.getUser(userId);
+
+    if (currentUser && currentUser.hubSpotPortalId) {
+      const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
+
+      if (hubToken) {
+        const result = await groupsController.deleteGroup(hubToken.access_token);
+
+    if (result) {
+      res
+          .sendStatus(StatusCodes.NO_CONTENT)
+          .json(`Successfully deleted group`);
+    } else {
+      res
+          .status(StatusCodes.NOT_FOUND)
+          .json({ error: `Unable to find group` });
+    }
+  }
+}
+  } catch (error) {
+    res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR);
+  }
+});
+
 
 export default router;

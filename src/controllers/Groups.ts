@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import logger from '../utils/Logger';
 import { Group } from '../typings/Group';
+import propertiesController from './Properties';
 
 const groupName = 'company_info_integration';
 const objectType = 'company';
@@ -9,7 +10,7 @@ const getGroup = async (accessToken: string): Promise<Group | null> => {
   try {
     logger.info(`Getting a ${objectType} group with name ${groupName}..`);
 
-    const response: AxiosResponse<Group> = await axios.delete(
+    const response: AxiosResponse<Group> = await axios.get(
       `https://api.hubapi.com/crm/v3/properties/${objectType}/groups/${groupName}`, {
           headers: {
             'Authorization': `Bearer ${accessToken}`,
@@ -72,8 +73,20 @@ const deleteGroup = async (accessToken: string): Promise<Group | null> => {
   try {
     logger.info('Trying to delete a property group..'); 
 
-    const response: AxiosResponse<Group> = await axios.post(
-        `https://api.hubapi.com/crm/v3/properties/${objectType}/groups/${groupName}`, {
+    console.log(accessToken);
+
+    const existingProperties = await propertiesController.getProperties(accessToken);
+    
+    if (existingProperties) {
+      // TODO: Type
+      // @ts-ignore
+      await Promise.all(existingProperties.map(property =>
+        propertiesController.deleteProperty(accessToken, property.name)
+      ));
+    }
+
+    const response: AxiosResponse<Group> = await axios.delete(
+        `https://api.hubapi.com/crm/v3/properties/${objectType}/${groupName}`, {
           headers: {
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
@@ -100,6 +113,7 @@ const deleteGroup = async (accessToken: string): Promise<Group | null> => {
 const groupsController = {
   createGroup,
   getGroup,
+  deleteGroup,
 };
 
 export default groupsController;

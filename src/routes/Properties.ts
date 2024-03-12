@@ -34,8 +34,6 @@ router.post('', async (req: Request, res: Response): Promise<any | null> => {
         if (currentProperties) {
           const propertyFields = await generatePropertyFields(groupName);
           await compareProperties(currentProperties, propertyFields);
-        } else {
-          const result = await propertiesController.createProperties(hubToken.access_token);
         }
 
         const result = await propertiesController.createProperties(hubToken.access_token);
