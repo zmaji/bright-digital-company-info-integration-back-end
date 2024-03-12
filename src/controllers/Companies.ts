@@ -83,36 +83,35 @@ const getCompanyInfo = async (dossierNumber: number): Promise<CompanyDetail | nu
 const updateCompany = async (companyId: string, companyData: CompanyDetail): Promise<Company | null> => {
   try {
     logger.info('Updating HubSpot company..');
-    // // const hubSpotProperties = await getHubSpotProperties(groupName);
+    const hubSpotProperties = await getHubSpotProperties(groupName);
 
-    // if (hubSpotProperties) {
-    //   // TODO: Type
-    //   const response: AxiosResponse<any> = await axios.patch(
-    //       `https://api.hubapi.com/crm/v3/objects/company/${companyId}`,
-    //       hubSpotProperties, {
-    //         headers: {
-    //           'Content-Type': 'application/json',
-    //           'Authorization': `Bearer ${process.env.HUBSPOT_TOKEN}`,
-    //         },
-    //       });
+    if (hubSpotProperties) {
+      const response: AxiosResponse<AxiosResponse> = await axios.patch(
+          `https://api.hubapi.com/crm/v3/objects/company/${companyId}`,
+          hubSpotProperties, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${process.env.HUBSPOT_TOKEN}`,
+            },
+          });
 
-    //   // TODO: Type
-    //   const result: any = response;
+      // TODO: Type
+      const result: any = response;
 
-    //   if (result) {
-    //     logger.info('HubSpot company has successfully been updated');
+      if (result) {
+        logger.info('HubSpot company has successfully been updated');
 
-    //     return result;
-    //   } else {
-    //     logger.error('HubSpot company has not been updated');
+        return result;
+      } else {
+        logger.error('HubSpot company has not been updated');
 
-    //     return null;
-    //   }
-    // } else {
-    //   logger.error('HubSpot company could not be updated');
+        return null;
+      }
+    } else {
+      logger.error('HubSpot company could not be updated');
 
-    //   return null;
-    // }
+      return null;
+    }
     return null;
   } catch (error) {
     logger.error('Something went wrong updating a HubSpot company', error);

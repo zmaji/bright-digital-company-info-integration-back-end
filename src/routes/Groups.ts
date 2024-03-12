@@ -13,25 +13,22 @@ import isLoggedIn from '../middleware/IsLoggedIn';
 const router = Router();
 
 // router.post('', isLoggedIn async (req: Request, res: Response) => {
-router.post('', async (req: Request, res: Response): Promise<any | null> => {
+router.post('', async (req: Request, res: Response) => {
   try {
     // TODO: Change to retrieving logged in user from request
     // const currentUser: User = req.user;
-    const userId: number = 4;
+    const userId: number = 1;
     const currentUser: User | null = await usersController.getUser(userId);
-    const groupName = 'company_info_integration';
 
     if (currentUser && currentUser.hubSpotPortalId) {
       const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
       if (hubToken) {
-        const hubSpotGroups = await groupsController.getGroups(hubToken.access_token);
-
-        if (hubSpotGroups) {
-          const existingGroup = await groupsController.searchGroup(hubSpotGroups, groupName);
+        // TODO: type
+        const existingGroup: Group | null = await groupsController.getGroup(hubToken.access_token);
 
           if (!existingGroup) {
-            const result = await groupsController.createGroup(hubToken.access_token);
+            const result: Group | null = await groupsController.createGroup(hubToken.access_token);
 
             if (result) {
               res
@@ -48,7 +45,6 @@ router.post('', async (req: Request, res: Response): Promise<any | null> => {
                 .json({ message: 'Group already exists', group: existingGroup });
           }
         }
-      }
     }
   } catch {
     res

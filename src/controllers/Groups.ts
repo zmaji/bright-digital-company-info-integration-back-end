@@ -3,48 +3,32 @@ import logger from '../utils/Logger';
 import { Group } from '../typings/Group';
 
 const groupName = 'company_info_integration';
+const objectType = 'company';
 
-const getGroups = async (accessToken: string): Promise<Group[] | null> => {
+const getGroup = async (accessToken: string): Promise<Group | null> => {
   try {
-    logger.info('Getting all company groups..');
+    logger.info(`Getting a ${objectType} group with name ${groupName}..`);
 
-    const response: AxiosResponse<Group[]> = await axios.get(
-        `https://api.hubspot.com/crm/v3/properties/company/groups`, {
+    const response: AxiosResponse<Group> = await axios.delete(
+      `https://api.hubapi.com/crm/v3/properties/${objectType}/groups/${groupName}`, {
           headers: {
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
           },
         });
 
-    const result: Group[] = response.data;
+    const result: Group = response.data;
 
     if (result) {
-      logger.info('Successfully retrieved all company groups');
-
+      logger.info(`Successfully retrieved ${objectType} group with name ${groupName}`);
       return result;
     } else {
       logger.error('No result received..');
-
       return null;
     }
   } catch (error) {
-    logger.error('Something went wrong getting company groups', error);
+    logger.error(`Something went wrong getting ${objectType} group with name ${groupName}`, error);
     throw error;
-  }
-};
-
-const searchGroup = async (groups: Group[], groupName: string): Promise<Group | null> => {
-  // @ts-expect-error Ignoring results on Group object
-  const foundGroup = groups.results.find((group) => group.name === groupName);
-
-  if (foundGroup) {
-    logger.info(`Successfully found group with name ${groupName}`);
-
-    return foundGroup;
-  } else {
-    logger.error(`No group with name ${groupName} found`);
-
-    return null;
   }
 };
 
@@ -59,7 +43,7 @@ const createGroup = async (accessToken: string): Promise<Group | null> => {
     };
 
     const response: AxiosResponse<Group> = await axios.post(
-        'https://api.hubapi.com/crm/v3/properties/company/groups',
+        `https://api.hubapi.com/crm/v3/properties/${objectType}/groups`,
         payload, {
           headers: {
             'Authorization': `Bearer ${accessToken}`,
@@ -70,7 +54,7 @@ const createGroup = async (accessToken: string): Promise<Group | null> => {
     const result: Group = response.data;
 
     if (result) {
-      logger.info('Successfully created a HubSpot company group');
+      logger.info(`Successfully created a HubSpot ${objectType} group`);
 
       return result;
     } else {
@@ -79,15 +63,43 @@ const createGroup = async (accessToken: string): Promise<Group | null> => {
       return null;
     }
   } catch (error) {
-    logger.error('Something went wrong creating a HubSpot company group', error);
+    logger.error(`Something went wrong creating a HubSpot ${objectType} group`, error);
+    throw error;
+  }
+};
+
+const deleteGroup = async (accessToken: string): Promise<Group | null> => {
+  try {
+    logger.info('Trying to delete a property group..'); 
+
+    const response: AxiosResponse<Group> = await axios.post(
+        `https://api.hubapi.com/crm/v3/properties/${objectType}/groups/${groupName}`, {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+    const result: Group = response.data;
+
+    if (result) {
+      logger.info(`Successfully deleted a HubSpot ${objectType} group`);
+
+      return result;
+    } else {
+      logger.error('No result received');
+
+      return null;
+    }
+  } catch (error) {
+    logger.error(`Something went wrong creating a HubSpot ${objectType} group`, error);
     throw error;
   }
 };
 
 const groupsController = {
   createGroup,
-  getGroups,
-  searchGroup,
+  getGroup,
 };
 
 export default groupsController;

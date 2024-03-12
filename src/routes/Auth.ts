@@ -12,6 +12,7 @@ const router = Router();
 router.post('', async (req: Request, res: Response) => {
   try {
     const { emailAddress, password } = req.body;
+    // TODO: Type
     const token = await authController.authenticateUser(emailAddress, password);
 
     if (token) {
@@ -38,7 +39,7 @@ router.get('/oauth-callback', async (req, res) => {
 
     // @ts-ignore
     // const userId: number | undefined = req.user?.id;
-    const userId: number = 4;
+    const userId: number = 1;
 
     if (hubSpotCode) {
       const hubToken: HubToken | null = await authController.authenticateHubSpotUser(hubSpotCode);
