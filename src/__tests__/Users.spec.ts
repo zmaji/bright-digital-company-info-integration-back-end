@@ -4,8 +4,7 @@ import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 
 test('should create new user', async () => {
-  const password = '123';
-  const hashedPassword = await bcrypt.hash(password, 12);
+  const hashedPassword = await bcrypt.hash('123', 12);
   const secret = uuidv4();
 
   const data = {
