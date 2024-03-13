@@ -46,9 +46,10 @@ const createUser = async (userData: User): Promise<User | null> => {
     if (newUser) {
       logger.success('Successfully created a new user');
       return newUser;
+    } else {
+      logger.error('Something went wrong creating a new user');
+      return null;
     }
-    logger.error('Something went wrong creating a new user');
-    return null;
   } catch (error) {
     throw error;
   }
