@@ -5,49 +5,25 @@ import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
 import logger from '../utils/Logger';
 
-const getUser = async (userId: number): Promise<User | null> => {
+const getUser = async (emailAddress: string): Promise<User | null> => {
   try {
     const existingUser = await prisma.user.findUnique({
       where: {
-        id: userId,
+        emailAddress: emailAddress,
       },
     });
 
     if (existingUser) {
-      logger.info('User successfully found: ', existingUser);
+      logger.info(`User with emailaddress: ${emailAddress} found!`);
 
       return existingUser;
     } else {
-      logger.error(`Could not find an existing user with id: ${userId}`);
+      logger.warn(`Could not find an existing user with email: ${emailAddress}`);
 
       return null;
     }
   } catch (error) {
-    logger.error('Something went wrong getting a user');
-    throw error;
-  }
-};
-
-//TODO: CHANGE TO GET ON PARAMATER
-const getUserEmail = async (userData: User): Promise<User | null> => {
-  try {
-    const existingUser = await prisma.user.findUnique({
-      where: {
-        emailAddress: userData.emailAddress,
-      },
-    });
-
-    if (existingUser) {
-      logger.info('User successfully found: ', existingUser);
-
-      return existingUser;
-    } else {
-      logger.error(`Could not find an existing user with email: ${userData.emailAddress}`);
-
-      return null;
-    }
-  } catch (error) {
-    logger.error('Something went wrong getting a user');
+    logger.fatal('Something went wrong getting a user');
     throw error;
   }
 };
@@ -55,18 +31,6 @@ const getUserEmail = async (userData: User): Promise<User | null> => {
 const createUser = async (userData: User): Promise<User | null> => {
   try {
     const { emailAddress, password } = userData;
-
-    // const existingUser = await prisma.user.findUnique({
-    //   where: {
-    //     emailAddress: emailAddress,
-    //   },
-    // });
-
-    // if (existingUser) {
-    //   logger.warn('This email address is already in use');
-
-    //   return null;
-    // }
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -79,7 +43,12 @@ const createUser = async (userData: User): Promise<User | null> => {
       },
     });
 
-    return newUser;
+    if (newUser) {
+      logger.success('Successfully created a new user');
+      return newUser;
+    }
+    logger.error('Something went wrong creating a new user');
+    return null;
   } catch (error) {
     throw error;
   }
@@ -116,7 +85,6 @@ const usersController = {
   getUser,
   createUser,
   updateUser,
-  getUserEmail
 };
 
 export default usersController;

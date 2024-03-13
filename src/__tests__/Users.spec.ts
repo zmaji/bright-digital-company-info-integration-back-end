@@ -1,5 +1,5 @@
 import usersController from '../controllers/Users';
-import { prismaMock } from './utils/singleton';
+import { prismaMock } from './utils/Singleton';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 

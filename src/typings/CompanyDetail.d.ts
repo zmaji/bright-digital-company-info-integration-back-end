@@ -1,4 +1,4 @@
-export type CompanyDetail = {
+export interface CompanyDetail {
     out: CompanyDetail | null;
     dossier_number?: string;
     establishment_number?: string;

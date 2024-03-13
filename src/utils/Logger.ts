@@ -1,4 +1,5 @@
 import winston, { createLogger, format, transports } from 'winston';
+import { CustomLogger } from '../typings/CustomLogger';
 const {
   combine,
   timestamp,
@@ -10,13 +11,18 @@ const {
 
 const customLevels = {
   levels: {
-    error: 1,
-    warn: 2,
-    info: 3,
+    fatal: 1,
+    error: 2,
+    warn: 3,
+    success: 4,
+    info: 5,
   },
   colors: {
+    fatal: 'redBG',
     error: 'red',
-    info: 'green',
+    warn: 'yellow',
+    success: 'green',
+    info: 'blue',
   },
 };
 
@@ -26,30 +32,30 @@ const logFormat = printf(({ timestamp, level, message, stack }) => {
   return `[${timestamp}] [${level}]: ${stack || message}`;
 });
 
-const logger = createLogger({
+const logger = winston.createLogger({
   levels: customLevels.levels,
   format: combine(
-      errors({ stack: true }),
-      timestamp({ format: 'DD-MM-YYYY HH:mm:ss' }),
-      logFormat,
+    errors({ stack: true }),
+    timestamp({ format: 'DD-MM-YYYY HH:mm:ss' }),
+    logFormat,
   ),
   transports: [
     new transports.Console({
       format: combine(
-          colorize(),
-          logFormat,
+        colorize(),
+        logFormat,
       ),
     }),
     new transports.File({
       filename: './Logs/application.log',
       format: combine(
-          prettyPrint(),
-          logFormat,
+        prettyPrint(),
+        logFormat,
       ),
       options: { flags: 'a' },
     }),
   ],
-});
+}) as CustomLogger;
 
 export default logger;
 
