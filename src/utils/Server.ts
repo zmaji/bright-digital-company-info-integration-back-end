@@ -1,4 +1,5 @@
 import type { Express } from 'express';
+import cors from 'cors';
 
 import express from 'express';
 import installRoutes from '../routes/Install';
@@ -13,6 +14,7 @@ const createServer = () => {
   const app: Express = express();
 
   app.use(express.json());
+  app.use(cors());
 
   app.use('/', installRoutes);
   app.use('/auth', authRoutes);
