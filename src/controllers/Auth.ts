@@ -64,7 +64,6 @@ const isTokenExpired = (hubToken: HubToken) => {
   }
 };
 
-// TODO: logs
 const authenticateUser = async (emailAddress: string, password: string): Promise<string | null> => {
   try {
     if (emailAddress && password) {
@@ -80,12 +79,15 @@ const authenticateUser = async (emailAddress: string, password: string): Promise
         if (matchedPassword) {
           return generateAuthToken(existingUser);
         } else {
+          logger.error('Wrong password provided');
           return null;
         }
       } else {
+        logger.error(`No user with email address ${emailAddress} found`);
         return null;
       }
     } else {
+      logger.error('Email address or password not provided');
       return null;
     }
   } catch (error) {
