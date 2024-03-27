@@ -12,12 +12,8 @@ const router = Router();
 router.post('', async (req: Request, res: Response) => {
   try {
     const { emailAddress, password } = req.body;
-<<<<<<< HEAD
-    // TODO: Type
-    const token = await authController.authenticateUser(emailAddress, password);
-=======
+
     const result = await authController.authenticateUser(emailAddress, password);
->>>>>>> ec9fc4c (Stash before rebase)
 
     if (typeof result === 'string' && result === 'Email address and password did not match.') {
       res
