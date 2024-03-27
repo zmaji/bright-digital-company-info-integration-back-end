@@ -17,8 +17,11 @@ const HUBSPOT_REDIRECT_URL = process.env.HUBSPOT_REDIRECT_URL;
 const generateAuthToken = (user: User): string => {
   return jwt.sign({
     id: user.id,
+    firstName: user.firstName,
+    lastName: user.lastName,
     emailAddress: user.emailAddress,
     roles: user.roles,
+    hubSpotPortalId: user.hubSpotPortalId,
   }, user.secret);
 };
 
