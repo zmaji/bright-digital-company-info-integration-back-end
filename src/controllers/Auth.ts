@@ -80,11 +80,11 @@ const authenticateUser = async (emailAddress: string, password: string): Promise
           return generateAuthToken(existingUser);
         } else {
           logger.error('Wrong password provided');
-          return null;
+          return 'Email address and password did not match.';
         }
       } else {
         logger.error(`No user with email address ${emailAddress} found`);
-        return null;
+        return `User with email address ${emailAddress} does not exist.`;
       }
     } else {
       logger.error('Email address or password not provided');

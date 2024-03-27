@@ -12,17 +12,27 @@ const router = Router();
 router.post('', async (req: Request, res: Response) => {
   try {
     const { emailAddress, password } = req.body;
+<<<<<<< HEAD
     // TODO: Type
     const token = await authController.authenticateUser(emailAddress, password);
+=======
+    const result = await authController.authenticateUser(emailAddress, password);
+>>>>>>> ec9fc4c (Stash before rebase)
 
-    if (token) {
-      res
-          .status(StatusCodes.OK)
-          .json({ token });
-    } else {
+    if (typeof result === 'string' && result === 'Email address and password did not match.') {
       res
           .status(StatusCodes.UNAUTHORIZED)
           .json({ error: 'Authentication failed: wrong email address and/or password' });
+
+    } else if (typeof result === 'string' && result === `User with email address ${emailAddress} does not exist.`) {
+      res
+          .status(StatusCodes.CONFLICT)
+          .json({ error: 'Email address does not exists' });
+
+    } else {
+      res
+        .status(StatusCodes.OK)
+        .json({ result })
     }
   } catch (error) {
     res
@@ -30,6 +40,7 @@ router.post('', async (req: Request, res: Response) => {
         .json({ error: 'An error occurred' });
   }
 });
+
 
 // router.get('/oauth-callback', isLoggedIn, async (req, res) => {
 router.get('/oauth-callback', async (req, res) => {
