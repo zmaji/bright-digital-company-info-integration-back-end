@@ -19,7 +19,6 @@ const getUser = async (emailAddress: string): Promise<User | null> => {
       return existingUser;
     } else {
       logger.warn(`Could not find an existing user with email: ${emailAddress}`);
-
       return null;
     }
   } catch (error) {

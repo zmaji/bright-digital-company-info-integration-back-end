@@ -50,7 +50,7 @@ router.post('', async (req: Request, res: Response) => {
       }
     } else {
       res
-        .status(StatusCodes.BAD_REQUEST)
+        .status(StatusCodes.CONFLICT)
         .json({ error: 'User already exists' });
     }
 
