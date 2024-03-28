@@ -2,7 +2,7 @@ import type { User } from '../typings/User';
 
 import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import prisma from '../database/Client'
+import prisma from '../database/Client';
 import jwt from 'jsonwebtoken';
 
 const isLoggedIn = async (req: Request, res: Response, next: NextFunction) => {
@@ -12,7 +12,7 @@ const isLoggedIn = async (req: Request, res: Response, next: NextFunction) => {
     const payload = await verifyToken(userToken);
 
     if (payload) {
-    // @ts-ignore
+    // eslint-disable-next-line
       req.user = payload as User;
 
       return next();

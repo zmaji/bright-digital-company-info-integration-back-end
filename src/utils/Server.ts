@@ -1,6 +1,6 @@
 import type { Express } from 'express';
-import cors from 'cors';
 
+import cors from 'cors';
 import express from 'express';
 import installRoutes from '../routes/Install';
 import authRoutes from '../routes/Auth';

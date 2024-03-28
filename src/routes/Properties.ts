@@ -1,6 +1,6 @@
 
 import type { User } from '../typings/User';
-import type { Group } from '../typings/Group';
+// import type { Group } from '../typings/Group';
 import type { HubToken } from '../typings/HubToken';
 
 import { Router, Request, Response } from 'express';
@@ -8,7 +8,7 @@ import { StatusCodes } from 'http-status-codes';
 import propertiesController from '../controllers/Properties';
 import userController from '../controllers/Users';
 import authController from '../controllers/Auth';
-import isLoggedIn from '../middleware/IsLoggedIn';
+// import isLoggedIn from '../middleware/IsLoggedIn';
 import { generatePropertyFields } from '../helpers/hubspot/hubSpotProperties';
 import { compareProperties } from '../helpers/hubspot/compareProperties';
 import logger from '../utils/Logger';
@@ -18,6 +18,7 @@ const groupName = 'company_info_integration';
 const router = Router();
 
 // router.post('', isLoggedIn async (req: Request, res: Response) => {
+// eslint-disable-next-line
 router.post('', async (req: Request, res: Response): Promise<any | null> => {
   try {
     // TODO: Change to retrieving logged in user from request

@@ -1,6 +1,6 @@
 import type { HubToken } from '../../typings/HubToken';
 
-import prisma from '../../database/Client'
+import prisma from '../../database/Client';
 import logger from '../../utils/Logger';
 
 export const storeHubTokens = async (tokens: HubToken, portalId: number): Promise<HubToken | null> => {

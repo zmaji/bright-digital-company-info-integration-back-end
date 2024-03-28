@@ -5,6 +5,7 @@ import logger from '../../utils/Logger';
 const HUBSPOT_CLIENT_SECRET = process.env.HUBSPOT_CLIENT_SECRET;
 
 // TODO: Type
+// eslint-disable-next-line
 export const verifySignature = (req: Request): any => {
   try {
     const timestamp: string | undefined = req.headers['x-hubspot-request-timestamp'] as string | undefined;

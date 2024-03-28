@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import userController from '../controllers/Users';
-import isLoggedIn from '../middleware/IsLoggedIn';
+// import isLoggedIn from '../middleware/IsLoggedIn';
 import { User } from '../typings/User';
 
 const router = Router();
@@ -36,30 +36,28 @@ router.post('', async (req: Request, res: Response) => {
     if (emailAddress && password) {
       const existingUser: User | null = await userController.getUser(emailAddress);
 
-    if (!existingUser) {
-      const newUser: User | null = await userController.createUser(req.body);
+      if (!existingUser) {
+        const newUser: User | null = await userController.createUser(req.body);
 
-      if (newUser) {
-        res
-          .status(StatusCodes.CREATED)
-          .json(newUser);
+        if (newUser) {
+          res
+              .status(StatusCodes.CREATED)
+              .json(newUser);
+        } else {
+          res
+              .status(StatusCodes.BAD_REQUEST)
+              .json({ error: 'Failed to create a new user.' });
+        }
       } else {
         res
-          .status(StatusCodes.BAD_REQUEST)
-          .json({ error: 'Failed to create a new user.' });
+            .status(StatusCodes.CONFLICT)
+            .json({ error: 'User already exists' });
       }
     } else {
       res
-        .status(StatusCodes.CONFLICT)
-        .json({ error: 'User already exists' });
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ error: 'Not all registration fields were entered correctly.' });
     }
-
-    } else {
-      res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ error: 'Not all registration fields were entered correctly.' });
-    }
-    
   } catch (error) {
     console.error(error);
   }

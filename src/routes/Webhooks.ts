@@ -15,7 +15,10 @@ router.post('/company', async (req: Request, res: Response) => {
       if (events) {
         for (const event of events) {
           if (event.propertName === 'dossier_number') {
-            console.info(`Property kvk_nummer has changed to ${event.propertyValue} for company ${event.objectId}, retrieving company details..`);
+            console.info(
+                `Property kvk_nummer has changed to ${event.propertyValue} 
+            for company ${event.objectId}, retrieving company details..`,
+            );
             const companyData = await companiesController.getCompanyInfo(event.propertyValue);
 
             if (companyData) {

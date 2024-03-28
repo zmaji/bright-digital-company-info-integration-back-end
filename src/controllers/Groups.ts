@@ -11,7 +11,7 @@ const getGroup = async (accessToken: string): Promise<Group | null> => {
     logger.info(`Getting a ${objectType} group with name ${groupName}..`);
 
     const response: AxiosResponse<Group> = await axios.get(
-      `https://api.hubapi.com/crm/v3/properties/${objectType}/groups/${groupName}`, {
+        `https://api.hubapi.com/crm/v3/properties/${objectType}/groups/${groupName}`, {
           headers: {
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
@@ -22,9 +22,11 @@ const getGroup = async (accessToken: string): Promise<Group | null> => {
 
     if (result) {
       logger.info(`Successfully retrieved ${objectType} group with name ${groupName}`);
+
       return result;
     } else {
       logger.error('No result received..');
+
       return null;
     }
   } catch (error) {
@@ -71,17 +73,17 @@ const createGroup = async (accessToken: string): Promise<Group | null> => {
 
 const deleteGroup = async (accessToken: string): Promise<Group | null> => {
   try {
-    logger.info('Trying to delete a property group..'); 
+    logger.info('Trying to delete a property group..');
 
     console.log(accessToken);
 
     const existingProperties = await propertiesController.getProperties(accessToken);
-    
+
     if (existingProperties) {
       // TODO: Type
-      // @ts-ignore
-      await Promise.all(existingProperties.map(property =>
-        propertiesController.deleteProperty(accessToken, property.name)
+      // eslint-disable-next-line
+      await Promise.all(existingProperties.map((property: any) =>
+        propertiesController.deleteProperty(accessToken, property.name),
       ));
     }
 

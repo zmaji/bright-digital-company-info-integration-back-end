@@ -3,9 +3,9 @@ import { StatusCodes } from 'http-status-codes';
 import authController from '../controllers/Auth';
 import { HubToken } from '../typings/HubToken';
 import logger from '../utils/Logger';
-import isLoggedIn from '../middleware/IsLoggedIn';
+// import isLoggedIn from '../middleware/IsLoggedIn';
 import userController from '../controllers/Users';
-import { User } from '../typings/User';
+// import { User } from '../typings/User';
 
 const router = Router();
 
@@ -19,16 +19,14 @@ router.post('', async (req: Request, res: Response) => {
       res
           .status(StatusCodes.UNAUTHORIZED)
           .json({ error: 'Authentication failed: wrong email address and/or password' });
-
     } else if (typeof result === 'string' && result === `User with email address ${emailAddress} does not exist.`) {
       res
           .status(StatusCodes.CONFLICT)
           .json({ error: 'Email address does not exists' });
-
     } else {
       res
-        .status(StatusCodes.OK)
-        .json({ result })
+          .status(StatusCodes.OK)
+          .json({ result });
     }
   } catch (error) {
     res
@@ -37,14 +35,13 @@ router.post('', async (req: Request, res: Response) => {
   }
 });
 
-
 // router.get('/oauth-callback', isLoggedIn, async (req, res) => {
 router.get('/oauth-callback', async (req, res) => {
   try {
     logger.info('User has been prompted to install the integration..');
     const hubSpotCode: string | undefined = typeof req.query.code === 'string' ? req.query.code : undefined;
 
-    // @ts-ignore
+    // eslint-disable-next-line
     // const userId: number | undefined = req.user?.id;
     const userId: number = 1;
 

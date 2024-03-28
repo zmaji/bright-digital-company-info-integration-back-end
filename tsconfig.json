@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "outDir": "./dist",
     "resolveJsonModule":true,
     /* Visit https://aka.ms/tsconfig to read more about this file */
 
@@ -109,3 +108,4 @@
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   }
 }
+

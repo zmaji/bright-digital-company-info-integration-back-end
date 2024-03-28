@@ -43,7 +43,7 @@ module.exports = {
     ],
     'import/order': importOrderRule,
   },
-  ignorePatterns: ['apidoc'],
+  ignorePatterns: ['apidoc', 'src/helpers/hubspot/formatCompanyData.ts', 'src/helpers/hubspot/hubSpotProperties.ts'],
   overrides: [
     {
       files: ['src/__tests__/**/*'],
@@ -66,12 +66,6 @@ module.exports = {
       rules: {
         'max-len': 'off',
         'require-jsdoc': 'off',
-      },
-    },
-    {
-      files: ['./src/helpers/hubspot/formatCompanyData.ts'],
-      rules: {
-        '@typescript-eslint/ban-ts-comment': 'off',
       },
     },
   ],

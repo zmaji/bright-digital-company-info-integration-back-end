@@ -80,6 +80,7 @@ const getCompanyInfo = async (dossierNumber: number): Promise<CompanyDetail | nu
   }
 };
 
+// eslint-disable-next-line
 const updateCompany = async (companyId: string, companyData: CompanyDetail): Promise<Company | null> => {
   try {
     logger.info('Updating HubSpot company..');
@@ -87,7 +88,7 @@ const updateCompany = async (companyId: string, companyData: CompanyDetail): Pro
 
     if (hubSpotProperties) {
       const response: AxiosResponse<AxiosResponse> = await axios.patch(
-          `https://api.hubapi.com/crm/v3/objects/company/${companyId}`,
+          `https://api.hubapi.com/crm/v3/objects/companies/${companyId}`,
           hubSpotProperties, {
             headers: {
               'Content-Type': 'application/json',
@@ -95,7 +96,7 @@ const updateCompany = async (companyId: string, companyData: CompanyDetail): Pro
             },
           });
 
-      // TODO: Type
+      // eslint-disable-next-line
       const result: any = response;
 
       if (result) {
@@ -112,6 +113,7 @@ const updateCompany = async (companyId: string, companyData: CompanyDetail): Pro
 
       return null;
     }
+
     return null;
   } catch (error) {
     logger.error('Something went wrong updating a HubSpot company', error);

@@ -8,8 +8,8 @@ describe('Users Controller Tests', () => {
   let secret = '';
   const emailAddress = 'maurice@brightdigital.com';
   const portalId = 123;
-  const accessToken = '123'
-  const refreshToken = '123'
+  const accessToken = '123';
+  const refreshToken = '123';
   const userId = 1;
 
   beforeAll(async () => {
@@ -48,9 +48,9 @@ describe('Users Controller Tests', () => {
       secret: secret,
       roles: ['Gebruiker'],
     };
-  
+
     prismaMock.user.create.mockRejectedValueOnce(new Error('Failed to create user'));
-  
+
     await expect(usersController.createUser(data)).rejects.toThrowError('Failed to create user');
   });
 
@@ -76,7 +76,7 @@ describe('Users Controller Tests', () => {
 
   test('should handle error during user retrieval', async () => {
     prismaMock.user.findUnique.mockRejectedValueOnce(new Error('Failed to find user'));
-  
+
     await expect(usersController.getUser(emailAddress)).rejects.toThrowError('Failed to find user');
   });
 
@@ -139,9 +139,9 @@ describe('Users Controller Tests', () => {
       created_at: new Date(),
       updated_at: new Date(),
     });
-  
+
     prismaMock.user.update.mockRejectedValueOnce(new Error('Failed to update user'));
-  
+
     await expect(usersController.updateUser(accessToken, userId)).rejects.toThrowError('Failed to update user');
   });
 });

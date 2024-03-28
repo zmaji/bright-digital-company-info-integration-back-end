@@ -8,11 +8,13 @@ const groupName = 'company_info_integration';
 const objectType = 'company';
 
 // TODO: Type
+// eslint-disable-next-line
 const getProperties = async (accessToken: string): Promise<any | null> => {
   try {
     logger.info(`Getting HubSpot properties..`);
 
     // TODO: type
+    // eslint-disable-next-line
     const response: AxiosResponse<any> = await axios.get(
         `https://api.hubapi.com/crm/v3/properties/${objectType}`,
         {
@@ -23,6 +25,7 @@ const getProperties = async (accessToken: string): Promise<any | null> => {
         });
 
     // TODO: type
+    // eslint-disable-next-line
     const result: any = response.data.results;
 
     if (result) {
@@ -40,6 +43,7 @@ const getProperties = async (accessToken: string): Promise<any | null> => {
   }
 };
 
+// eslint-disable-next-line
 const createProperties = async (accessToken: string): Promise<any | null> => {
   try {
     logger.info(`Creating HubSpot properties..`);
@@ -50,6 +54,7 @@ const createProperties = async (accessToken: string): Promise<any | null> => {
     };
 
     // TODO: type
+    // eslint-disable-next-line
     const response: AxiosResponse<any> = await axios.post(
         `https://api.hubapi.com/crm/v3/properties/${objectType}/batch/create`,
         payload, {
@@ -60,6 +65,7 @@ const createProperties = async (accessToken: string): Promise<any | null> => {
         });
 
     // TODO: type
+    // eslint-disable-next-line
     const result: any = response.data.results;
 
     if (result) {
@@ -77,14 +83,15 @@ const createProperties = async (accessToken: string): Promise<any | null> => {
   }
 };
 
-
 // TODO: READ ONLY PROPERTIES
 // TODO: type
+// eslint-disable-next-line
 const deleteProperty = async (accessToken: string, propertyName: string): Promise<any | null> => {
   try {
-    logger.info(`Trying to delete property: ${propertyName}..`); 
+    logger.info(`Trying to delete property: ${propertyName}..`);
 
     // TODO: type
+    // eslint-disable-next-line
     const response: AxiosResponse<any> = await axios.delete(
         `https://api.hubapi.com/crm/v3/properties/${objectType}/${propertyName}`, {
           headers: {

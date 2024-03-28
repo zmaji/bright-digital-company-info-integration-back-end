@@ -116,4 +116,4 @@ export interface CompanyDetail {
             currency?: string;
         };
     };
-};
+}
