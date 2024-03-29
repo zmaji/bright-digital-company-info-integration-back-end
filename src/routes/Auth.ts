@@ -6,6 +6,11 @@ import logger from '../utils/Logger';
 // import isLoggedIn from '../middleware/IsLoggedIn';
 import userController from '../controllers/Users';
 // import { User } from '../typings/User';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const frontEndBaseUrl = process.env.FRONT_END_BASE_URL
 
 const router = Router();
 
@@ -57,7 +62,7 @@ router.get('/oauth-callback', async (req, res) => {
       if (hubToken && userId) {
         await userController.updateUser(hubToken.access_token, userId);
 
-        return res.redirect(`/success`);
+        return res.redirect(`${frontEndBaseUrl}/overview`);
       } else {
         return res
             .status(StatusCodes.UNAUTHORIZED)
