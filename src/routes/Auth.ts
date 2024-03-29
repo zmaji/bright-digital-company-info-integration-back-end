@@ -43,7 +43,7 @@ router.get('/oauth-callback', async (req, res) => {
 
     // eslint-disable-next-line
     // const userId: number | undefined = req.user?.id;
-    const userId: number = 1;
+    const userId: number = 5;
 
     if (hubSpotCode) {
       const hubToken: HubToken | null = await authController.authenticateHubSpotUser(hubSpotCode);

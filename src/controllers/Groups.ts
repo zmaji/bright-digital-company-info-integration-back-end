@@ -2,9 +2,12 @@ import axios, { AxiosResponse } from 'axios';
 import logger from '../utils/Logger';
 import { Group } from '../typings/Group';
 import propertiesController from './Properties';
+import dotenv from 'dotenv';
 
-const groupName = 'company_info_integration';
-const objectType = 'company';
+dotenv.config();
+
+const groupName = process.env.HUBSPOT_GROUP_NAME;
+const objectType = process.env.HUBSPOT_COMPANT_OBJECT_TYPE;
 
 const getGroup = async (accessToken: string): Promise<Group | null> => {
   try {
@@ -25,7 +28,7 @@ const getGroup = async (accessToken: string): Promise<Group | null> => {
 
       return result;
     } else {
-      logger.error('No result received..');
+      logger.warn(`No existing ${objectType} group with name ${groupName} found..`);
 
       return null;
     }
@@ -39,30 +42,36 @@ const createGroup = async (accessToken: string): Promise<Group | null> => {
   try {
     logger.info('Trying to create a property group..');
 
-    const payload = {
-      'name': groupName,
-      'label': 'Company.info integration',
-      'displayOrder': -1,
-    };
+    const existingGroup = await getGroup(accessToken);
 
-    const response: AxiosResponse<Group> = await axios.post(
-        `https://api.hubapi.com/crm/v3/properties/${objectType}/groups`,
-        payload, {
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        });
-
-    const result: Group = response.data;
-
-    if (result) {
-      logger.info(`Successfully created a HubSpot ${objectType} group`);
-
-      return result;
+    if (!existingGroup) {
+      const payload = {
+        'name': groupName,
+        'label': 'Company.info integration',
+        'displayOrder': -1,
+      };
+  
+      const response: AxiosResponse<Group> = await axios.post(
+          `https://api.hubapi.com/crm/v3/properties/${objectType}/groups`,
+          payload, {
+            headers: {
+              'Authorization': `Bearer ${accessToken}`,
+              'Content-Type': 'application/json',
+            },
+          });
+  
+      const result: Group = response.data;
+  
+      if (result) {
+        logger.info(`Successfully created a HubSpot ${objectType} group`);
+  
+        return result;
+      } else {
+        logger.error('No result received');
+  
+        return null;
+      }
     } else {
-      logger.error('No result received');
-
       return null;
     }
   } catch (error) {
@@ -80,7 +89,6 @@ const deleteGroup = async (accessToken: string): Promise<Group | null> => {
     const existingProperties = await propertiesController.getProperties(accessToken);
 
     if (existingProperties) {
-      // TODO: Type
       // eslint-disable-next-line
       await Promise.all(existingProperties.map((property: any) =>
         propertiesController.deleteProperty(accessToken, property.name),

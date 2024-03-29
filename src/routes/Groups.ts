@@ -8,32 +8,31 @@ import { StatusCodes } from 'http-status-codes';
 import groupController from '../controllers/Groups';
 import userController from '../controllers/Users';
 import authController from '../controllers/Auth';
-// import isLoggedIn from '../middleware/IsLoggedIn';
+import isLoggedIn from '../middleware/IsLoggedIn';
 
 const router = Router();
 
-// router.get('', isLoggedIn async (req: Request, res: Response) => {
-router.get('', async (req: Request, res: Response) => {
+router.get('', isLoggedIn, async (req: Request, res: Response) => {
   try {
-    // TODO: Change to retrieving logged in user from request
-    // const emailAddress: string | undefined = req.user?.emailAddress;
-    const emailAddress: string = 'maurice@brightdigital.com';
-    const currentUser: User | null = await userController.getUser(emailAddress);
+    if (req.user && req.user.emailAddress) {
+      const emailAddress: string | undefined = req.user?.emailAddress;
+      const currentUser: User | null = await userController.getUser(emailAddress);
 
-    if (currentUser && currentUser.hubSpotPortalId) {
-      const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
+      if (currentUser && currentUser.hubSpotPortalId) {
+        const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
-      if (hubToken) {
-        const result: Group | null = await groupController.getGroup(hubToken.access_token);
+        if (hubToken) {
+          const result: Group | null = await groupController.getGroup(hubToken.access_token);
 
-        if (result) {
-          res
-              .status(StatusCodes.OK)
-              .json(result);
-        } else {
-          res
-              .status(StatusCodes.NOT_FOUND)
-              .json({ error: `No group has been found` });
+          if (result) {
+            res
+                .status(StatusCodes.OK)
+                .json(result);
+          } else {
+            res
+                .status(StatusCodes.NOT_FOUND)
+                .json({ error: `No group has been found` });
+          }
         }
       }
     }
@@ -44,36 +43,35 @@ router.get('', async (req: Request, res: Response) => {
   }
 });
 
-// router.post('', isLoggedIn async (req: Request, res: Response) => {
-router.post('', async (req: Request, res: Response) => {
+router.post('', isLoggedIn, async (req: Request, res: Response) => {
   try {
-    // TODO: Change to retrieving logged in user from request
-    // const emailAddress: string | undefined = req.user?.emailAddress;
-    const emailAddress: string = 'maurice@brightdigital.com';
-    const currentUser: User | null = await userController.getUser(emailAddress);
+    if (req.user && req.user.emailAddress) {
+      const emailAddress: string | undefined = req.user?.emailAddress;
+      const currentUser: User | null = await userController.getUser(emailAddress);
 
-    if (currentUser && currentUser.hubSpotPortalId) {
-      const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
+      if (currentUser && currentUser.hubSpotPortalId) {
+        const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
-      if (hubToken) {
-        const existingGroup: Group | null = await groupController.getGroup(hubToken.access_token);
+        if (hubToken) {
+          const existingGroup: Group | null = await groupController.getGroup(hubToken.access_token);
 
-        if (!existingGroup) {
-          const result: Group | null = await groupController.createGroup(hubToken.access_token);
+          if (!existingGroup) {
+            const result: Group | null = await groupController.createGroup(hubToken.access_token);
 
-          if (result) {
-            res
-                .status(StatusCodes.OK)
-                .json(result);
+            if (result) {
+              res
+                  .status(StatusCodes.OK)
+                  .json(result);
+            } else {
+              res
+                  .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                  .json({ error: `Unable to create group` });
+            }
           } else {
             res
-                .status(StatusCodes.INTERNAL_SERVER_ERROR)
-                .json({ error: `Unable to create group` });
+                .status(StatusCodes.OK)
+                .json({ message: 'Group already exists', group: existingGroup });
           }
-        } else {
-          res
-              .status(StatusCodes.OK)
-              .json({ message: 'Group already exists', group: existingGroup });
         }
       }
     }
@@ -84,28 +82,27 @@ router.post('', async (req: Request, res: Response) => {
   }
 });
 
-// router.delete('', isLoggedIn async (req: Request, res: Response) => {
-router.delete('', async (req: Request, res: Response) => {
+router.delete('', isLoggedIn, async (req: Request, res: Response) => {
   try {
-    // TODO: Change to retrieving logged in user from request
-    // const emailAddress: string | undefined = req.user?.emailAddress;
-    const emailAddress: string = 'maurice@brightdigital.com';
-    const currentUser: User | null = await userController.getUser(emailAddress);
+    if (req.user && req.user.emailAddress) {
+      const emailAddress: string | undefined = req.user?.emailAddress;
+      const currentUser: User | null = await userController.getUser(emailAddress);
 
-    if (currentUser && currentUser.hubSpotPortalId) {
-      const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
+      if (currentUser && currentUser.hubSpotPortalId) {
+        const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
-      if (hubToken) {
-        const result = await groupController.deleteGroup(hubToken.access_token);
+        if (hubToken) {
+          const result = await groupController.deleteGroup(hubToken.access_token);
 
-        if (result) {
-          res
-              .sendStatus(StatusCodes.NO_CONTENT)
-              .json(`Successfully deleted group`);
-        } else {
-          res
-              .status(StatusCodes.NOT_FOUND)
-              .json({ error: `Unable to find group` });
+          if (result) {
+            res
+                .sendStatus(StatusCodes.NO_CONTENT)
+                .json(`Successfully deleted group`);
+          } else {
+            res
+                .status(StatusCodes.NOT_FOUND)
+                .json({ error: `Unable to find group` });
+          }
         }
       }
     }

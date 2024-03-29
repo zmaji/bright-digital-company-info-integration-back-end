@@ -35,6 +35,7 @@ const refreshAccessToken = async (portalId: number, refreshToken: string): Promi
         redirect_uri: HUBSPOT_REDIRECT_URL,
         refresh_token: refreshToken,
       };
+
       const hubToken: HubToken | null = await exchangeTokens(params);
 
       if (hubToken) {
@@ -111,6 +112,7 @@ const authenticateHubSpotUser = async (hubSpotCode: string): Promise<HubToken | 
         redirect_uri: HUBSPOT_REDIRECT_URL,
         code: hubSpotCode,
       };
+
       const hubToken: HubToken | null = await exchangeTokens(params);
 
       if (hubToken) {
