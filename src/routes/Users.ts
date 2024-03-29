@@ -62,4 +62,25 @@ router.post('', async (req: Request, res: Response) => {
   }
 });
 
+router.put('', isLoggedIn, async (req: Request, res: Response) => {
+  try {
+    if (req.user && req.user.id && req.portalId) {
+      const result: User | null = await userController.updateUser(req.user.id, req.portalId);
+      if (result) {
+        res
+            .status(StatusCodes.OK)
+            .json(result);
+      } else {
+        res
+            .status(StatusCodes.NOT_FOUND)
+            .json({ error: `Unable to update user with ID ${req.user.id}` });
+      }
+    }
+  } catch {
+    res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: 'An error occurred retrieving a user' });
+  }
+});
+
 export default router;

@@ -3,10 +3,8 @@ import { StatusCodes } from 'http-status-codes';
 import authController from '../controllers/Auth';
 import { HubToken } from '../typings/HubToken';
 import logger from '../utils/Logger';
-// import isLoggedIn from '../middleware/IsLoggedIn';
-import userController from '../controllers/Users';
-// import { User } from '../typings/User';
 import dotenv from 'dotenv';
+import { getCurrentPortal } from '../helpers/hubspot/getCurrentPortalId';
 
 dotenv.config();
 
@@ -40,29 +38,24 @@ router.post('', async (req: Request, res: Response) => {
   }
 });
 
-// router.get('/oauth-callback', isLoggedIn, async (req, res) => {
 router.get('/oauth-callback', async (req, res) => {
   try {
     logger.info('User has been prompted to install the integration..');
     const hubSpotCode: string | undefined = typeof req.query.code === 'string' ? req.query.code : undefined;
 
-    // eslint-disable-next-line
-    // const userId: number | undefined = req.user?.id;
-    const userId: number = 5;
-
     if (hubSpotCode) {
       const hubToken: HubToken | null = await authController.authenticateHubSpotUser(hubSpotCode);
 
-      if (hubToken && hubToken.message) {
-        logger.error(`Error while retrieving tokens: ${hubToken.message}`);
+      if (hubToken) {
+        const portalId: number | null = await getCurrentPortal(hubToken.access_token);
 
-        return res.redirect(`/error?msg=${hubToken.message}`);
-      }
-
-      if (hubToken && userId) {
-        await userController.updateUser(hubToken.access_token, userId);
-
-        return res.redirect(`${frontEndBaseUrl}/overview`);
+        if (portalId) {
+          return res.redirect(`${frontEndBaseUrl}/thank-you?portalId=${portalId}`);
+        } else {
+          res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ error: 'Portal id missing or invalid' });
+        }
       } else {
         return res
             .status(StatusCodes.UNAUTHORIZED)

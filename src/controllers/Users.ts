@@ -59,28 +59,18 @@ const createUser = async (userData: User): Promise<User | null> => {
   }
 };
 
-const updateUser = async (accessToken: string, userId: number): Promise<User | null> => {
+const updateUser = async (userId: number, portalId: number): Promise<User | null> => {
   try {
-    const existingToken = await prisma.hubToken.findUnique({
-      where: {
-        access_token: accessToken,
-      },
-    });
-
-    if (existingToken) {
       const updatedUser = await prisma.user.update({
         where: {
           id: userId,
         },
         data: {
-          hubSpotPortalId: existingToken.portal_id,
+          hubSpotPortalId: portalId,
         },
       });
 
       return updatedUser;
-    } else {
-      return null;
-    }
   } catch (error) {
     throw error;
   }
