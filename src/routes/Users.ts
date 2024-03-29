@@ -1,26 +1,25 @@
 import { Router, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import userController from '../controllers/Users';
-// import isLoggedIn from '../middleware/IsLoggedIn';
+import isLoggedIn from '../middleware/IsLoggedIn';
 import { User } from '../typings/User';
 
 const router = Router();
 
-// router.get('', isLoggedIn, async (req: Request, res: Response) => {
-router.get('', async (req: Request, res: Response) => {
+router.get('', isLoggedIn, async (req: Request, res: Response) => {
   try {
-    // const emailAddress: string | undefined = req.user?.emailAddress;
-    const emailAddress: string = 'maurice@brightdigital.com';
-    const result: User | null = await userController.getUser(emailAddress);
-
-    if (result) {
-      res
-          .status(StatusCodes.OK)
-          .json(result);
-    } else {
-      res
-          .status(StatusCodes.NOT_FOUND)
-          .json({ error: `Unable to get user with ID ${emailAddress}` });
+    if (req.user && req.user.emailAddress) {
+      const emailAddress: string | undefined = req.user?.emailAddress;
+      const result: User | null = await userController.getUser(emailAddress);
+      if (result) {
+        res
+            .status(StatusCodes.OK)
+            .json(result);
+      } else {
+        res
+            .status(StatusCodes.NOT_FOUND)
+            .json({ error: `Unable to get user with ID ${emailAddress}` });
+      }
     }
   } catch {
     res
