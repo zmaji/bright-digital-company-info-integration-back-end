@@ -34,11 +34,11 @@ export const verifySignature = (req: Request): any => {
       const hash: string = hmac.digest('base64');
 
       if (crypto.timingSafeEqual(Buffer.from(hash), Buffer.from(signature))) {
-        console.log(`Valid signature for incoming request, proceeding..`);
+        logger.info(`Valid signature for incoming request, proceeding..`);
 
         return true;
       } else {
-        console.error(`Invalid signature for incoming request, rejected!`);
+        logger.info(`Invalid signature for incoming request, rejected!`);
 
         return false;
       }
