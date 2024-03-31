@@ -50,6 +50,8 @@ router.get('/oauth-callback', async (req, res) => {
         const portalId: number | null = await getCurrentPortal(hubToken.access_token);
 
         if (portalId) {
+          console.log('frontEndBaseUrl')
+          console.log(frontEndBaseUrl)
           return res.redirect(`${frontEndBaseUrl}/thank-you?portalId=${portalId}`);
         } else {
           res

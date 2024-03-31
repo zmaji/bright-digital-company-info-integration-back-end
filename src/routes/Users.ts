@@ -64,8 +64,8 @@ router.post('', async (req: Request, res: Response) => {
 
 router.put('', isLoggedIn, async (req: Request, res: Response) => {
   try {
-    if (req.user && req.user.id && req.portalId) {
-      const result: User | null = await userController.updateUser(req.user.id, req.portalId);
+    if (req.user && req.user.id && req.body.portalId) {
+      const result: User | null = await userController.updateUser(req.user.id, req.body.portalId);
       if (result) {
         res
             .status(StatusCodes.OK)
