@@ -83,9 +83,7 @@ const createGroup = async (accessToken: string): Promise<Group | null> => {
 const deleteGroup = async (accessToken: string): Promise<Group | null> => {
   try {
     logger.info('Trying to delete a property group..');
-
-    console.log(accessToken);
-
+    
     const existingProperties = await propertiesController.getProperties(accessToken);
 
     if (existingProperties) {
