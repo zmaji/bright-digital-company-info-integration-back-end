@@ -22,6 +22,8 @@ model User {
   password   String
   secret     String
   roles      String[]
+  activationToken   String   @unique
+  isActive   Boolean   @default(false)
 }
 
 model HubToken {

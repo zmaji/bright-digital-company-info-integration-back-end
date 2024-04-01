@@ -28,6 +28,29 @@ router.get('', isLoggedIn, async (req: Request, res: Response) => {
   }
 });
 
+router.get('/verify', async (req: Request, res: Response) => {
+  try {
+    if (req && req.body && req.body.activationCode) {
+      const activationCode: string = req.body.activationCode;
+      const result: boolean | null = await userController.verifyUser(activationCode);
+
+      if (result) {
+        res
+            .status(StatusCodes.OK)
+            .json('Successfully entered activation code');
+      } else {
+        res
+            .status(StatusCodes.NOT_FOUND)
+            .json({ error: 'Wrong activation code entered'});
+      }
+    }
+  } catch {
+    res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: 'An error occurred verifying a user' });
+  }
+});
+
 router.post('', async (req: Request, res: Response) => {
   try {
     const { emailAddress, password } = req.body;

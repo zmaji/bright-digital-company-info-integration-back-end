@@ -7,5 +7,7 @@ export interface User {
     emailAddress: string,
     password: string,
     secret: string,
-    roles: string[]
+    roles: string[],
+    activationToken: string,
+    isActive: boolean
 }

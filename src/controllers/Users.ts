@@ -4,6 +4,7 @@ import prisma from '../database/Client';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
 import logger from '../utils/Logger';
+import { sendActivationEmail } from '../helpers/sendActivationEmail';
 
 const getUser = async (emailAddress: string): Promise<User | null> => {
   try {
@@ -28,11 +29,34 @@ const getUser = async (emailAddress: string): Promise<User | null> => {
   }
 };
 
+const verifyUser = async (activationCode: string): Promise<boolean> => {
+  try {
+    const existingToken = await prisma.user.findUnique({
+      where: {
+        activationToken: activationCode,
+      },
+    });
+
+    if (existingToken) {
+      logger.info(`Matching activation token found found!`);
+      return true;
+    } else {
+      logger.error('No matching token!');
+      return false;
+    }
+  } catch (error) {
+    logger.fatal('Something went wrong retrieving an activation token');
+    throw error;
+  }
+};
+
 const createUser = async (userData: User): Promise<User | null> => {
   try {
     const { firstName, lastName, emailAddress, password } = userData;
-
     const hashedPassword = await bcrypt.hash(password, 12);
+    const activationToken = uuidv4();
+
+    await sendActivationEmail(emailAddress, activationToken);
 
     const newUser: User = await prisma.user.create({
       data: {
@@ -42,12 +66,13 @@ const createUser = async (userData: User): Promise<User | null> => {
         password: hashedPassword,
         secret: uuidv4(),
         roles: ['Gebruiker'],
+        isActive: false,
+        activationToken: activationToken
       },
     });
 
     if (newUser) {
       logger.success('Successfully created a new user');
-
       return newUser;
     } else {
       logger.error('Something went wrong creating a new user');
@@ -80,6 +105,7 @@ const usersController = {
   getUser,
   createUser,
   updateUser,
+  verifyUser,
 };
 
 export default usersController;
