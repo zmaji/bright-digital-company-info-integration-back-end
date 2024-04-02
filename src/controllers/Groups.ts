@@ -2,24 +2,18 @@ import axios, { AxiosResponse } from 'axios';
 import logger from '../utils/Logger';
 import { Group } from '../typings/Group';
 import propertiesController from './Properties';
-import dotenv from 'dotenv';
 
-dotenv.config();
-
-const groupName = process.env.HUBSPOT_GROUP_NAME;
-const objectType = process.env.HUBSPOT_COMPANT_OBJECT_TYPE;
-
-const getGroup = async (accessToken: string): Promise<Group | null> => {
+const getGroup = async (accessToken: string, groupName: string, objectType: string): Promise<Group | null> => {
   try {
     logger.info(`Getting a ${objectType} group with name ${groupName}..`);
 
     const response: AxiosResponse<Group> = await axios.get(
-        `https://api.hubapi.com/crm/v3/properties/${objectType}/groups/${groupName}`, {
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        });
+      `https://api.hubapi.com/crm/v3/properties/${objectType}/groups/${groupName}`, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
     const result: Group = response.data;
 
@@ -33,16 +27,16 @@ const getGroup = async (accessToken: string): Promise<Group | null> => {
       return null;
     }
   } catch (error) {
-    logger.error(`Something went wrong getting ${objectType} group with name ${groupName}`, error);
+    logger.error(`Something went wrong getting a ${objectType} group with name ${groupName}`, error);
     throw error;
   }
 };
 
-const createGroup = async (accessToken: string): Promise<Group | null> => {
+const createGroup = async (accessToken: string, groupName: string, objectType: string): Promise<Group | null> => {
   try {
-    logger.info('Trying to create a property group..');
+    logger.info(`Trying to create a ${objectType} group with name ${groupName}..`);
 
-    const existingGroup = await getGroup(accessToken);
+    const existingGroup = await getGroup(accessToken, groupName, objectType);
 
     if (!existingGroup) {
       const payload = {
@@ -63,7 +57,7 @@ const createGroup = async (accessToken: string): Promise<Group | null> => {
       const result: Group = response.data;
   
       if (result) {
-        logger.info(`Successfully created a HubSpot ${objectType} group`);
+        logger.info(`Successfully created a ${objectType} group`);
   
         return result;
       } else {
@@ -75,14 +69,14 @@ const createGroup = async (accessToken: string): Promise<Group | null> => {
       return null;
     }
   } catch (error) {
-    logger.error(`Something went wrong creating a HubSpot ${objectType} group`, error);
+    logger.error(`Something went wrong creating a ${objectType} group`, error);
     throw error;
   }
 };
 
-const deleteGroup = async (accessToken: string): Promise<Group | null> => {
+const deleteGroup = async (accessToken: string, groupName: string, objectType: string): Promise<Group | null> => {
   try {
-    logger.info('Trying to delete a property group..');
+    logger.info(`Trying to delete a ${objectType} group with name ${groupName}..`);
     
     const existingProperties = await propertiesController.getProperties(accessToken);
 
@@ -104,7 +98,7 @@ const deleteGroup = async (accessToken: string): Promise<Group | null> => {
     const result: Group = response.data;
 
     if (result) {
-      logger.info(`Successfully deleted a HubSpot ${objectType} group`);
+      logger.info(`Successfully deleted a ${objectType} group with name ${groupName}`);
 
       return result;
     } else {
@@ -113,7 +107,7 @@ const deleteGroup = async (accessToken: string): Promise<Group | null> => {
       return null;
     }
   } catch (error) {
-    logger.error(`Something went wrong creating a HubSpot ${objectType} group`, error);
+    logger.error(`Something went wrong deleting a ${objectType} group with name ${groupName}`, error);
     throw error;
   }
 };

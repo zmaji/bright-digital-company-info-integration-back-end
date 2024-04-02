@@ -56,7 +56,8 @@ const createUser = async (userData: User): Promise<User | null> => {
     const hashedPassword = await bcrypt.hash(password, 12);
     const activationToken = uuidv4();
 
-    await sendActivationEmail(emailAddress, activationToken);
+    // TODO: SEND MAIL
+    // await sendActivationEmail(emailAddress, activationToken);
 
     const newUser: User = await prisma.user.create({
       data: {
@@ -84,14 +85,14 @@ const createUser = async (userData: User): Promise<User | null> => {
   }
 };
 
-const updateUser = async (userId: number, portalId: number): Promise<User | null> => {
+const updateUser = async (userId: number, hubSpotPortalId: number): Promise<User | null> => {
   try {
       const updatedUser = await prisma.user.update({
         where: {
           id: userId,
         },
         data: {
-          hubSpotPortalId: portalId,
+          hubSpotPortalId: hubSpotPortalId,
         },
       });
 

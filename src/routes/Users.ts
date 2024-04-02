@@ -3,6 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import userController from '../controllers/Users';
 import isLoggedIn from '../middleware/IsLoggedIn';
 import { User } from '../typings/User';
+import logger from '../utils/Logger';
 
 const router = Router();
 
@@ -86,9 +87,13 @@ router.post('', async (req: Request, res: Response) => {
 });
 
 router.put('', isLoggedIn, async (req: Request, res: Response) => {
+  logger.info('Updating a user..')
+  
   try {
-    if (req.user && req.user.id && req.body.portalId) {
-      const result: User | null = await userController.updateUser(req.user.id, req.body.portalId);
+    if (req.user && req.user.id && req.body.hubSpotPortalId) {
+      const hubSpotPortalId = parseInt(req.body.hubSpotPortalId);
+      const result: User | null = await userController.updateUser(req.user.id, hubSpotPortalId);
+
       if (result) {
         res
             .status(StatusCodes.OK)
@@ -98,6 +103,10 @@ router.put('', isLoggedIn, async (req: Request, res: Response) => {
             .status(StatusCodes.NOT_FOUND)
             .json({ error: `Unable to update user with ID ${req.user.id}` });
       }
+    } else {
+      res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ error: 'Unable to find hubSpot portal ID' });
     }
   } catch {
     res

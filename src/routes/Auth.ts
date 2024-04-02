@@ -47,10 +47,10 @@ router.get('/oauth-callback', async (req, res) => {
       const hubToken: HubToken | null = await authController.authenticateHubSpotUser(hubSpotCode);
 
       if (hubToken) {
-        const portalId: number | null = await getCurrentPortal(hubToken.access_token);
+        const hubSpotPortalId: number | null = await getCurrentPortal(hubToken.access_token);
 
-        if (portalId) {
-          return res.redirect(`${frontEndBaseUrl}/thank-you?portalId=${portalId}`);
+        if (hubSpotPortalId) {
+          return res.redirect(`${frontEndBaseUrl}/thank-you?hubSpotPortalId=${hubSpotPortalId}`);
         } else {
           res
           .status(StatusCodes.BAD_REQUEST)
