@@ -85,7 +85,7 @@ router.post('', isLoggedIn, async (req: Request, res: Response) => {
         }
       }
     }
-  } catch {
+  } catch (error) {
     res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ error: 'An error occurred creating a group' });

@@ -1,12 +1,12 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import logger from '../utils/Logger';
 import { Group } from '../typings/Group';
 import propertiesController from './Properties';
 
 const getGroup = async (accessToken: string, groupName: string, objectType: string): Promise<Group | null> => {
-  try {
-    logger.info(`Getting a ${objectType} group with name ${groupName}..`);
+  logger.info(`Getting a ${objectType} group with name ${groupName}..`);
 
+  try {
     const response: AxiosResponse<Group> = await axios.get(
       `https://api.hubapi.com/crm/v3/properties/${objectType}/groups/${groupName}`, {
         headers: {
@@ -19,26 +19,27 @@ const getGroup = async (accessToken: string, groupName: string, objectType: stri
 
     if (result) {
       logger.info(`Successfully retrieved ${objectType} group with name ${groupName}`);
-
       return result;
     } else {
-      logger.warn(`No existing ${objectType} group with name ${groupName} found..`);
-
       return null;
     }
   } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response && axiosError.response.status === 404) {
+        logger.warn(`No existing ${objectType} group with name ${groupName} found..`);
+        return null;
+      }
+    }
     logger.error(`Something went wrong getting a ${objectType} group with name ${groupName}`, error);
     throw error;
   }
 };
 
 const createGroup = async (accessToken: string, groupName: string, objectType: string): Promise<Group | null> => {
+  logger.info(`Trying to create a ${objectType} group with name ${groupName}..`);
+
   try {
-    logger.info(`Trying to create a ${objectType} group with name ${groupName}..`);
-
-    const existingGroup = await getGroup(accessToken, groupName, objectType);
-
-    if (!existingGroup) {
       const payload = {
         'name': groupName,
         'label': 'Company.info integration',
@@ -62,12 +63,8 @@ const createGroup = async (accessToken: string, groupName: string, objectType: s
         return result;
       } else {
         logger.error('No result received');
-  
         return null;
       }
-    } else {
-      return null;
-    }
   } catch (error) {
     logger.error(`Something went wrong creating a ${objectType} group`, error);
     throw error;
