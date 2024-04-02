@@ -19,11 +19,14 @@ model User {
   firstName   String
   lastName   String
   emailAddress  String   @unique
+  domain  String?
   password   String
   secret     String
   roles      String[]
   activationToken   String   @unique
   isActive   Boolean   @default(false)
+  companyInfoUserName  String?   @unique
+  companyInfoPassword  String?   @unique
 }
 
 model HubToken {
