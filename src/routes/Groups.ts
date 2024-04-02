@@ -15,12 +15,12 @@ const router = Router();
 router.get('', isLoggedIn, async (req: Request, res: Response) => {
   try {
     if (req.user && req.user.emailAddress) {
-      const emailAddress: string = req.user?.emailAddress;
+      const emailAddress: string = req.user.emailAddress;
       const currentUser: User | null = await userController.getUser(emailAddress);
 
-      if (req.body && req.body.groupName && req.body.objectType) {
-        const groupName: string = req.body?.groupName;
-        const objectType: string = req.body?.objectType;
+      if (req.query && req.query.groupName && req.query.objectType) {
+        const groupName: string = req.query.groupName as string;
+        const objectType: string = req.query.objectType as string;
 
         if (currentUser && currentUser.hubSpotPortalId) {
           const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
@@ -38,7 +38,15 @@ router.get('', isLoggedIn, async (req: Request, res: Response) => {
                   .json({ error: `Unable to find group with name ${groupName}` });
             }
           }
+        } else {
+          res
+          .status(StatusCodes.UNAUTHORIZED)
+          .json({ error: 'Unauthorized' });
         }
+      } else {
+        res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: 'No group name and object type provided' });
       }
     }
   } catch (error) {
@@ -62,9 +70,6 @@ router.post('', isLoggedIn, async (req: Request, res: Response) => {
           const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
           if (hubToken) {
-            const existingGroup: Group | null = await groupController.getGroup(hubToken.access_token, groupName, objectType);
-
-            if (!existingGroup) {
               const result: Group | null = await groupController.createGroup(hubToken.access_token, groupName, objectType);
 
               if (result) {
@@ -76,11 +81,6 @@ router.post('', isLoggedIn, async (req: Request, res: Response) => {
                     .status(StatusCodes.INTERNAL_SERVER_ERROR)
                     .json({ error: `Unable to create group with name ${groupName}` });
               }
-            } else {
-              res
-                  .status(StatusCodes.OK)
-                  .json({ message: `Group with name ${groupName} already exists`, group: existingGroup });
-            }
           }
         }
       }

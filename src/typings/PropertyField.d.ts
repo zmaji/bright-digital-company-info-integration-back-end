@@ -1,4 +1,13 @@
 export interface PropertyField {
+    updatedAt?: Date,
+    createdAt?: Date,
+    description?: string,
+    calculated?: boolean,
+    externalOptions?: boolean,
+    hidden?: boolean,
+    hubspotDefined?: boolean,
+    modificationMetadata?: Object,
+    formField?: boolean,
     label: string;
     name: string;
     type: string;

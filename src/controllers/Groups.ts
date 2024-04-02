@@ -75,12 +75,12 @@ const deleteGroup = async (accessToken: string, groupName: string, objectType: s
   try {
     logger.info(`Trying to delete a ${objectType} group with name ${groupName}..`);
     
-    const existingProperties = await propertiesController.getProperties(accessToken);
+    const existingProperties = await propertiesController.getProperties(accessToken, objectType);
 
     if (existingProperties) {
       // eslint-disable-next-line
       await Promise.all(existingProperties.map((property: any) =>
-        propertiesController.deleteProperty(accessToken, property.name),
+        propertiesController.deleteProperty(accessToken, property.name, objectType),
       ));
     }
 

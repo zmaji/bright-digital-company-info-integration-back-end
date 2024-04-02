@@ -1,7 +1,7 @@
 
 import type { User } from '../typings/User';
-// import type { Group } from '../typings/Group';
 import type { HubToken } from '../typings/HubToken';
+import { PropertyField } from '../typings/PropertyField';
 
 import { Router, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
@@ -11,56 +11,105 @@ import authController from '../controllers/Auth';
 import isLoggedIn from '../middleware/IsLoggedIn';
 import { generatePropertyFields } from '../helpers/hubspot/hubSpotProperties';
 import { compareProperties } from '../helpers/hubspot/compareProperties';
-import logger from '../utils/Logger';
-
-const groupName = 'company_info_integration';
 
 const router = Router();
 
-// eslint-disable-next-line
-router.post('', isLoggedIn, async (req: Request, res: Response): Promise<any | null> => {
-// router.post('', async (req: Request, res: Response): Promise<any | null> => {
+router.get('', isLoggedIn, async (req: Request, res: Response) => {
   try {
     if (req.user && req.user.emailAddress) {
     const emailAddress: string | undefined = req.user?.emailAddress;
     const currentUser: User | null = await userController.getUser(emailAddress);
 
-      if (currentUser && currentUser.hubSpotPortalId) {
-        const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
+    if (req.body && req.body.groupName && req.body.objectType) {
+      const groupName: string = req.body.groupName;
+      const objectType: string = req.body.objectType;
 
-        if (hubToken) {
-          const currentProperties = await propertiesController.getProperties(hubToken.access_token);
+        if (currentUser && currentUser.hubSpotPortalId) {
+          const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
-          if (currentProperties) {
-            const propertyFields = await generatePropertyFields(groupName);
-            await compareProperties(currentProperties, propertyFields);
-          }
+          if (hubToken) {
+            const properties = await propertiesController.getProperties(hubToken.access_token, objectType);
 
-          const result = await propertiesController.createProperties(hubToken.access_token);
-
-          if (result) {
-            res
-                .status(StatusCodes.OK)
-                .json('Successfully created properties');
+            if (properties) {
+              res
+                  .status(StatusCodes.OK)
+                  .json(`Successfully retrieved properties from group ${groupName}`);
+            } else {
+              res
+                  .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                  .json({ error: `retrieved properties from group ${groupName}` });
+            }
           } else {
             res
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)
-                .json({ error: `Unable to create properties` });
+                .json({ error: `Unable to retrieve hub token` });
           }
         } else {
           res
-              .status(StatusCodes.INTERNAL_SERVER_ERROR)
-              .json({ error: `Unable to retrieve hub token` });
+          .status(StatusCodes.UNAUTHORIZED)
+          .json({ error: `Unauthorized` });
         }
       } else {
-        logger.info('Not logged in!');
+        res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: 'No group name and object type provided' });
       }
     }
   } catch {
     res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: 'An error occurred creating properties' });
+        .json({ error: `An error occurred retrieving properties` });
   }
 });
+
+// eslint-disable-next-line
+// router.post('', isLoggedIn, async (req: Request, res: Response) => {
+//   try {
+//     if (req.user && req.user.emailAddress) {
+//     const emailAddress: string | undefined = req.user?.emailAddress;
+//     const currentUser: User | null = await userController.getUser(emailAddress);
+
+//     if (req.body && req.body.groupName && req.body.objectType) {
+//       const groupName: string = req.body.groupName;
+//       const objectType: string = req.body.objectType;
+
+//         if (currentUser && currentUser.hubSpotPortalId) {
+//           const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
+
+//           if (hubToken) {
+//             const currentProperties = await propertiesController.getProperties(hubToken.access_token, groupName);
+
+//             if (currentProperties) {
+//               const propertyFields = await generatePropertyFields(groupName);
+//               await compareProperties(currentProperties, propertyFields);
+//             }
+
+//             const result = await propertiesController.createProperties(hubToken.access_token, groupName, objectType);
+
+//             if (result) {
+//               res
+//                   .status(StatusCodes.OK)
+//                   .json('Successfully created properties');
+//             } else {
+//               res
+//                   .status(StatusCodes.INTERNAL_SERVER_ERROR)
+//                   .json({ error: `Unable to create properties` });
+//             }
+//           } else {
+//             res
+//                 .status(StatusCodes.INTERNAL_SERVER_ERROR)
+//                 .json({ error: `Unable to retrieve hub token` });
+//           }
+//         } else {
+//           logger.info('Not logged in!');
+//         }
+//       }
+//     }
+//   } catch {
+//     res
+//         .status(StatusCodes.INTERNAL_SERVER_ERROR)
+//         .json({ error: 'An error occurred creating properties' });
+//   }
+// });
 
 export default router;

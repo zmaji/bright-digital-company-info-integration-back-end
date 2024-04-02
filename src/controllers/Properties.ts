@@ -4,18 +4,11 @@ import axios, { AxiosResponse } from 'axios';
 import logger from '../utils/Logger';
 import { generatePropertyFields } from '../helpers/hubspot/hubSpotProperties';
 
-const groupName = 'company_info_integration';
-const objectType = 'company';
+const getProperties = async (accessToken: string, objectType: string): Promise<PropertyField[] | null> => {
+  logger.info(`Getting HubSpot properties..`);
 
-// TODO: Type
-// eslint-disable-next-line
-const getProperties = async (accessToken: string): Promise<any | null> => {
   try {
-    logger.info(`Getting HubSpot properties..`);
-
-    // TODO: type
-    // eslint-disable-next-line
-    const response: AxiosResponse<any> = await axios.get(
+    const response: AxiosResponse = await axios.get(
         `https://api.hubapi.com/crm/v3/properties/${objectType}`,
         {
           headers: {
@@ -24,9 +17,7 @@ const getProperties = async (accessToken: string): Promise<any | null> => {
           },
         });
 
-    // TODO: type
-    // eslint-disable-next-line
-    const result: any = response.data.results;
+    const result: PropertyField[] | null = response.data;
 
     if (result) {
       logger.info('Successfully retrieved properties');
@@ -43,19 +34,17 @@ const getProperties = async (accessToken: string): Promise<any | null> => {
   }
 };
 
-// eslint-disable-next-line
-const createProperties = async (accessToken: string): Promise<any | null> => {
+const createProperties = async (accessToken: string, groupName: string, objectType: string): Promise<PropertyField[] | null> => {
+  logger.info(`Creating HubSpot properties..`);
+
   try {
-    logger.info(`Creating HubSpot properties..`);
     const propertyFields: PropertyField[] = await generatePropertyFields(groupName);
 
     const payload = {
       inputs: propertyFields,
     };
 
-    // TODO: type
-    // eslint-disable-next-line
-    const response: AxiosResponse<any> = await axios.post(
+    const response: AxiosResponse = await axios.post(
         `https://api.hubapi.com/crm/v3/properties/${objectType}/batch/create`,
         payload, {
           headers: {
@@ -64,9 +53,7 @@ const createProperties = async (accessToken: string): Promise<any | null> => {
           },
         });
 
-    // TODO: type
-    // eslint-disable-next-line
-    const result: any = response.data.results;
+    const result: PropertyField[] | null = response.data.results;
 
     if (result) {
       logger.info('Successfully created properties');
@@ -83,16 +70,11 @@ const createProperties = async (accessToken: string): Promise<any | null> => {
   }
 };
 
-// TODO: READ ONLY PROPERTIES
-// TODO: type
-// eslint-disable-next-line
-const deleteProperty = async (accessToken: string, propertyName: string): Promise<any | null> => {
+const deleteProperty = async (accessToken: string, propertyName: string, objectType: string): Promise<PropertyField[] | null> => {
   try {
     logger.info(`Trying to delete property: ${propertyName}..`);
 
-    // TODO: type
-    // eslint-disable-next-line
-    const response: AxiosResponse<any> = await axios.delete(
+    const response: AxiosResponse = await axios.delete(
         `https://api.hubapi.com/crm/v3/properties/${objectType}/${propertyName}`, {
           headers: {
             'Authorization': `Bearer ${accessToken}`,
@@ -100,7 +82,7 @@ const deleteProperty = async (accessToken: string, propertyName: string): Promis
           },
         });
 
-    const result = response.data;
+    const result: PropertyField[] = response.data;
 
     if (result) {
       logger.info(`Successfully deleted a HubSpot property: ${propertyName}`);
