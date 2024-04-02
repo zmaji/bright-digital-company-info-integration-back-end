@@ -20,9 +20,9 @@ router.get('', isLoggedIn, async (req: Request, res: Response) => {
     const emailAddress: string | undefined = req.user?.emailAddress;
     const currentUser: User | null = await userController.getUser(emailAddress);
 
-    if (req.body && req.body.groupName && req.body.objectType) {
-      const groupName: string = req.body.groupName;
-      const objectType: string = req.body.objectType;
+    if (req.query && req.query.groupName && req.query.objectType) {
+      const groupName: string = req.query.groupName as string;
+      const objectType: string = req.query.objectType as string;
 
         if (currentUser && currentUser.hubSpotPortalId) {
           const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
