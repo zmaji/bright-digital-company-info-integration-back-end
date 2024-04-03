@@ -21,7 +21,6 @@ const getProperties = async (accessToken: string, objectType: string): Promise<P
 
     if (result) {
       logger.info('Successfully retrieved properties');
-
       return result;
     } else {
       console.error('No result received');
@@ -34,14 +33,14 @@ const getProperties = async (accessToken: string, objectType: string): Promise<P
   }
 };
 
-const createProperties = async (accessToken: string, groupName: string, objectType: string): Promise<PropertyField[] | null> => {
+const createProperties = async (accessToken: string, objectType: string, missingProperties: PropertyField[]): Promise<PropertyField[] | null> => {
   logger.info(`Creating HubSpot properties..`);
 
-  try {
-    const propertyFields: PropertyField[] = await generatePropertyFields(groupName);
+  console.log(missingProperties);
 
+  try {
     const payload = {
-      inputs: propertyFields,
+      inputs: missingProperties,
     };
 
     const response: AxiosResponse = await axios.post(
@@ -53,7 +52,7 @@ const createProperties = async (accessToken: string, groupName: string, objectTy
           },
         });
 
-    const result: PropertyField[] | null = response.data.results;
+    const result: PropertyField[] = response.data.results;
 
     if (result) {
       logger.info('Successfully created properties');
@@ -69,6 +68,40 @@ const createProperties = async (accessToken: string, groupName: string, objectTy
     throw error;
   }
 };
+
+// const createProperties = async (accessToken: string, objectType: string, missingProperties: PropertyField[]): Promise<PropertyField[] | null> => {
+//   logger.info(`Creating HubSpot properties..`);
+
+//   const data = {
+//     inputs: missingProperties,
+//   }
+
+//   return axios({
+// 		method: 'post',
+// 		url: `https://api.hubapi.com/crm/v3/properties/${objectType}/batch/create`,
+// 		headers: {
+// 			'Authorization': `Bearer ${accessToken}`,
+//       'Content-Type': 'application/json'
+// 		},
+//     data: data
+// 	}).then((response) => {
+//     console.log(`Succesfully created properties`)
+//     if (response.data) {
+//       return response.data.results
+//     }
+//   }).catch((error) => {
+//       console.log(`Error while creating properties: ${error}`)
+//       if (error.response) {
+//         console.log('Server responded with status code:', error.response.status);
+//         console.log('Response data:', error.response.data);
+//       } else if (error.request) {
+//         console.log('No response received:', error.request);
+//       } else {
+//         console.log('Error creating request:', error.message);
+//       }
+//       return false
+//   })
+// }
 
 const deleteProperty = async (accessToken: string, propertyName: string, objectType: string): Promise<PropertyField[] | null> => {
   try {
