@@ -2,7 +2,6 @@ import type { PropertyField } from '../typings/PropertyField';
 
 import axios, { AxiosResponse } from 'axios';
 import logger from '../utils/Logger';
-import { generatePropertyFields } from '../helpers/hubspot/hubSpotProperties';
 
 const getProperties = async (accessToken: string, objectType: string): Promise<PropertyField[] | null> => {
   logger.info(`Getting HubSpot properties..`);
