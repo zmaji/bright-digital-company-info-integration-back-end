@@ -2,13 +2,15 @@ import { Router, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { verifySignature } from '../helpers/hubspot/verifySignature';
 import companiesController from '../controllers/Companies';
+import logger from '../utils/Logger';
 
 const router = Router();
 
 router.post('/company', async (req: Request, res: Response) => {
+  logger.info('Entered webhook routes!')
   try {
     const verified = await verifySignature(req);
-
+    
     if (verified) {
       const events = req.body;
 
