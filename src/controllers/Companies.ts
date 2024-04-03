@@ -55,9 +55,7 @@ const getCompanyInfo = async (dossierNumber: number): Promise<CompanyDetail | nu
       dossier_number: dossierNumber,
     };
 
-    // eslint-disable-next-line
     const result: any = await new Promise((resolve: any, reject: any) => {
-      // eslint-disable-next-line
       client.dutchBusinessGetDossierV3(searchParameters, (err: any, result: any) => {
         if (err) {
           reject(err);
@@ -69,14 +67,14 @@ const getCompanyInfo = async (dossierNumber: number): Promise<CompanyDetail | nu
 
     if (result && result.out) {
       logger.info(`Successfully found company with dossier number ${dossierNumber}`);
-
       return result.out;
     } else {
+      logger.info(`No company found with dossier number ${dossierNumber}`);
       return null;
     }
   } catch (error) {
     logger.error('Something went wrong getting company information', error);
-    throw error;
+    return null;
   }
 };
 
