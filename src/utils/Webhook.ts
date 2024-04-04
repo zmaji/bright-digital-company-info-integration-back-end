@@ -7,7 +7,7 @@ export const initializeWebhook = async () => {
     const webHook = await webHookController.getWebHook();
   
     if (webHook && targetUrl !== '' && webHook.targetUrl !== targetUrl) {
-      webHookController.updateWebHook('ROLLING_MINUTE', 10, targetUrl)
+      webHookController.updateWebHook('ROLLING_MINUTE', 10, targetUrl);
     }
   
     if (!webHook && targetUrl !== '' ) {
@@ -16,8 +16,7 @@ export const initializeWebhook = async () => {
   
     const webHookSubscriptions = await webHookController.getSubcriptions();
   
-    // @ts-ignore
-    const hasDossierNumberSubscription = webHookSubscriptions.some(subscription => {
+    const hasDossierNumberSubscription = webHookSubscriptions.some((subscription: { propertyName: string; }) => {
       return subscription.propertyName === 'dossier_number';
     });
   

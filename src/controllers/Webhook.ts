@@ -30,6 +30,8 @@ const getWebHook = async () => {
 const createWebHook = async (period: string, maxConcurrentRequests: number, targetUrl: string) => {
   logger.info('Initializing a HubSpot Webhook..');
 
+  targetUrl = targetUrl + '/webhooks/company';
+
   try {
     const data = {
       throttling: {
@@ -64,6 +66,8 @@ const createWebHook = async (period: string, maxConcurrentRequests: number, targ
 
 const updateWebHook = async (period: string, maxConcurrentRequests: number, targetUrl: string) => {
   logger.info('Updating a HubSpot Webhook..');
+
+  targetUrl = targetUrl + '/webhooks/company';
 
   try {
     const data = {
