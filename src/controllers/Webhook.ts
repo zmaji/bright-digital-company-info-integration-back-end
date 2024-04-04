@@ -1,9 +1,8 @@
 import axios from 'axios';
 import logger from '../utils/Logger';
 
-const HUBSPOT_APP_ID = '2993290';
-const HUBSPOT_APP_DEVELOPER_KEY = 'eu1-276a-a5fd-4de9-b7c6-911f27611797';
-const HUBSPOT_WEBHOOK_TARGET_URL = 'https://bf28-77-174-178-221.ngrok-free.app';
+const HUBSPOT_APP_ID = process.env.HUBSPOT_APP_ID;
+const HUBSPOT_APP_DEVELOPER_KEY = process.env.HUBSPOT_APP_DEVELOPER_KEY;
 
 const getWebHook = async () => {
   logger.info('Finding HubSpot webhook..');
@@ -28,7 +27,7 @@ const getWebHook = async () => {
   }
 };
 
-const createWebHook = async (period: string, maxConcurrentRequests: number) => {
+const createWebHook = async (period: string, maxConcurrentRequests: number, targetUrl: string) => {
   logger.info('Initializing a HubSpot Webhook..');
 
   try {
@@ -37,7 +36,7 @@ const createWebHook = async (period: string, maxConcurrentRequests: number) => {
         period: period,
         maxConcurrentRequests: maxConcurrentRequests
       },
-      targetUrl: HUBSPOT_WEBHOOK_TARGET_URL
+      targetUrl: targetUrl
     };
 
     const response = await axios.post(
@@ -56,6 +55,43 @@ const createWebHook = async (period: string, maxConcurrentRequests: number) => {
     if (response.data) {
       logger.info(JSON.stringify(response.data));
       logger.info('Webhook created successfully');
+      return response.data;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const updateWebHook = async (period: string, maxConcurrentRequests: number, targetUrl: string) => {
+  logger.info('Updating a HubSpot Webhook..');
+
+  try {
+    const data = {
+      throttling: {
+        period: period,
+        maxConcurrentRequests: maxConcurrentRequests
+      },
+      targetUrl: targetUrl
+    };
+
+    const response = await axios.put(
+      `https://api.hubapi.com/webhooks/v3/${HUBSPOT_APP_ID}/settings`,
+      data,
+      {
+        params: {
+          hapikey: HUBSPOT_APP_DEVELOPER_KEY
+        },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (response.data) {
+      logger.info(JSON.stringify(response.data));
+      logger.info('Webhook updated successfully');
+      logger.info('Webhook target URL changed to:', targetUrl);
+      logger.info(targetUrl);
       return response.data;
     }
   } catch (error) {
@@ -125,6 +161,7 @@ const webHookController = {
   getWebHook,
   getSubcriptions,
   createWebHook,
+  updateWebHook,
   createSubscription,
 };
 

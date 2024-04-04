@@ -8,6 +8,7 @@
   "scripts": {
     "start": "echo \"Starting index.ts\" && ts-node src/index.ts",
     "start:dev": "echo \"Starting index.ts with nodemon\" && nodemon src/index.ts",
+    "start:tunnel": "echo \"Starting index.ts with ngrok\" && ts-node src/utils/Ngrok.ts",
     "test": "echo \"Starting Jest tests\" && jest --detectOpenHandles",
     "test:watch": "echo \"Starting Jest tests in watch mode\" && jest --detectOpenHandles --watchAll",
     "test:coverage": "echo \"Generating code coverage report\" && jest --coverage --detectOpenHandles",
@@ -117,6 +118,7 @@
     "minimatch": "^3.1.2",
     "ms": "^2.1.2",
     "natural-compare": "^1.4.0",
+    "ngrok": "^5.0.0-beta.2",
     "nodemailer": "^6.9.13",
     "once": "^1.4.0",
     "optionator": "^0.9.3",
