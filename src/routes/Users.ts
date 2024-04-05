@@ -94,26 +94,28 @@ router.put('', isLoggedIn, async (req: Request, res: Response) => {
     if (req.user && req.user.id && req.body.updateFields) {
       const updateFields = req.body.updateFields;
 
-      if (updateFields.hubSpotPortalId) {
-        updateFields.hubSpotPortalId = parseInt(updateFields.hubSpotPortalId);
-      }
+        if (updateFields.hubSpotPortalId) {
+          updateFields.hubSpotPortalId = parseInt(updateFields.hubSpotPortalId);
+        }
 
-      const result: User | null = await userController.updateUser(req.user.id, updateFields);
+        if (updateFields) {
+        const result: User | null = await userController.updateUser(req.user.id, updateFields);
 
-      if (result) {
-        res
-            .status(StatusCodes.OK)
-            .json(result);
-      } else {
-        res
-            .status(StatusCodes.NOT_FOUND)
-            .json({ error: `Unable to update user with ID ${req.user.id}` });
+        if (result) {
+          res
+              .status(StatusCodes.OK)
+              .json(result);
+        } else {
+          res
+              .status(StatusCodes.NOT_FOUND)
+              .json({ error: `Unable to update user with ID ${req.user.id}` });
+        }
       }
     }
   } catch {
     res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: 'An error occurred retrieving a user' });
+        .json({ error: 'An error occurred updating a user' });
   }
 });
 
