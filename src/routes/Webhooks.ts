@@ -4,6 +4,7 @@ import { verifySignature } from '../helpers/hubspot/verifySignature';
 import companiesController from '../controllers/Companies';
 import logger from '../utils/Logger';
 import { retrieveHubToken } from '../controllers/Auth';
+import { formatCompanyData } from '../helpers/hubspot/formatCompanyData';
 
 const router = Router();
 
@@ -28,7 +29,7 @@ router.post('/company', async (req: Request, res: Response) => {
             if (companyData) {
               logger.info(`Successfully retrieved data for company with dossier number ${event.propertyName}`);
 
-              const hubToken = await retrieveHubToken(event.portalId);
+                const hubToken = await retrieveHubToken(event.portalId);
 
                 if (hubToken) {
                   const result = await companiesController.updateCompany(hubToken, event.objectId, companyData);

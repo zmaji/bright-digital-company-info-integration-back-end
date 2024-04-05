@@ -9,7 +9,6 @@ import { HubToken } from '@prisma/client';
 
 const COMPANY_INFO_TEST_USERNAME = process.env.COMPANY_INFO_TEST_USERNAME;
 const COMPANY_INFO_TEST_PASSWORD = process.env.COMPANY_INFO_TEST_PASSWORD;
-const HUBSPOT_GROUP_NAME = process.env.HUBSPOT_GROUP_NAME;
 
 const companyInfoURL = 'https://ws1.webservices.nl/soap_doclit?wsdl';
 const headerArguments = { username: COMPANY_INFO_TEST_USERNAME, password: COMPANY_INFO_TEST_PASSWORD };
@@ -78,60 +77,29 @@ const getCompanyInfo = async (dossierNumber: number): Promise<CompanyDetail | nu
   }
 };
 
-const updateCompany = async (hubToken: HubToken, companyId: string, companyData: CompanyDetail): Promise<Company | null> => {
+const updateCompany = async (hubToken: HubToken, companyId: string, companyData: CompanyDetail): Promise<CompanyDetail | null> => {
+  logger.info(`Trying to update company`);
+  const properties = await formatCompanyData(companyData);
+
   try {
-    logger.info('Updating HubSpot company..');
+    const response: AxiosResponse = await axios({
+      method: 'patch',
+      url: `https://api.hubapi.com/crm/v3/objects/company/${companyId}`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${hubToken.access_token}`
+      },
+      data: JSON.stringify({
+        properties: properties
+      })
+    });
 
-    if (HUBSPOT_GROUP_NAME) {
-      // const hubSpotProperties = await formatCompanyData(companyData);
-
-      const hubSpotProperties = {
-        dossier_number: "62801406"
-      }
-      
-      console.log('hubSpotProperties')
-      console.log('hubSpotProperties')
-      console.log(hubSpotProperties)
-
-      if (hubSpotProperties) {
-        const response: AxiosResponse<any> = await axios.patch(
-          `https://api.hubapi.com/crm/v3/objects/companies/${companyId}`,
-          {
-            properties: hubSpotProperties
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${hubToken.access_token}`,
-            },
-          }
-        );
-
-        // eslint-disable-next-line
-        const result: any = response;
-        console.log('result');
-        console.log('result');
-        console.log(result);
-
-        if (result) {
-          logger.info('HubSpot company has successfully been updated');
-
-          return result;
-        } else {
-          logger.error('HubSpot company has not been updated');
-
-          return null;
-        }
-      } else {
-        logger.error('HubSpot company could not be updated');
-
-        return null;
-      }
-    }
+    logger.info('HubSpot company has successfully been updated');
+    logger.info('Result:', response.data);
+    return response.data;
+  } catch (error: any) {
+    logger.error(`Error while updating company: ${error.response?.data?.message}`);
     return null;
-  } catch (error) {
-    logger.error('Something went wrong updating a HubSpot company', error);
-    throw error;
   }
 };
 
