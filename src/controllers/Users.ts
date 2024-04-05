@@ -88,17 +88,13 @@ const createUser = async (userData: User): Promise<User | null> => {
   }
 };
 
-const updateUser = async (userId: number, hubSpotPortalId: number): Promise<User | null> => {
+const updateUser = async (userId: number, updateFields: Partial<User>): Promise<User | null> => {
   try {
     const updatedUser = await prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        hubSpotPortalId: hubSpotPortalId,
-      },
+      where: { id: userId },
+      data: updateFields,
     });
-
+    
     return updatedUser;
   } catch (error) {
     throw error;

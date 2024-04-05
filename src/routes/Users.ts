@@ -90,24 +90,32 @@ router.post('', async (req: Request, res: Response) => {
 router.put('', isLoggedIn, async (req: Request, res: Response) => {
   logger.info('Updating a user..');
 
-  try {
-    if (req.user && req.user.id && req.body.hubSpotPortalId) {
-      const hubSpotPortalId = parseInt(req.body.hubSpotPortalId);
-      const result: User | null = await userController.updateUser(req.user.id, hubSpotPortalId);
+  console.log('req.body')
+  console.log('req.body')
+  console.log(req.body)
 
-      if (result) {
-        res
-            .status(StatusCodes.OK)
-            .json(result);
+  try {
+    if (req.user && req.user.id && req.body) {
+      const updateFields = req.body.updateFields;
+
+      if (updateFields.hubSpotPortalId) {
+        updateFields.hubSpotPortalId = parseInt(updateFields.hubSpotPortalId);
+        const result: User | null = await userController.updateUser(req.user.id, updateFields);
+
+        if (result) {
+          res
+              .status(StatusCodes.OK)
+              .json(result);
+        } else {
+          res
+              .status(StatusCodes.NOT_FOUND)
+              .json({ error: `Unable to update user with ID ${req.user.id}` });
+        }
       } else {
         res
             .status(StatusCodes.NOT_FOUND)
-            .json({ error: `Unable to update user with ID ${req.user.id}` });
+            .json({ error: 'Unable to find hubSpot portal ID' });
       }
-    } else {
-      res
-          .status(StatusCodes.NOT_FOUND)
-          .json({ error: 'Unable to find hubSpot portal ID' });
     }
   } catch {
     res
