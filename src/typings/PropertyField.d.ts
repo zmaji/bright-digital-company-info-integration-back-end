@@ -6,7 +6,7 @@ export interface PropertyField {
     externalOptions?: boolean,
     hidden?: boolean,
     hubspotDefined?: boolean,
-    modificationMetadata?: Object,
+    modificationMetadata?: object,
     formField?: boolean,
     label: string;
     name: string;

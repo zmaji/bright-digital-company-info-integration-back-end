@@ -12,6 +12,13 @@ import isLoggedIn from '../middleware/IsLoggedIn';
 
 const router = Router();
 
+declare module 'express' {
+  interface Request {
+    user?: User;
+    portalId?: number;
+  }
+}
+
 router.get('', isLoggedIn, async (req: Request, res: Response) => {
   try {
     if (req.user && req.user.emailAddress) {
@@ -40,13 +47,13 @@ router.get('', isLoggedIn, async (req: Request, res: Response) => {
           }
         } else {
           res
-          .status(StatusCodes.UNAUTHORIZED)
-          .json({ error: 'Unauthorized' });
+              .status(StatusCodes.UNAUTHORIZED)
+              .json({ error: 'Unauthorized' });
         }
       } else {
         res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: 'No group name and object type provided' });
+            .status(StatusCodes.INTERNAL_SERVER_ERROR)
+            .json({ error: 'No group name and object type provided' });
       }
     }
   } catch (error) {
@@ -70,17 +77,18 @@ router.post('', isLoggedIn, async (req: Request, res: Response) => {
           const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
           if (hubToken) {
-              const result: Group | null = await groupController.createGroup(hubToken.access_token, groupName, objectType);
+            const result: Group | null = await groupController.createGroup(
+                hubToken.access_token, groupName, objectType);
 
-              if (result) {
-                res
-                    .status(StatusCodes.OK)
-                    .json(result);
-              } else {
-                res
-                    .status(StatusCodes.INTERNAL_SERVER_ERROR)
-                    .json({ error: `Unable to create group with name ${groupName}` });
-              }
+            if (result) {
+              res
+                  .status(StatusCodes.OK)
+                  .json(result);
+            } else {
+              res
+                  .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                  .json({ error: `Unable to create group with name ${groupName}` });
+            }
           }
         }
       }
@@ -92,39 +100,39 @@ router.post('', isLoggedIn, async (req: Request, res: Response) => {
   }
 });
 
-router.delete('', isLoggedIn, async (req: Request, res: Response) => {
-  try {
-    if (req.user && req.user.emailAddress) {
-      const emailAddress: string | undefined = req.user?.emailAddress;
-      const currentUser: User | null = await userController.getUser(emailAddress);
+// router.delete('', isLoggedIn, async (req: Request, res: Response) => {
+//   try {
+//     if (req.user && req.user.emailAddress) {
+//       const emailAddress: string | undefined = req.user?.emailAddress;
+//       const currentUser: User | null = await userController.getUser(emailAddress);
 
-      if (req.body && req.body.groupName && req.body.objectType) {
-        const groupName: string = req.body?.groupName;
-        const objectType: string = req.body?.objectType;
+//       if (req.body && req.body.groupName && req.body.objectType) {
+//         const groupName: string = req.body?.groupName;
+//         const objectType: string = req.body?.objectType;
 
-        if (currentUser && currentUser.hubSpotPortalId) {
-          const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
+//         if (currentUser && currentUser.hubSpotPortalId) {
+//           const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
-          if (hubToken) {
-            const result = await groupController.deleteGroup(hubToken.access_token, groupName, objectType);
+//           if (hubToken) {
+//             const result = await groupController.deleteGroup(hubToken.access_token, groupName, objectType);
 
-            if (result) {
-              res
-                  .sendStatus(StatusCodes.NO_CONTENT)
-                  .json(`Successfully deleted group with name ${groupName}`);
-            } else {
-              res
-                  .status(StatusCodes.NOT_FOUND)
-                  .json({ error: `Unable to find group with name ${groupName}` });
-            }
-          }
-        }
-      }
-    }
-  } catch (error) {
-    res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR);
-  }
-});
+//             if (result) {
+//               res
+//                   .sendStatus(StatusCodes.NO_CONTENT)
+//                   .json(`Successfully deleted group with name ${groupName}`);
+//             } else {
+//               res
+//                   .status(StatusCodes.NOT_FOUND)
+//                   .json({ error: `Unable to find group with name ${groupName}` });
+//             }
+//           }
+//         }
+//       }
+//     }
+//   } catch (error) {
+//     res
+//         .status(StatusCodes.INTERNAL_SERVER_ERROR);
+//   }
+// });
 
 export default router;

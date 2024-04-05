@@ -8,17 +8,18 @@ const getGroup = async (accessToken: string, groupName: string, objectType: stri
 
   try {
     const response: AxiosResponse<Group> = await axios.get(
-      `https://api.hubapi.com/crm/v3/properties/${objectType}/groups/${groupName}`, {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-      });
+        `https://api.hubapi.com/crm/v3/properties/${objectType}/groups/${groupName}`, {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
 
     const result: Group = response.data;
 
     if (result) {
       logger.info(`Successfully retrieved ${objectType} group with name ${groupName}`);
+
       return result;
     } else {
       return null;
@@ -26,8 +27,10 @@ const getGroup = async (accessToken: string, groupName: string, objectType: stri
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError;
+
       if (axiosError.response && axiosError.response.status === 404) {
         logger.warn(`No existing ${objectType} group with name ${groupName} found..`);
+
         return null;
       }
     }
@@ -40,31 +43,32 @@ const createGroup = async (accessToken: string, groupName: string, objectType: s
   logger.info(`Trying to create a ${objectType} group with name ${groupName}..`);
 
   try {
-      const payload = {
-        'name': groupName,
-        'label': 'Company.info integration',
-        'displayOrder': -1,
-      };
-  
-      const response: AxiosResponse<Group> = await axios.post(
-          `https://api.hubapi.com/crm/v3/properties/${objectType}/groups`,
-          payload, {
-            headers: {
-              'Authorization': `Bearer ${accessToken}`,
-              'Content-Type': 'application/json',
-            },
-          });
-  
-      const result: Group = response.data;
-  
-      if (result) {
-        logger.info(`Successfully created a ${objectType} group`);
-  
-        return result;
-      } else {
-        logger.error('No result received');
-        return null;
-      }
+    const payload = {
+      'name': groupName,
+      'label': 'Company.info integration',
+      'displayOrder': -1,
+    };
+
+    const response: AxiosResponse<Group> = await axios.post(
+        `https://api.hubapi.com/crm/v3/properties/${objectType}/groups`,
+        payload, {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+    const result: Group = response.data;
+
+    if (result) {
+      logger.info(`Successfully created a ${objectType} group`);
+
+      return result;
+    } else {
+      logger.error('No result received');
+
+      return null;
+    }
   } catch (error) {
     logger.error(`Something went wrong creating a ${objectType} group`, error);
     throw error;
@@ -74,7 +78,7 @@ const createGroup = async (accessToken: string, groupName: string, objectType: s
 const deleteGroup = async (accessToken: string, groupName: string, objectType: string): Promise<Group | null> => {
   try {
     logger.info(`Trying to delete a ${objectType} group with name ${groupName}..`);
-    
+
     const existingProperties = await propertiesController.getProperties(accessToken, objectType);
 
     if (existingProperties) {

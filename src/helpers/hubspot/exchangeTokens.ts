@@ -4,10 +4,11 @@ import type { HubToken } from '../../typings/HubToken';
 import axios, { AxiosResponse } from 'axios';
 import logger from '../../utils/Logger';
 
+// eslint-disable-next-line
 function encodeFormData(data: any) {
   return Object.keys(data)
-    .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
-    .join('&');
+      .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+      .join('&');
 }
 
 export const exchangeTokens = async (exchangeProof: ExchangeProof): Promise<HubToken | null> => {
@@ -23,6 +24,7 @@ export const exchangeTokens = async (exchangeProof: ExchangeProof): Promise<HubT
       },
     });
     const hubToken: HubToken = response.data;
+
     return hubToken;
   } catch (error) {
     logger.error(error);

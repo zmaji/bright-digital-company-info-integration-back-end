@@ -4,7 +4,7 @@ import prisma from '../database/Client';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
 import logger from '../utils/Logger';
-import { sendActivationEmail } from '../helpers/sendActivationEmail';
+// import { sendActivationEmail } from '../helpers/sendActivationEmail';
 
 const getUser = async (emailAddress: string): Promise<User | null> => {
   try {
@@ -39,9 +39,11 @@ const verifyUser = async (activationCode: string): Promise<boolean> => {
 
     if (existingToken) {
       logger.info(`Matching activation token found found!`);
+
       return true;
     } else {
       logger.error('No matching token!');
+
       return false;
     }
   } catch (error) {
@@ -68,12 +70,13 @@ const createUser = async (userData: User): Promise<User | null> => {
         secret: uuidv4(),
         roles: ['Gebruiker'],
         isActive: false,
-        activationToken: activationToken
+        activationToken: activationToken,
       },
     });
 
     if (newUser) {
       logger.success('Successfully created a new user');
+
       return newUser;
     } else {
       logger.error('Something went wrong creating a new user');
@@ -87,16 +90,16 @@ const createUser = async (userData: User): Promise<User | null> => {
 
 const updateUser = async (userId: number, hubSpotPortalId: number): Promise<User | null> => {
   try {
-      const updatedUser = await prisma.user.update({
-        where: {
-          id: userId,
-        },
-        data: {
-          hubSpotPortalId: hubSpotPortalId,
-        },
-      });
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        hubSpotPortalId: hubSpotPortalId,
+      },
+    });
 
-      return updatedUser;
+    return updatedUser;
   } catch (error) {
     throw error;
   }

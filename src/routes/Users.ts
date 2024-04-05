@@ -12,6 +12,7 @@ router.get('', isLoggedIn, async (req: Request, res: Response) => {
     if (req.user && req.user.emailAddress) {
       const emailAddress: string | undefined = req.user?.emailAddress;
       const result: User | null = await userController.getUser(emailAddress);
+
       if (result) {
         res
             .status(StatusCodes.OK)
@@ -42,7 +43,7 @@ router.get('/verify', async (req: Request, res: Response) => {
       } else {
         res
             .status(StatusCodes.NOT_FOUND)
-            .json({ error: 'Wrong activation code entered'});
+            .json({ error: 'Wrong activation code entered' });
       }
     }
   } catch {
@@ -87,8 +88,8 @@ router.post('', async (req: Request, res: Response) => {
 });
 
 router.put('', isLoggedIn, async (req: Request, res: Response) => {
-  logger.info('Updating a user..')
-  
+  logger.info('Updating a user..');
+
   try {
     if (req.user && req.user.id && req.body.hubSpotPortalId) {
       const hubSpotPortalId = parseInt(req.body.hubSpotPortalId);
@@ -105,8 +106,8 @@ router.put('', isLoggedIn, async (req: Request, res: Response) => {
       }
     } else {
       res
-      .status(StatusCodes.NOT_FOUND)
-      .json({ error: 'Unable to find hubSpot portal ID' });
+          .status(StatusCodes.NOT_FOUND)
+          .json({ error: 'Unable to find hubSpot portal ID' });
     }
   } catch {
     res

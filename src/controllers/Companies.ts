@@ -54,7 +54,9 @@ const getCompanyInfo = async (dossierNumber: number): Promise<CompanyDetail | nu
       dossier_number: dossierNumber,
     };
 
-    const result: any = await new Promise((resolve: any, reject: any) => {
+    // eslint-disable-next-line
+    const result: CompanyDetail = await new Promise((resolve: any, reject: any) => {
+      // eslint-disable-next-line
       client.dutchBusinessGetDossierV3(searchParameters, (err: any, result: any) => {
         if (err) {
           reject(err);
@@ -66,18 +68,25 @@ const getCompanyInfo = async (dossierNumber: number): Promise<CompanyDetail | nu
 
     if (result && result.out) {
       logger.info(`Successfully found company with dossier number ${dossierNumber}`);
+
       return result.out;
     } else {
       logger.info(`No company found with dossier number ${dossierNumber}`);
+
       return null;
     }
   } catch (error) {
     logger.error('Something went wrong getting company information', error);
+
     return null;
   }
 };
 
-const updateCompany = async (hubToken: HubToken, companyId: string, companyData: CompanyDetail): Promise<CompanyDetail | null> => {
+const updateCompany = async (
+    hubToken: HubToken,
+    companyId: string,
+    companyData: CompanyDetail,
+): Promise<CompanyDetail | null> => {
   logger.info(`Trying to update company`);
   const properties = await formatCompanyData(companyData);
 
@@ -87,18 +96,20 @@ const updateCompany = async (hubToken: HubToken, companyId: string, companyData:
       url: `https://api.hubapi.com/crm/v3/objects/company/${companyId}`,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${hubToken.access_token}`
+        'Authorization': `Bearer ${hubToken.access_token}`,
       },
       data: JSON.stringify({
-        properties: properties
-      })
+        properties: properties,
+      }),
     });
 
     logger.info('HubSpot company has successfully been updated');
     logger.info('Result:', response.data);
+
     return response.data;
-  } catch (error: any) {
-    logger.error(`Error while updating company: ${error.response?.data?.message}`);
+  } catch (error) {
+    logger.error('Error while updating company:', error);
+
     return null;
   }
 };

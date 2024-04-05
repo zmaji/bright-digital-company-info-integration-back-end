@@ -8,7 +8,7 @@ import { getCurrentPortal } from '../helpers/hubspot/getCurrentPortalId';
 
 dotenv.config();
 
-const frontEndBaseUrl = process.env.FRONT_END_BASE_URL
+const frontEndBaseUrl = process.env.FRONT_END_BASE_URL;
 
 const router = Router();
 
@@ -53,8 +53,8 @@ router.get('/oauth-callback', async (req, res) => {
           return res.redirect(`${frontEndBaseUrl}/thank-you?hubSpotPortalId=${hubSpotPortalId}`);
         } else {
           res
-          .status(StatusCodes.BAD_REQUEST)
-          .json({ error: 'Portal id missing or invalid' });
+              .status(StatusCodes.BAD_REQUEST)
+              .json({ error: 'Portal id missing or invalid' });
         }
       } else {
         return res

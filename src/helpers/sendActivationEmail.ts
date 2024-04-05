@@ -11,11 +11,11 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: ACTIVATION_SENDER_ADDRESS,
-    pass: ACTIVATION_SENDER_PASSWORD
+    pass: ACTIVATION_SENDER_PASSWORD,
   },
   tls: {
-    rejectUnauthorized: false
-  }
+    rejectUnauthorized: false,
+  },
 });
 
 export const sendActivationEmail = async (email: string, activationToken: string) => {

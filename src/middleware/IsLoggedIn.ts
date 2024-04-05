@@ -5,15 +5,6 @@ import { StatusCodes } from 'http-status-codes';
 import prisma from '../database/Client';
 import jwt from 'jsonwebtoken';
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: User;
-      portalId?: number;
-    }
-  }
-}
-
 const isLoggedIn = async (req: Request, res: Response, next: NextFunction) => {
   const userToken = await getTokenFromRequest(req);
 

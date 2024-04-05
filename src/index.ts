@@ -9,7 +9,7 @@ const startServer = async () => {
   const port = process.env.PORT || 3000;
 
   await initializeWebhook();
-  
+
   app.listen(port, () => {
     logger.info(`Company.info integration back-end listening on port ${port}`);
   });

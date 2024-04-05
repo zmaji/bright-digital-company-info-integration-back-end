@@ -4,12 +4,11 @@ import { verifySignature } from '../helpers/hubspot/verifySignature';
 import companiesController from '../controllers/Companies';
 import logger from '../utils/Logger';
 import { retrieveHubToken } from '../controllers/Auth';
-import { formatCompanyData } from '../helpers/hubspot/formatCompanyData';
 
 const router = Router();
 
 router.post('/company', async (req: Request, res: Response) => {
-  logger.info('Entered webhook routes!')
+  logger.info('Entered webhook routes!');
   try {
     const verified = await verifySignature(req);
 
@@ -29,47 +28,47 @@ router.post('/company', async (req: Request, res: Response) => {
             if (companyData) {
               logger.info(`Successfully retrieved data for company with dossier number ${event.propertyName}`);
 
-                const hubToken = await retrieveHubToken(event.portalId);
+              const hubToken = await retrieveHubToken(event.portalId);
 
-                if (hubToken) {
-                  const result = await companiesController.updateCompany(hubToken, event.objectId, companyData);
+              if (hubToken) {
+                const result = await companiesController.updateCompany(hubToken, event.objectId, companyData);
 
-                  if (result) {
-                    res
-                        .status(StatusCodes.OK)
-                        .json(result);
-                  } else {
-                    res
-                        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-                        .json({ error: 'No company has been updated' });
-                  }
+                if (result) {
+                  res
+                      .status(StatusCodes.OK)
+                      .json(result);
                 } else {
                   res
-                  .status(StatusCodes.UNAUTHORIZED)
-                  .json({ error: 'No HubToken found' });
+                      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                      .json({ error: 'No company has been updated' });
                 }
+              } else {
+                res
+                    .status(StatusCodes.UNAUTHORIZED)
+                    .json({ error: 'No HubToken found' });
               }
-            } else {
-              res
-                  .status(StatusCodes.INTERNAL_SERVER_ERROR)
-                  .json({ error: 'No company data found' });
             }
+          } else {
+            res
+                .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                .json({ error: 'No company data found' });
           }
-        } else {
-          res
-              .status(StatusCodes.INTERNAL_SERVER_ERROR)
-              .json({ error: 'No events found' });
         }
       } else {
         res
             .status(StatusCodes.INTERNAL_SERVER_ERROR)
-            .json({ error: 'Signature has not been verified' });
+            .json({ error: 'No events found' });
       }
-    } catch (error) {
+    } else {
       res
           .status(StatusCodes.INTERNAL_SERVER_ERROR)
-          .json({ error: 'An error occurred processing the webhook' });
+          .json({ error: 'Signature has not been verified' });
     }
+  } catch (error) {
+    res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: 'An error occurred processing the webhook' });
+  }
 });
 
 export default router;

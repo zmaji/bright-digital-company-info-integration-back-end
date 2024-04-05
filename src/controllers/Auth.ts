@@ -84,6 +84,7 @@ const authenticateUser = async (emailAddress: string, password: string): Promise
           return generateAuthToken(existingUser);
         } else {
           logger.error('Wrong password provided');
+
           return 'Email address and password did not match.';
         }
       } else {
@@ -136,7 +137,6 @@ const authenticateHubSpotUser = async (hubSpotCode: string): Promise<HubToken | 
     throw error;
   }
 };
-
 
 export const retrieveHubToken = async (portalId: number): Promise<HubToken | null> => {
   logger.info('Retrieving HubSpot user linked to current user..');

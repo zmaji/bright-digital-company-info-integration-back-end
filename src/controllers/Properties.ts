@@ -20,6 +20,7 @@ const getProperties = async (accessToken: string, objectType: string): Promise<P
 
     if (result) {
       logger.info('Successfully retrieved properties');
+
       return result;
     } else {
       console.error('No result received');
@@ -32,7 +33,11 @@ const getProperties = async (accessToken: string, objectType: string): Promise<P
   }
 };
 
-const createProperties = async (accessToken: string, objectType: string, missingProperties: PropertyField[]): Promise<PropertyField[] | null> => {
+const createProperties = async (
+    accessToken: string,
+    objectType: string,
+    missingProperties: PropertyField[],
+): Promise<PropertyField[] | null> => {
   logger.info(`Creating HubSpot properties..`);
 
   try {
@@ -66,7 +71,11 @@ const createProperties = async (accessToken: string, objectType: string, missing
   }
 };
 
-const deleteProperty = async (accessToken: string, propertyName: string, objectType: string): Promise<PropertyField[] | null> => {
+const deleteProperty = async (
+    accessToken: string,
+    propertyName: string,
+    objectType: string):
+  Promise<PropertyField[] | null> => {
   try {
     logger.info(`Trying to delete property: ${propertyName}..`);
 
