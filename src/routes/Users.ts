@@ -94,11 +94,11 @@ router.put('', isLoggedIn, async (req: Request, res: Response) => {
     if (req.user && req.user.id && req.body.updateFields) {
       const updateFields = req.body.updateFields;
 
-        if (updateFields.hubSpotPortalId) {
-          updateFields.hubSpotPortalId = parseInt(updateFields.hubSpotPortalId);
-        }
+      if (updateFields.hubSpotPortalId) {
+        updateFields.hubSpotPortalId = parseInt(updateFields.hubSpotPortalId);
+      }
 
-        if (updateFields) {
+      if (updateFields) {
         const result: User | null = await userController.updateUser(req.user.id, updateFields);
 
         if (result) {

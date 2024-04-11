@@ -94,7 +94,7 @@ const updateUser = async (userId: number, updateFields: Partial<User>): Promise<
       where: { id: userId },
       data: updateFields,
     });
-    
+
     return updatedUser;
   } catch (error) {
     throw error;
