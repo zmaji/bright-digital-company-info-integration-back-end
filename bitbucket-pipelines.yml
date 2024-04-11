@@ -29,12 +29,14 @@ pipelines:
           - node
         script:
           - npm install
+
      - step:
         name: Code linting
         script:
           - npm run lint:check
         caches:
           - node
+          
       - step:
           name: Tests
           script:
