@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import groupsController from '../../controllers/Groups';
 import logger from '../../utils/Logger';
 
@@ -27,13 +27,13 @@ describe('Groups Controller Tests', () => {
     const result = await groupsController.getGroup(accessToken, groupName, objectType);
 
     expect(axios.get).toHaveBeenCalledWith(
-      `https://api.hubapi.com/crm/v3/properties/${objectType}/groups/${groupName}`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
+        `https://api.hubapi.com/crm/v3/properties/${objectType}/groups/${groupName}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
         },
-      }
     );
 
     expect(result).toEqual(responseData);
@@ -62,18 +62,18 @@ describe('Groups Controller Tests', () => {
     const result = await groupsController.createGroup(accessToken, groupName, objectType);
 
     expect(axios.post).toHaveBeenCalledWith(
-      `https://api.hubapi.com/crm/v3/properties/${objectType}/groups`,
-      {
-        name: groupName,
-        label: 'Company.info integration',
-        displayOrder: -1,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
+        `https://api.hubapi.com/crm/v3/properties/${objectType}/groups`,
+        {
+          name: groupName,
+          label: 'Company.info integration',
+          displayOrder: -1,
         },
-      }
+        {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        },
     );
 
     expect(result).toEqual(responseData);
@@ -85,7 +85,7 @@ describe('Groups Controller Tests', () => {
 
     (axios.post as jest.MockedFunction<typeof axios.post>).mockRejectedValueOnce(error);
 
-    await expect(groupsController.createGroup(accessToken, groupName, objectType)).rejects.toThrowError(error);
+    await expect(groupsController.createGroup(accessToken, groupName, objectType)).rejects.toThrow(error);
     expect(logger.error).toHaveBeenCalledWith(`Something went wrong creating a ${objectType} group`, error);
   });
 });
