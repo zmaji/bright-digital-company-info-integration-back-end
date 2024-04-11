@@ -20,3 +20,10 @@ pipelines:
           - npm run lint:check
         caches:
           - node
+
+branches:
+    testing:
+      - step:
+          name: Tests
+          script:
+            - npm run test
