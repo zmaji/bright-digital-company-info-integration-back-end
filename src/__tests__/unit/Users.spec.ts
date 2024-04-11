@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 describe('Users Controller Tests', () => {
   let hashedPassword = '';
-  const password = '123'
+  const password = '123';
   const emailAddress = 'maurice@brightdigital.com';
   const userId = 1;
   const secret = uuidv4();
@@ -28,14 +28,14 @@ describe('Users Controller Tests', () => {
 
   test('should create a new system user', async () => {
     prismaMock.user.create.mockResolvedValueOnce({
-        id: userId,
-        hubSpotPortalId: null,
-        domain: null,
-        companyInfoUserName: null,
-        companyInfoPassword: null,
-        ...data,
-      });
-      
+      id: userId,
+      hubSpotPortalId: null,
+      domain: null,
+      companyInfoUserName: null,
+      companyInfoPassword: null,
+      ...data,
+    });
+
     await expect(usersController.createUser(data)).resolves.toEqual({
       id: userId,
       hubSpotPortalId: null,
@@ -54,24 +54,23 @@ describe('Users Controller Tests', () => {
 
   test('should get user by email address', async () => {
     prismaMock.user.findUnique.mockResolvedValueOnce({
-        id: userId,
-        hubSpotPortalId: null,
-        domain: null,
-        companyInfoUserName: null,
-        companyInfoPassword: null,
-        ...data,
-      });
-  
+      id: userId,
+      hubSpotPortalId: null,
+      domain: null,
+      companyInfoUserName: null,
+      companyInfoPassword: null,
+      ...data,
+    });
+
     await expect(usersController.getUser(emailAddress)).resolves.toEqual({
-        id: userId,
-        hubSpotPortalId: null,
-        domain: null,
-        companyInfoUserName: null,
-        companyInfoPassword: null,
-        ...data,
+      id: userId,
+      hubSpotPortalId: null,
+      domain: null,
+      companyInfoUserName: null,
+      companyInfoPassword: null,
+      ...data,
     });
   });
-  
 
   test('should handle error during user retrieval', async () => {
     prismaMock.user.findUnique.mockRejectedValueOnce(new Error('Failed to find user'));
@@ -91,23 +90,23 @@ describe('Users Controller Tests', () => {
     const updateFields = {
       firstName: 'NewFirstName',
     };
-  
+
     const updatedUserMock = {
       id: userId,
       ...updateFields,
     };
-  
+
     // @ts-ignore
-    prismaMock.user.update.mockResolvedValueOnce(updatedUserMock); 
-  
+    prismaMock.user.update.mockResolvedValueOnce(updatedUserMock);
+
     const expectedResponse = {
       id: userId,
       ...updateFields,
     };
-  
+
     await expect(usersController.updateUser(userId, updateFields)).resolves.toEqual(expectedResponse);
   });
-  
+
   test('should handle error during user update', async () => {
     const updateFields = {
       firstName: 'NewFirstName',
