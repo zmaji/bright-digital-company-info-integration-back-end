@@ -33,6 +33,8 @@ const getCompanies = async (tradeName: string): Promise<Company[] | null> => {
 
       return result[0].out.results as Company[];
     } else {
+      logger.info(`No companies found with trade name ${tradeName}`);
+
       return null;
     }
   } catch (error) {
@@ -82,11 +84,8 @@ const getCompanyInfo = async (dossierNumber: number): Promise<CompanyDetail | nu
   }
 };
 
-const updateCompany = async (
-    hubToken: HubToken,
-    companyId: string,
-    companyData: CompanyDetail,
-): Promise<CompanyDetail | null> => {
+// eslint-disable-next-line
+const updateCompany = async (hubToken: HubToken, companyId: string, companyData: CompanyDetail): Promise<CompanyDetail | null> => {
   logger.info(`Trying to update company`);
   const properties = await formatCompanyData(companyData);
 
@@ -103,10 +102,16 @@ const updateCompany = async (
       }),
     });
 
-    logger.info('HubSpot company has successfully been updated');
-    logger.info('Result:', response.data);
+    if (response && response.data) {
+      logger.info('HubSpot company has successfully been updated');
+      logger.info('Result:', response.data);
 
-    return response.data;
+      return response.data;
+    } else {
+      logger.error('HubSpot company has not been updated');
+
+      return null;
+    }
   } catch (error) {
     logger.error('Error while updating company:', error);
 

@@ -1,5 +1,5 @@
 export interface CompanyDetail {
-    out: CompanyDetail | null;
+    out?: CompanyDetail | null;
     dossier_number?: string;
     establishment_number?: string;
     number_of_establishments?: string;
