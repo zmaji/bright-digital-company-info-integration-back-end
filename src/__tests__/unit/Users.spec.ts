@@ -1,4 +1,5 @@
 import type { HubToken } from '../../typings/HubToken';
+
 import usersController from '../../controllers/Users';
 import logger from '../../utils/Logger';
 import { prismaMock } from '../utils/singleton';
@@ -24,7 +25,7 @@ describe('Users Controller Tests', () => {
     expires_in: 3600,
     created_at: new Date(),
     updated_at: null,
-};
+  };
 
   const data = {
     firstName: 'Maurice',

@@ -47,13 +47,13 @@ describe('Groups Controller Tests', () => {
 
     expect(axios.get).toHaveBeenCalledWith(
         `https://api.hubapi.com/crm/v3/properties/${objectType}/groups/${groupName}`,
-        expect.any(Object)
+        expect.any(Object),
     );
 
     expect(result).toBeNull();
 
     expect(logger.info).toHaveBeenCalledWith(`No group retrieved with name ${groupName}`);
-});
+  });
 
   test('should handle error when getting a group', async () => {
     const error = new Error('Failed to get group');
@@ -96,22 +96,21 @@ describe('Groups Controller Tests', () => {
     expect(axios.post).toHaveBeenCalledWith(
         `https://api.hubapi.com/crm/v3/properties/${objectType}/groups`,
         {
-            name: groupName,
-            label: 'Company.info integration',
-            displayOrder: -1,
+          name: groupName,
+          label: 'Company.info integration',
+          displayOrder: -1,
         },
         {
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-                'Content-Type': 'application/json',
-            },
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
         },
     );
 
     expect(result).toBeNull();
     expect(logger.error).toHaveBeenCalledWith('No result received');
-});
-
+  });
 
   test('should handle error when creating a group', async () => {
     const error = new Error('Failed to create group');
