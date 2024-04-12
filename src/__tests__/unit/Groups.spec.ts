@@ -14,14 +14,14 @@ describe('Groups Controller Tests', () => {
   const groupName = 'testGroup';
   const objectType = 'company';
 
-  test('should get a group successfully', async () => {
-    const responseData = {
-      archived: true,
-      name: groupName,
-      displayOrder: -1,
-      label: 'Company.info integration',
-    };
+  const responseData = {
+    archived: true,
+    name: groupName,
+    displayOrder: -1,
+    label: 'Company.info integration',
+  };
 
+  test('should get a group successfully', async () => {
     (axios.get as jest.MockedFunction<typeof axios.get>).mockResolvedValueOnce({ data: responseData } as AxiosResponse<any>);
 
     const result = await groupsController.getGroup(accessToken, groupName, objectType);
@@ -45,18 +45,11 @@ describe('Groups Controller Tests', () => {
 
     (axios.get as jest.MockedFunction<typeof axios.get>).mockRejectedValueOnce(error);
 
-    await expect(groupsController.getGroup(accessToken, groupName, objectType)).rejects.toThrowError(error);
+    await expect(groupsController.getGroup(accessToken, groupName, objectType)).rejects.toThrow(error);
     expect(logger.error).toHaveBeenCalledWith(`Something went wrong getting a ${objectType} group with name ${groupName}`, error);
   });
 
   test('should create a group successfully', async () => {
-    const responseData = {
-      archived: true,
-      name: groupName,
-      displayOrder: -1,
-      label: 'Company.info integration',
-    };
-
     (axios.post as jest.MockedFunction<typeof axios.post>).mockResolvedValueOnce({ data: responseData } as AxiosResponse<any>);
 
     const result = await groupsController.createGroup(accessToken, groupName, objectType);
