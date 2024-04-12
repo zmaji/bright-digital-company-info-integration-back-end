@@ -1,5 +1,3 @@
-import type { HubToken } from '../../typings/HubToken';
-
 import usersController from '../../controllers/Users';
 import logger from '../../utils/Logger';
 import { prismaMock } from '../utils/singleton';
@@ -16,16 +14,6 @@ describe('Users Controller Tests', () => {
   const secret = uuidv4();
   const activationCode = '12345';
   const nonExistingActivationCode = '324213';
-
-  const hubToken: HubToken = {
-    id: 1,
-    portal_id: null,
-    access_token: 'token123',
-    refresh_token: 'refreshTokenXYZ',
-    expires_in: 3600,
-    created_at: new Date(),
-    updated_at: null,
-  };
 
   const data = {
     firstName: 'Maurice',
