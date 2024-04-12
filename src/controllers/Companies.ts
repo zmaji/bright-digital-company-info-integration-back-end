@@ -1,11 +1,11 @@
 import type { Company } from '../typings/Company';
 import type { CompanyDetail } from '../typings/CompanyDetail';
+import type { HubToken } from '../typings/HubToken';
 
 import axios, { AxiosResponse } from 'axios';
 import * as soap from 'soap';
 import logger from '../utils/Logger';
 import { formatCompanyData } from '../helpers/hubspot/formatCompanyData';
-import { HubToken } from '@prisma/client';
 
 const COMPANY_INFO_TEST_USERNAME = process.env.COMPANY_INFO_TEST_USERNAME;
 const COMPANY_INFO_TEST_PASSWORD = process.env.COMPANY_INFO_TEST_PASSWORD;
