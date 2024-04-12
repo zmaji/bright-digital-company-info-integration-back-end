@@ -1,4 +1,4 @@
-import type { HubToken } from '@prisma/client';
+import type { HubToken } from '../../typings/HubToken';
 import usersController from '../../controllers/Users';
 import logger from '../../utils/Logger';
 import { prismaMock } from '../utils/singleton';

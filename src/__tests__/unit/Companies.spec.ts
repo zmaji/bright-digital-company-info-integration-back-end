@@ -2,7 +2,7 @@ import companiesController from '../../controllers/Companies';
 import * as soap from 'soap';
 import axios from 'axios';
 import logger from '../../utils/Logger';
-import { HubToken } from '@prisma/client';
+import type { HubToken } from '../../typings/HubToken';
 import { Company } from '../../typings/Company';
 import { CompanyDetail } from '../../typings/CompanyDetail';
 import { formatCompanyData } from '../../helpers/hubspot/formatCompanyData';
