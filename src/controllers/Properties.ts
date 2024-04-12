@@ -20,11 +20,9 @@ const getProperties = async (accessToken: string, objectType: string): Promise<P
 
     if (result) {
       logger.info('Successfully retrieved properties');
-
       return result;
     } else {
-      console.error('No result received');
-
+      logger.info('No properties retrieved');
       return null;
     }
   } catch (error) {
@@ -33,11 +31,8 @@ const getProperties = async (accessToken: string, objectType: string): Promise<P
   }
 };
 
-const createProperties = async (
-    accessToken: string,
-    objectType: string,
-    missingProperties: PropertyField[],
-): Promise<PropertyField[] | null> => {
+// eslint-disable-next-line
+const createProperties = async (accessToken: string, objectType: string, missingProperties: PropertyField[]): Promise<PropertyField[] | null> => {
   logger.info(`Creating HubSpot properties..`);
 
   try {
@@ -71,11 +66,8 @@ const createProperties = async (
   }
 };
 
-const deleteProperty = async (
-    accessToken: string,
-    propertyName: string,
-    objectType: string):
-  Promise<PropertyField[] | null> => {
+// eslint-disable-next-line
+const deleteProperty = async (accessToken: string, propertyName: string, objectType: string): Promise<PropertyField[] | null> => {
   try {
     logger.info(`Trying to delete property: ${propertyName}..`);
 
