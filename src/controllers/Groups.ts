@@ -22,6 +22,8 @@ const getGroup = async (accessToken: string, groupName: string, objectType: stri
 
       return result;
     } else {
+      logger.info(`No group retrieved with name ${groupName}`);
+
       return null;
     }
   } catch (error) {
