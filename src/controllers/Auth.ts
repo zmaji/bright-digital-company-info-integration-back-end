@@ -171,9 +171,12 @@ export const retrieveHubToken = async (portalId: number): Promise<HubToken | nul
 };
 
 const authController = {
+  generateAuthToken,
   authenticateUser,
   authenticateHubSpotUser,
   retrieveHubToken,
+  refreshAccessToken,
+  isTokenExpired,
 };
 
 export default authController;
