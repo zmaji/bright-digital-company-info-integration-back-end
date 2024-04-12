@@ -1,7 +1,8 @@
+import type { PropertyField } from '../../typings/PropertyField';
+
 import axios, { AxiosResponse } from 'axios';
 import propertiesController from '../../controllers/Properties';
 import logger from '../../utils/Logger';
-import type { PropertyField } from '../../typings/PropertyField';
 
 jest.mock('axios');
 jest.mock('../../utils/Logger');
@@ -21,32 +22,32 @@ describe('Properties Controller Tests', () => {
 
   const missingProperties: PropertyField[] = [
     {
-      label: "Email",
-      name: "email",
-      type: "string",
-      fieldType: "text",
-      groupName: "Company_info_integration",
+      label: 'Email',
+      name: 'email',
+      type: 'string',
+      fieldType: 'text',
+      groupName: 'Company_info_integration',
       hidden: false,
       displayOrder: 1,
       hasUniqueValue: false,
-      formField: true
+      formField: true,
     },
     {
-      label: "Age",
-      name: "age",
-      type: "number",
-      fieldType: "number",
-      groupName: "ompany_info_integration",
+      label: 'Age',
+      name: 'age',
+      type: 'number',
+      fieldType: 'number',
+      groupName: 'ompany_info_integration',
       hidden: false,
       displayOrder: 2,
       hasUniqueValue: false,
       formField: true,
       options: [
-        { label: "Under 18", value: "under_18", displayOrder: 0, hidden: false },
-        { label: "18-24", value: "18_24", displayOrder: 1, hidden: false },
-        { label: "25+", value: "25_plus", displayOrder: 2, hidden: false }
-      ]
-    }
+        { label: 'Under 18', value: 'under_18', displayOrder: 0, hidden: false },
+        { label: '18-24', value: '18_24', displayOrder: 1, hidden: false },
+        { label: '25+', value: '25_plus', displayOrder: 2, hidden: false },
+      ],
+    },
   ];
 
   test('should get properties successfully', async () => {
@@ -55,13 +56,13 @@ describe('Properties Controller Tests', () => {
     const result = await propertiesController.getProperties(accessToken, objectType);
 
     expect(axios.get).toHaveBeenCalledWith(
-      `https://api.hubapi.com/crm/v3/properties/${objectType}`,
-      {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
+        `https://api.hubapi.com/crm/v3/properties/${objectType}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
         },
-      },
     );
 
     expect(result).toEqual(responseData);
@@ -83,14 +84,14 @@ describe('Properties Controller Tests', () => {
     const result = await propertiesController.createProperties(accessToken, objectType, missingProperties);
 
     expect(axios.post).toHaveBeenCalledWith(
-      `https://api.hubapi.com/crm/v3/properties/${objectType}/batch/create`,
-      { inputs: missingProperties },
-      {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
+        `https://api.hubapi.com/crm/v3/properties/${objectType}/batch/create`,
+        { inputs: missingProperties },
+        {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
         },
-      },
     );
 
     expect(result).toEqual(responseData);
@@ -114,13 +115,13 @@ describe('Properties Controller Tests', () => {
     const result = await propertiesController.deleteProperty(accessToken, propertyName, objectType);
 
     expect(axios.delete).toHaveBeenCalledWith(
-      `https://api.hubapi.com/crm/v3/properties/${objectType}/${propertyName}`,
-      {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
+        `https://api.hubapi.com/crm/v3/properties/${objectType}/${propertyName}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
         },
-      },
     );
 
     expect(result).toEqual(responseData);
