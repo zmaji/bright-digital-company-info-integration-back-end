@@ -20,9 +20,11 @@ const getProperties = async (accessToken: string, objectType: string): Promise<P
 
     if (result) {
       logger.info('Successfully retrieved properties');
+
       return result;
     } else {
       logger.info('No properties retrieved');
+
       return null;
     }
   } catch (error) {
