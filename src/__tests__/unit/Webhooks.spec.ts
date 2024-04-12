@@ -67,10 +67,8 @@ describe('webHookController Tests', () => {
         targetUrl: `${targetUrl}/webhooks/company`,
       };
 
-      const responseData = { webhook: 'created' };
-
       // @ts-ignore
-      axios.post.mockResolvedValue({ data: responseData });
+      axios.post.mockResolvedValue({ data: requestData });
 
       const result = await webHookController.createWebHook(period, maxConcurrentRequests, targetUrl);
 
@@ -79,9 +77,9 @@ describe('webHookController Tests', () => {
         headers: { 'Content-Type': 'application/json' },
       });
       expect(logger.info).toHaveBeenCalledWith('Initializing a HubSpot Webhook..');
-      expect(logger.info).toHaveBeenCalledWith(JSON.stringify(responseData));
+      expect(logger.info).toHaveBeenCalledWith(JSON.stringify(requestData));
       expect(logger.info).toHaveBeenCalledWith('Webhook created successfully');
-      expect(result).toEqual(responseData);
+      expect(result).toEqual(webhookReponse);
     });
 
     test('should update webhook successfully', async () => {
