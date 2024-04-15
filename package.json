@@ -16,6 +16,7 @@
     "lint:fix": "eslint . --fix src/**/*.ts"
   },
   "devDependencies": {
+    "@prisma/client": "^5.12.1",
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
@@ -41,7 +42,6 @@
     "uuidv4": "^6.2.13"
   },
   "dependencies": {
-    "@prisma/client": "^5.12.1",
     "acorn": "^8.11.3",
     "acorn-jsx": "^5.3.2",
     "ajv": "^6.12.6",

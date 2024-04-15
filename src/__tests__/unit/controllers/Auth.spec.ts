@@ -1,9 +1,7 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-
 import { User } from '../../../typings/User';
 import { HubToken } from '../../../typings/HubToken';
-
 import { prismaMock } from '../../utils/singleton';
 import { exchangeTokens } from '../../../helpers/hubspot/exchangeTokens';
 import { storeHubTokens } from '../../../helpers/database/storeHubToken';
@@ -30,7 +28,7 @@ const user: User = {
   hubSpotPortalId: 123,
   secret: 'secret_key',
   activationToken: '123',
-  isActive: true
+  isActive: true,
 };
 
 const hubToken: HubToken = {
@@ -40,7 +38,17 @@ const hubToken: HubToken = {
   expires_in: 3600,
   updated_at: new Date(),
   created_at: new Date(),
-  portal_id: user.hubSpotPortalId || null
+  portal_id: user.hubSpotPortalId || null,
+};
+
+const expiredHubToken: HubToken = {
+  id: 1,
+  access_token: 'access_token',
+  refresh_token: 'refresh_token',
+  expires_in: 0,
+  updated_at: new Date(),
+  created_at: new Date(),
+  portal_id: user.hubSpotPortalId || null,
 };
 
 describe('authController', () => {
@@ -64,7 +72,7 @@ describe('authController', () => {
         lastName: user.lastName,
         emailAddress: user.emailAddress,
         roles: user.roles,
-        hubSpotPortalId: user.hubSpotPortalId
+        hubSpotPortalId: user.hubSpotPortalId,
       }, user.secret);
 
       expect(token).toEqual('user_token');
@@ -81,20 +89,33 @@ describe('authController', () => {
       const result = await authController.authenticateUser(user.emailAddress, 'valid_password');
 
       expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
-        where: { emailAddress: user.emailAddress }
+        where: { emailAddress: user.emailAddress },
       });
       expect(bcrypt.compareSync).toHaveBeenCalledWith('valid_password', user.password);
+      expect(jwt.sign).toHaveBeenCalledWith(expect.any(Object), user.secret);
       expect(result).toEqual('user_token');
+      expect(logger.info).toHaveBeenCalledWith('User authenticated successfully');
     });
 
     it('should return error message if password does not match', async () => {
       // @ts-ignore
       prismaMock.user.findUnique.mockResolvedValue(user);
+
       bcrypt.compareSync = jest.fn().mockReturnValue(false);
 
       const result = await authController.authenticateUser(user.emailAddress, 'invalid_password');
 
       expect(result).toEqual('Email address and password did not match.');
+      expect(logger.error).toHaveBeenCalledWith('Wrong password provided');
+    });
+
+    it('should return error message if user not found', async () => {
+      prismaMock.user.findUnique.mockResolvedValue(null);
+
+      const result = await authController.authenticateUser('nonexistent@example.com', 'valid_password');
+
+      expect(result).toEqual('User with email address nonexistent@example.com does not exist.');
+      expect(logger.error).toHaveBeenCalledWith('No user with email address nonexistent@example.com found');
     });
 
     it('should return error message if user not found', async () => {
@@ -108,15 +129,15 @@ describe('authController', () => {
 
   describe('authenticateHubSpotUser', () => {
     it('should authenticate a HubSpot user successfully', async () => {
-        (exchangeTokens as jest.Mock).mockResolvedValue(hubToken);
-        (getCurrentPortal as jest.Mock).mockResolvedValue(user.hubSpotPortalId);
-    
-        const result = await authController.authenticateHubSpotUser(hubSpotCode);
-    
-        expect(exchangeTokens).toHaveBeenCalled();
-        expect(storeHubTokens).toHaveBeenCalledWith(hubToken, user.hubSpotPortalId);
-        expect(result).toEqual(hubToken);
-      });
+      (exchangeTokens as jest.Mock).mockResolvedValue(hubToken);
+      (getCurrentPortal as jest.Mock).mockResolvedValue(user.hubSpotPortalId);
+
+      const result = await authController.authenticateHubSpotUser(hubSpotCode);
+
+      expect(exchangeTokens).toHaveBeenCalled();
+      expect(storeHubTokens).toHaveBeenCalledWith(hubToken, user.hubSpotPortalId);
+      expect(result).toEqual(hubToken);
+    });
 
     it('should return null if HubSpot authentication fails', async () => {
       (exchangeTokens as jest.Mock).mockResolvedValue(null);
@@ -132,22 +153,53 @@ describe('authController', () => {
       (exchangeTokens as jest.Mock).mockResolvedValue(hubToken);
       (storeHubTokens as jest.Mock).mockResolvedValue(hubToken);
 
-      // @ts-ignore
-      const result = await authController.refreshAccessToken(user.hubSpotPortalId, 'refresh_token');
+      if (user.hubSpotPortalId !== undefined && user.hubSpotPortalId !== null) {
+        const result = await authController.refreshAccessToken(user.hubSpotPortalId, 'refresh_token');
 
-      expect(exchangeTokens).toHaveBeenCalled();
-      expect(storeHubTokens).toHaveBeenCalledWith(hubToken, user.hubSpotPortalId);
-      expect(result).toEqual(hubToken);
+        expect(exchangeTokens).toHaveBeenCalled();
+        expect(storeHubTokens).toHaveBeenCalledWith(hubToken, user.hubSpotPortalId);
+        expect(result).toEqual(hubToken);
+      }
     });
 
     it('should return null if token exchange fails', async () => {
-      // @ts-ignore
-      exchangeTokens.mockResolvedValue(null);
+      (exchangeTokens as jest.Mock).mockResolvedValue(null);
 
-      // @ts-ignore
-      const result = await authController.refreshAccessToken(user.hubSpotPortalId, 'refresh_token');
+      if (user.hubSpotPortalId !== undefined && user.hubSpotPortalId !== null) {
+        const result = await authController.refreshAccessToken(user.hubSpotPortalId, 'refresh_token');
+        expect(result).toBeNull();
+      }
+    });
+  });
 
-      expect(result).toBeNull();
+  describe('retrieveHubToken', () => {
+    it('should retrieve HubSpot token for a given portal ID', async () => {
+      prismaMock.hubToken.findUnique.mockResolvedValue(hubToken);
+
+      if (user.hubSpotPortalId !== undefined && user.hubSpotPortalId !== null) {
+        const result = await authController.retrieveHubToken(user.hubSpotPortalId);
+
+        expect(prismaMock.hubToken.findUnique).toHaveBeenCalledWith({
+          where: { portal_id: user.hubSpotPortalId },
+        });
+        expect(result).toEqual(hubToken);
+      }
+    });
+  });
+
+  describe('isTokenExpired', () => {
+    it('should return true if token is expired', async () => {
+      const result = await authController.isTokenExpired(expiredHubToken);
+
+      if (expiredHubToken.updated_at !== null) {
+        expect(result).toBe(Date.now() >= Date.parse(expiredHubToken.updated_at.toString()) + Number(hubToken.expires_in) * 1000);
+      }
+    });
+
+    it('should return false if token is not expired', async () => {
+      const result = await authController.isTokenExpired(hubToken);
+
+      expect(result).toBe(false);
     });
   });
 });

@@ -61,7 +61,7 @@ const refreshAccessToken = async (portalId: number, refreshToken: string): Promi
   }
 };
 
-const isTokenExpired = (hubToken: HubToken) => {
+const isTokenExpired = async (hubToken: HubToken) => {
   if (hubToken.updated_at && hubToken.expires_in) {
     return Date.now() >= Date.parse(hubToken.updated_at.toString()) + Number(hubToken.expires_in) * 1000;
   } else {
@@ -84,6 +84,8 @@ const authenticateUser = async (emailAddress: string, password: string): Promise
         const matchedPassword = bcrypt.compareSync(password, existingUser.password);
 
         if (matchedPassword) {
+          logger.info('User authenticated successfully');
+
           return generateAuthToken(existingUser);
         } else {
           logger.error('Wrong password provided');
@@ -153,8 +155,7 @@ export const retrieveHubToken = async (portalId: number): Promise<HubToken | nul
     if (hubToken) {
       logger.info(`Retrieved HubToken from user with portal id ${portalId}`);
 
-      if (isTokenExpired(hubToken)) {
-        logger.info('Token is expired..');
+      if (await isTokenExpired(hubToken)) {
         const newToken: HubToken | null = await refreshAccessToken(portalId, hubToken.refresh_token);
 
         if (newToken && newToken.access_token) {
