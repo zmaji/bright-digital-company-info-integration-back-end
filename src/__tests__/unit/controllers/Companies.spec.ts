@@ -1,17 +1,17 @@
-import type { HubToken } from '../../typings/HubToken';
+import type { HubToken } from '../../../typings/HubToken';
 
-import companiesController from '../../controllers/Companies';
+import companiesController from '../../../controllers/Companies';
 import * as soap from 'soap';
 import axios from 'axios';
-import logger from '../../utils/Logger';
-import { Company } from '../../typings/Company';
-import { CompanyDetail } from '../../typings/CompanyDetail';
-import { formatCompanyData } from '../../helpers/hubspot/formatCompanyData';
+import logger from '../../../utils/Logger';
+import { Company } from '../../../typings/Company';
+import { CompanyDetail } from '../../../typings/CompanyDetail';
+import { formatCompanyData } from '../../../helpers/hubspot/formatCompanyData';
 
 jest.mock('soap');
 jest.mock('axios');
-jest.mock('../../utils/Logger');
-jest.mock('../../helpers/hubspot/formatCompanyData');
+jest.mock('../../../utils/Logger');
+jest.mock('../../../helpers/hubspot/formatCompanyData');
 
 describe('companiesController Tests', () => {
   const tradeName = 'ExampleTrade';

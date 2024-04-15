@@ -9,6 +9,9 @@ import { exchangeTokens } from '../helpers/hubspot/exchangeTokens';
 import { storeHubTokens } from '../helpers/database/storeHubToken';
 import { getCurrentPortal } from '../helpers/hubspot/getCurrentPortalId';
 import logger from '../utils/Logger';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const HUBSPOT_CLIENT_ID = process.env.HUBSPOT_CLIENT_ID;
 const HUBSPOT_CLIENT_SECRET = process.env.HUBSPOT_CLIENT_SECRET;

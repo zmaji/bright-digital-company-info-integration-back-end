@@ -1,11 +1,11 @@
-import type { PropertyField } from '../../typings/PropertyField';
+import type { PropertyField } from '../../../typings/PropertyField';
 
 import axios, { AxiosResponse } from 'axios';
-import propertiesController from '../../controllers/Properties';
-import logger from '../../utils/Logger';
+import propertiesController from '../../../controllers/Properties';
+import logger from '../../../utils/Logger';
 
 jest.mock('axios');
-jest.mock('../../utils/Logger');
+jest.mock('../../../utils/Logger');
 
 describe('Properties Controller Tests', () => {
   afterEach(() => {

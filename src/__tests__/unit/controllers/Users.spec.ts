@@ -1,10 +1,10 @@
-import usersController from '../../controllers/Users';
-import logger from '../../utils/Logger';
-import { prismaMock } from '../utils/singleton';
+import usersController from '../../../controllers/Users';
+import logger from '../../../utils/Logger';
+import { prismaMock } from '../../utils/singleton';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 
-jest.mock('../../utils/Logger');
+jest.mock('../../../utils/Logger');
 
 describe('Users Controller Tests', () => {
   let hashedPassword = '';

@@ -1,9 +1,9 @@
 import axios, { AxiosResponse } from 'axios';
-import groupsController from '../../controllers/Groups';
-import logger from '../../utils/Logger';
+import groupsController from '../../../controllers/Groups';
+import logger from '../../../utils/Logger';
 
 jest.mock('axios');
-jest.mock('../../utils/Logger');
+jest.mock('../../../utils/Logger');
 
 describe('Groups Controller Tests', () => {
   afterEach(() => {

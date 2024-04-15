@@ -1,9 +1,9 @@
 import axios from 'axios';
-import webHookController from '../../controllers/Webhook';
-import logger from '../../utils/Logger';
+import webHookController from '../../../controllers/Webhook';
+import logger from '../../../utils/Logger';
 
 jest.mock('axios');
-jest.mock('../../utils/Logger');
+jest.mock('../../../utils/Logger');
 
 describe('webHookController Tests', () => {
   const period = 'weekly';
