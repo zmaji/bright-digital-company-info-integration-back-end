@@ -21,7 +21,7 @@ describe('storeHubTokens Function Tests', () => {
     jest.clearAllMocks();
   });
 
-  test('should create a new record if portal ID does not exist', async () => {
+  test('should create a new record if hubtoken does not exist', async () => {
     prismaMock.hubToken.findUnique.mockResolvedValueOnce(null);
     prismaMock.hubToken.create.mockResolvedValueOnce(HubToken);
 
@@ -42,7 +42,7 @@ describe('storeHubTokens Function Tests', () => {
     }
   });
 
-  test('should update an existing record if portal ID exists', async () => {
+  test('should update an existing record if hubtoken exists', async () => {
     const updatedHubToken: HubToken = {
       ...HubToken,
       updated_at: new Date(),
