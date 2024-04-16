@@ -9,7 +9,6 @@ export const verifySignature = (req: Request): boolean => {
     const timestamp: string | undefined = req.headers['x-hubspot-request-timestamp'] as string | undefined;
     const signature: string | undefined = req.headers['x-hubspot-signature-v3'] as string | undefined;
 
-    // const requestBody: string = req.rawBody.toString();
     const requestBody: string = JSON.stringify(req.body);
     const requestMethod: string = req.method;
     const requestUri: string = `https://${req.get('host')}${req.originalUrl}`;
