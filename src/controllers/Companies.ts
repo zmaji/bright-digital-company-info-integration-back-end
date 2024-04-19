@@ -44,6 +44,8 @@ const getCompanies = async (tradeName: string): Promise<Company[] | null> => {
 };
 
 const getCompanyInfo = async (dossierNumber: number): Promise<CompanyDetail | null> => {
+  logger.info('Trying to get company info');
+  
   try {
     const client = await soap.createClientAsync(companyInfoURL);
     const soapHeader = {
