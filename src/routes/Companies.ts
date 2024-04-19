@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import companiesController from '../controllers/Companies';
+import { formatCompanyData } from '../helpers/hubspot/formatCompanyData';
 // import isLoggedIn from '../middleware/IsLoggedIn';
 
 const router = Router();
@@ -41,8 +42,9 @@ router.get('/info', async (req: Request, res: Response) => {
 
     if (dossierNumber) {
       const result = await companiesController.getCompanyInfo(dossierNumber);
+      const formattedResult = await formatCompanyData(result);
 
-      if (result) {
+      if (formattedResult) {
         res
             .status(StatusCodes.OK)
             .json(result);
