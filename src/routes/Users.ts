@@ -32,18 +32,31 @@ router.get('', isLoggedIn, async (req: Request, res: Response) => {
 
 router.get('/verify', async (req: Request, res: Response) => {
   try {
-    if (req && req.body && req.body.activationCode) {
-      const activationCode: string = req.body.activationCode;
-      const result: boolean | null = await userController.verifyUser(activationCode);
+    if (req && req.query && req.query.activationCode && req.query.userId) {
+      const activationCode: string | undefined = req.query.activationCode as string;
+      const userId: string | undefined = req.query.userId as string;
+      const userIdNumber: number | undefined = userId ? parseInt(userId, 10) : undefined;
 
-      if (result) {
-        res
+      if (userIdNumber) {
+        const result: boolean | null = await userController.verifyUser(userIdNumber, activationCode);
+
+        if (result) {
+          const updateFields = {
+            isActive: true,
+          }
+
+          const updatedUser = await userController.updateUser(userIdNumber, updateFields);
+
+          if (updatedUser) {
+            res
             .status(StatusCodes.OK)
             .json('Successfully entered activation code');
-      } else {
-        res
-            .status(StatusCodes.NOT_FOUND)
-            .json({ error: 'Wrong activation code entered' });
+          } else {
+            res
+                .status(StatusCodes.NOT_FOUND)
+                .json({ error: 'Wrong activation code entered' });
+          }
+        }
       }
     }
   } catch {

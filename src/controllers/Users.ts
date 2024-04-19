@@ -4,7 +4,7 @@ import prisma from '../database/Client';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
 import logger from '../utils/Logger';
-// import { sendActivationEmail } from '../helpers/sendActivationEmail';
+import { sendActivationEmail } from '../helpers/sendActivationEmail';
 
 const getUser = async (emailAddress: string): Promise<User | null> => {
   try {
@@ -29,15 +29,17 @@ const getUser = async (emailAddress: string): Promise<User | null> => {
   }
 };
 
-const verifyUser = async (activationCode: string): Promise<boolean> => {
+const verifyUser = async (userId: number, activationCode: string): Promise<boolean> => {
+  logger.info('Verifying activation code');
+
   try {
-    const existingToken = await prisma.user.findUnique({
+    const existingUser = await prisma.user.findUnique({
       where: {
-        activationToken: activationCode,
+        id: userId,
       },
     });
 
-    if (existingToken) {
+    if (existingUser && existingUser.activationToken === activationCode) {
       logger.info(`Matching activation token found found!`);
 
       return true;
@@ -58,8 +60,7 @@ const createUser = async (userData: User): Promise<User | null> => {
     const hashedPassword = await bcrypt.hash(password, 12);
     const activationToken = uuidv4();
 
-    // TODO: SEND MAIL
-    // await sendActivationEmail(emailAddress, activationToken);
+    await sendActivationEmail(emailAddress, activationToken);
 
     const newUser: User = await prisma.user.create({
       data: {

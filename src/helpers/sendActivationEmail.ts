@@ -1,32 +1,23 @@
 import logger from '../utils/Logger';
-import nodemailer from 'nodemailer';
+import SparkPost from 'sparkpost';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const ACTIVATION_SENDER_ADDRESS = process.env.ACTIVATION_SENDER_ADDRESS;
-const ACTIVATION_SENDER_PASSWORD = process.env.ACTIVATION_SENDER_PASSWORD;
-
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: ACTIVATION_SENDER_ADDRESS,
-    pass: ACTIVATION_SENDER_PASSWORD,
-  },
-  tls: {
-    rejectUnauthorized: false,
-  },
-});
+const SPARKPOST_API_KEY = process.env.SPARKPOST_API_KEY;
+const sparkpostClient = new SparkPost(SPARKPOST_API_KEY, { origin: "https://api.eu.sparkpost.com:443" });
 
 export const sendActivationEmail = async (email: string, activationToken: string) => {
   logger.info(`Sending activation email to ${email}`);
 
   try {
-    await transporter.sendMail({
-      from: 'maurice@brightdigital.com',
-      to: email,
-      subject: 'Activate Your Account',
-      html: `<p>Your activation code is: ${activationToken}></p>`,
+    await sparkpostClient.transmissions.send({
+      content: {
+        from: 'noreply@brightdigital.dev',
+        subject: 'Activate Your Account',
+        html: `<p>Your activation code is: ${activationToken}</p>`,
+      },
+      recipients: [{ address: email }],
     });
   } catch (error) {
     logger.error('Error sending email verification:', error);
