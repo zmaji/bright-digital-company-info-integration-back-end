@@ -2,7 +2,11 @@ import { Router, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import companiesController from '../controllers/Companies';
 import { formatCompanyData } from '../helpers/hubspot/formatCompanyData';
-// import isLoggedIn from '../middleware/IsLoggedIn';
+import isLoggedIn from '../middleware/IsLoggedIn';
+import { User } from '../typings/User';
+import usersController from '../controllers/Users';
+import { HubToken } from '../typings/HubToken';
+import authController from '../controllers/Auth';
 
 const router = Router();
 
@@ -47,7 +51,7 @@ router.get('/info', async (req: Request, res: Response) => {
       if (formattedResult) {
         res
             .status(StatusCodes.OK)
-            .json(result);
+            .json(formattedResult);
       } else {
         res
             .status(StatusCodes.NOT_FOUND)
@@ -62,6 +66,125 @@ router.get('/info', async (req: Request, res: Response) => {
     res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ error: 'An error occurred retrieving info' });
+  }
+});
+
+router.get('/hubspot', isLoggedIn, async (req: Request, res: Response) => {
+  try {
+    if (req.user && req.user.emailAddress) {
+      const emailAddress: string = req.user.emailAddress;
+      const currentUser: User | null = await usersController.getUser(emailAddress);
+
+        if (currentUser && currentUser.hubSpotPortalId) {
+          const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
+
+          if (hubToken) {
+            const result = await companiesController.getCompany(hubToken.access_token);
+
+            if (result) {
+              res
+                  .status(StatusCodes.OK)
+                  .json(result);
+            } else {
+              res
+                  .status(StatusCodes.NOT_FOUND)
+                  .json({ error: 'Unable to get companies' });
+            }
+          } else {
+            res
+                .status(StatusCodes.UNAUTHORIZED)
+                .json({ error: 'Unauthorized' });
+          }
+        } else {
+          res
+            .status(StatusCodes.INTERNAL_SERVER_ERROR)
+            .json({ error: 'No user or portal id found' });
+        }
+      }
+    } catch {
+      res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .json({ error: 'An error occurred retrieving info' });
+    }
+});
+
+router.post('/hubspot', isLoggedIn, async (req: Request, res: Response) => {
+  try {
+    if (req.user && req.user.emailAddress) {
+      const emailAddress: string = req.user.emailAddress;
+      const currentUser: User | null = await usersController.getUser(emailAddress);
+
+        if (currentUser && currentUser.hubSpotPortalId) {
+          const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
+
+          if (hubToken && req.body.companyData) {
+            const companyData = req.body.companyData;
+      
+            if (companyData && Object.keys(companyData).length > 0) {
+              const result = await companiesController.createCompany(hubToken, companyData);
+        
+              if (result) {
+                res
+                    .status(StatusCodes.OK)
+                    .json(result);
+              } else {
+                res
+                    .status(StatusCodes.NOT_FOUND)
+                    .json({ error: `Unable to create a company` });
+              }
+            } else {
+              res
+                  .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                  .json({ error: 'No data provided' });
+            }
+          }
+        }
+    }
+  } catch {
+    res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: 'An error occurred updating a company' });
+  }
+});
+
+router.put('/hubspot', isLoggedIn, async (req: Request, res: Response) => {
+  try {
+    if (req.user && req.user.emailAddress) {
+      const emailAddress: string = req.user.emailAddress;
+      const currentUser: User | null = await usersController.getUser(emailAddress);
+
+        if (currentUser && currentUser.hubSpotPortalId) {
+          const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
+
+          if (hubToken && req.params.companyId && req.params.companyData) {
+            const companyId: string = typeof req.params.companyId === 'string' ? req.params.companyId : '';
+            const companyData: Object = typeof req.params.companyData === 'object' ? req.params.companyData : {};
+      
+            if (companyId && companyId !== '' && companyData && Object.keys(companyData).length > 0) {
+              const result = await companiesController.updateCompany(hubToken, companyId, companyData);
+        
+              if (result) {
+                res
+                    .status(StatusCodes.OK)
+                    .json(result);
+              } else {
+                res
+                    .status(StatusCodes.NOT_FOUND)
+                    .json({ error: `Unable to update a company with id ${companyId}` });
+              }
+            } else {
+              res
+                  .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                  .json({ error: 'No company or data provided' });
+            }
+          }
+        }
+    }
+
+  } catch {
+    res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: 'An error occurred updating a company' });
   }
 });
 
