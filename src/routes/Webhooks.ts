@@ -24,35 +24,35 @@ router.post('/company', async (req: Request, res: Response) => {
                 for company ${event.objectId}, retrieving company details..`,
             );
 
-            const companyData = await companiesController.getCompanyInfo(event.propertyValue);
+            // const companyData = await companiesController.getCompanyInfo(event.propertyValue);
 
-            if (companyData) {
-              logger.info(`Successfully retrieved data for company with dossier number ${event.propertyName}`);
+            // if (companyData) {
+            //   logger.info(`Successfully retrieved data for company with dossier number ${event.propertyName}`);
 
-              const hubToken = await retrieveHubToken(event.portalId);
+            //   const hubToken = await retrieveHubToken(event.portalId);
 
-              if (hubToken) {
-                const properties = await formatCompanyData(companyData);
+            //   if (hubToken) {
+            //     const properties = await formatCompanyData(companyData);
 
-                if (properties) {
-                  const result = await companiesController.updateCompany(hubToken, event.objectId, properties);
+            //     if (properties) {
+            //       const result = await companiesController.updateCompany(hubToken, event.objectId, properties);
 
-                  if (result) {
-                    res
-                        .status(StatusCodes.OK)
-                        .json(result);
-                  } else {
-                    res
-                        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-                        .json({ error: 'No company has been updated' });
-                  }
-                } else {
-                  res
-                      .status(StatusCodes.UNAUTHORIZED)
-                      .json({ error: 'No HubToken found' });
-                }
-              }
-            }
+            //       if (result) {
+            //         res
+            //             .status(StatusCodes.OK)
+            //             .json(result);
+            //       } else {
+            //         res
+            //             .status(StatusCodes.INTERNAL_SERVER_ERROR)
+            //             .json({ error: 'No company has been updated' });
+            //       }
+            //     } else {
+            //       res
+            //           .status(StatusCodes.UNAUTHORIZED)
+            //           .json({ error: 'No HubToken found' });
+            //     }
+            //   }
+            // }
           } else {
             res
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)

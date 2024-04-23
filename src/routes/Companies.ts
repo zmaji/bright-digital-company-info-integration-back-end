@@ -12,10 +12,16 @@ const router = Router();
 
 router.get('', isLoggedIn, async (req: Request, res: Response) => {
   try {
+    if (req.user && req.user.emailAddress) {
+      const emailAddress: string = req.user.emailAddress;
+      const currentUser: User | null = await usersController.getUser(emailAddress);
+
+      if (currentUser && currentUser.companyInfoUserName && currentUser.companyInfoPassword) {
+
     const tradeName = req.query.tradeName ? String(req.query.tradeName) : undefined;
 
     if (tradeName) {
-      const result = await companiesController.getCompanies(tradeName);
+      const result = await companiesController.getCompanies(tradeName, currentUser.companyInfoUserName, currentUser.companyInfoPassword);
 
       if (result) {
         res
@@ -31,6 +37,8 @@ router.get('', isLoggedIn, async (req: Request, res: Response) => {
           .status(StatusCodes.INTERNAL_SERVER_ERROR)
           .json({ error: 'Trade name has not been provided' });
     }
+  }
+}
   } catch {
     res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -38,28 +46,35 @@ router.get('', isLoggedIn, async (req: Request, res: Response) => {
   }
 });
 
-router.get('', isLoggedIn, async (req: Request, res: Response) => {
+router.get('/info', isLoggedIn, async (req: Request, res: Response) => {
   try {
-    const dossierNumber = req.query.dossierNumber ? Number(req.query.dossierNumber) : undefined;
+    if (req.user && req.user.emailAddress) {
+      const emailAddress: string = req.user.emailAddress;
+      const currentUser: User | null = await usersController.getUser(emailAddress);
 
-    if (dossierNumber) {
-      const result = await companiesController.getCompanyInfo(dossierNumber);
-      const formattedResult = await formatCompanyData(result);
+          if (currentUser && currentUser.companyInfoUserName && currentUser.companyInfoPassword) {
+            const dossierNumber = req.query.dossierNumber ? Number(req.query.dossierNumber) : undefined;
 
-      if (formattedResult) {
-        res
-            .status(StatusCodes.OK)
-            .json(formattedResult);
-      } else {
-        res
-            .status(StatusCodes.NOT_FOUND)
-            .json({ error: `Unable to get information with dossier number ${dossierNumber}` });
+            if (dossierNumber) {
+              const result = await companiesController.getCompanyInfo(dossierNumber, currentUser.companyInfoUserName, currentUser.companyInfoPassword);
+              const formattedResult = await formatCompanyData(result);
+        
+              if (formattedResult) {
+                res
+                    .status(StatusCodes.OK)
+                    .json(formattedResult);
+              } else {
+                res
+                    .status(StatusCodes.NOT_FOUND)
+                    .json({ error: `Unable to get information with dossier number ${dossierNumber}` });
+              }
+            } else {
+              res
+                  .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                  .json({ error: 'Dossier number has not been provided' });
+            }
+          }
       }
-    } else {
-      res
-          .status(StatusCodes.INTERNAL_SERVER_ERROR)
-          .json({ error: 'Dossier number has not been provided' });
-    }
   } catch {
     res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)

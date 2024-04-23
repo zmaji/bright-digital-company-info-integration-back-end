@@ -5,15 +5,12 @@ import type { HubToken } from '../typings/HubToken';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import * as soap from 'soap';
 import logger from '../utils/Logger';
-import { formatCompanyData } from '../helpers/hubspot/formatCompanyData';
-
-const COMPANY_INFO_TEST_USERNAME = process.env.COMPANY_INFO_TEST_USERNAME;
-const COMPANY_INFO_TEST_PASSWORD = process.env.COMPANY_INFO_TEST_PASSWORD;
 
 const companyInfoURL = 'https://ws1.webservices.nl/soap_doclit?wsdl';
-const headerArguments = { username: COMPANY_INFO_TEST_USERNAME, password: COMPANY_INFO_TEST_PASSWORD };
 
-const getCompanies = async (tradeName: string): Promise<Company[] | null> => {
+const getCompanies = async (tradeName: string, companyInfoUsername: string, companyInfoPassword: string): Promise<Company[] | null> => {
+  const headerArguments = { username: companyInfoUsername, password: companyInfoPassword };
+
   try {
     const client = await soap.createClientAsync(companyInfoURL);
     const soapHeader = {
@@ -43,8 +40,10 @@ const getCompanies = async (tradeName: string): Promise<Company[] | null> => {
   }
 };
 
-const getCompanyInfo = async (dossierNumber: number): Promise<CompanyDetail | null> => {
+const getCompanyInfo = async (dossierNumber: number, companyInfoUsername: string, companyInfoPassword: string): Promise<CompanyDetail | null> => {
   logger.info('Trying to get company info');
+  const headerArguments = { username: companyInfoUsername, password: companyInfoPassword };
+
   try {
     const client = await soap.createClientAsync(companyInfoURL);
     const soapHeader = {
@@ -128,6 +127,8 @@ const getCompany = async (accessToken: string) => {
 
 const createCompany = async (hubToken: HubToken, companyData: CompanyDetail): Promise<CompanyDetail | null> => {
     logger.info(`Trying to create a company with dossier number ${companyData.dossier_number}`);
+
+    delete companyData.legal_name;
   
     const updatedCompanyData = {
       name: companyData.trade_name_full,
@@ -171,8 +172,10 @@ const createCompany = async (hubToken: HubToken, companyData: CompanyDetail): Pr
   };
 
  // eslint-disable-next-line
-const updateCompany = async (hubToken: HubToken, companyId: string, companyData: any): Promise<CompanyDetail | null> => {
+const updateCompany = async (hubToken: HubToken, companyId: string, companyData: CompanyDetail): Promise<CompanyDetail | null> => {
   logger.info(`Trying to update company`);
+
+  delete companyData.legal_name;
 
   try {
     const response: AxiosResponse = await axios({
