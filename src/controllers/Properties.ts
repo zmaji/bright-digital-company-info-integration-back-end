@@ -69,32 +69,30 @@ const createProperties = async (accessToken: string, objectType: string, missing
 };
 
 // eslint-disable-next-line
-const deleteProperty = async (accessToken: string, propertyName: string, objectType: string): Promise<PropertyField[] | null> => {
+const deleteProperty = async (accessToken: string, objectType: string, propertyName: string) => {
   try {
     logger.info(`Trying to delete property: ${propertyName}..`);
 
-    const response: AxiosResponse = await axios.delete(
-        `https://api.hubapi.com/crm/v3/properties/${objectType}/${propertyName}`, {
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        });
+    const response = await axios.delete(
+      `https://api.hubapi.com/crm/v3/properties/${objectType}/${propertyName}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
-    const result: PropertyField[] = response.data;
-
-    if (result) {
+    if (response.status === 204) { 
       logger.info(`Successfully deleted a HubSpot property: ${propertyName}`);
-
-      return result;
+      return { success: true };
     } else {
-      logger.error('No result received');
-
-      return null;
+      logger.error(`Unexpected status code while deleting property: ${response.status}`);
+      return { success: false, message: `Unexpected status code: ${response.status}` };
     }
   } catch (error) {
     logger.error(`Something went wrong deleting a HubSpot property: ${propertyName}`, error);
-    throw error;
+    throw new Error(`Error deleting property ${propertyName}: ${error}`);
   }
 };
 

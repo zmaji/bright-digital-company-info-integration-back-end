@@ -105,4 +105,42 @@ router.post('', isLoggedIn, async (req: Request, res: Response) => {
   }
 });
 
+router.delete('/:objectType/:propertyName', isLoggedIn, async (req: Request, res: Response) => {
+  try {
+    if (req.user && req.user.emailAddress) {
+      const emailAddress = req.user.emailAddress;
+      const currentUser = emailAddress ? await userController.getUser(emailAddress) : null;
+
+      if (req.params.objectType && req.params.propertyName) {
+        const { objectType, propertyName } = req.params;
+
+        if (currentUser && currentUser.hubSpotPortalId) {
+          const hubToken = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
+
+          if (hubToken) {
+            const result = await propertiesController.deleteProperty(hubToken.access_token, objectType, propertyName);
+
+            if (result.success) {
+              return res.status(200).json({ message: `Property ${propertyName} deleted successfully` });
+            } else {
+              return res.status(500).json({ error: `Unable to delete property: ${result.message}` });
+            }
+          } else {
+            return res.status(500).json({ error: `Unable to retrieve hub token` });
+          }
+        } else {
+          return res.status(401).json({ error: 'Unauthorized' });
+        }
+      } else {
+        return res.status(400).json({ error: 'Invalid parameters' });
+      }
+    } else {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+  } catch (error) {
+    console.error('Error in DELETE endpoint:', error);
+    return res.status(500).json({ error: `An error occurred deleting a property: ${error}` });
+  }
+});
+
 export default router;
