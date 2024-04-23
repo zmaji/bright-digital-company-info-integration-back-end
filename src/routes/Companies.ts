@@ -10,8 +10,7 @@ import authController from '../controllers/Auth';
 
 const router = Router();
 
-// router.get('', isLoggedIn async (req: Request, res: Response) => {
-router.get('', async (req: Request, res: Response) => {
+router.get('', isLoggedIn, async (req: Request, res: Response) => {
   try {
     const tradeName = req.query.tradeName ? String(req.query.tradeName) : undefined;
 
@@ -39,8 +38,7 @@ router.get('', async (req: Request, res: Response) => {
   }
 });
 
-// router.get('', isLoggedIn async (req: Request, res: Response) => {
-router.get('/info', async (req: Request, res: Response) => {
+router.get('', isLoggedIn, async (req: Request, res: Response) => {
   try {
     const dossierNumber = req.query.dossierNumber ? Number(req.query.dossierNumber) : undefined;
 
@@ -156,9 +154,9 @@ router.put('/hubspot', isLoggedIn, async (req: Request, res: Response) => {
         if (currentUser && currentUser.hubSpotPortalId) {
           const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
-          if (hubToken && req.params.companyId && req.params.companyData) {
-            const companyId: string = typeof req.params.companyId === 'string' ? req.params.companyId : '';
-            const companyData: Object = typeof req.params.companyData === 'object' ? req.params.companyData : {};
+          if (hubToken && req.body.companyId && req.body.companyData) {
+            const companyId: string = typeof req.body.companyId === 'string' ? req.body.companyId : '';
+            const companyData: Object = typeof req.body.companyData === 'object' ? req.body.companyData : {};
       
             if (companyId && companyId !== '' && companyData && Object.keys(companyData).length > 0) {
               const result = await companiesController.updateCompany(hubToken, companyId, companyData);
@@ -180,7 +178,6 @@ router.put('/hubspot', isLoggedIn, async (req: Request, res: Response) => {
           }
         }
     }
-
   } catch {
     res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)

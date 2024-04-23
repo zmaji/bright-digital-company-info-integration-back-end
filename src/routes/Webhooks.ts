@@ -4,6 +4,7 @@ import { verifySignature } from '../helpers/hubspot/verifySignature';
 import companiesController from '../controllers/Companies';
 import logger from '../utils/Logger';
 import { retrieveHubToken } from '../controllers/Auth';
+import { formatCompanyData } from '../helpers/hubspot/formatCompanyData';
 
 const router = Router();
 
@@ -31,21 +32,25 @@ router.post('/company', async (req: Request, res: Response) => {
               const hubToken = await retrieveHubToken(event.portalId);
 
               if (hubToken) {
-                const result = await companiesController.updateCompany(hubToken, event.objectId, companyData);
+                const properties = await formatCompanyData(companyData);
 
-                if (result) {
-                  res
-                      .status(StatusCodes.OK)
-                      .json(result);
+                if (properties) {
+                  const result = await companiesController.updateCompany(hubToken, event.objectId, properties);
+
+                  if (result) {
+                    res
+                        .status(StatusCodes.OK)
+                        .json(result);
+                  } else {
+                    res
+                        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                        .json({ error: 'No company has been updated' });
+                  }
                 } else {
                   res
-                      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-                      .json({ error: 'No company has been updated' });
+                      .status(StatusCodes.UNAUTHORIZED)
+                      .json({ error: 'No HubToken found' });
                 }
-              } else {
-                res
-                    .status(StatusCodes.UNAUTHORIZED)
-                    .json({ error: 'No HubToken found' });
               }
             }
           } else {
