@@ -43,14 +43,14 @@ router.get('/verify', async (req: Request, res: Response) => {
         if (result) {
           const updateFields = {
             isActive: true,
-          }
+          };
 
           const updatedUser = await userController.updateUser(userIdNumber, updateFields);
 
           if (updatedUser) {
             res
-            .status(StatusCodes.OK)
-            .json('Successfully entered activation code');
+                .status(StatusCodes.OK)
+                .json('Successfully entered activation code');
           } else {
             res
                 .status(StatusCodes.NOT_FOUND)

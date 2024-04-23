@@ -1,10 +1,10 @@
 import { Router, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { verifySignature } from '../helpers/hubspot/verifySignature';
-import companiesController from '../controllers/Companies';
+// import companiesController from '../controllers/Companies';
 import logger from '../utils/Logger';
-import { retrieveHubToken } from '../controllers/Auth';
-import { formatCompanyData } from '../helpers/hubspot/formatCompanyData';
+// import { retrieveHubToken } from '../controllers/Auth';
+// import { formatCompanyData } from '../helpers/hubspot/formatCompanyData';
 
 const router = Router();
 
