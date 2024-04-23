@@ -4,7 +4,7 @@ import prisma from '../database/Client';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
 import logger from '../utils/Logger';
-import { sendActivationEmail } from '../helpers/sendActivationEmail';
+// import { sendActivationEmail } from '../helpers/sendActivationEmail';
 
 const getUser = async (emailAddress: string): Promise<User | null> => {
   try {
