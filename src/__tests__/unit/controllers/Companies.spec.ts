@@ -2,11 +2,11 @@ import type { HubToken } from '../../../typings/HubToken';
 
 import companiesController from '../../../controllers/Companies';
 import * as soap from 'soap';
-import axios from 'axios';
+// import axios from 'axios';
 import logger from '../../../utils/Logger';
 import { Company } from '../../../typings/Company';
 import { CompanyDetail } from '../../../typings/CompanyDetail';
-import { formatCompanyData } from '../../../helpers/hubspot/formatCompanyData';
+// import { formatCompanyData } from '../../../helpers/hubspot/formatCompanyData';
 
 jest.mock('soap');
 jest.mock('axios');
@@ -16,17 +16,17 @@ jest.mock('../../../helpers/hubspot/formatCompanyData');
 describe('companiesController Tests', () => {
   const tradeName = 'ExampleTrade';
   const dossierNumber = 123456;
-  const companyId = '1001';
+  // const companyId = '1001';
 
-  const hubToken: HubToken = {
-    id: 1,
-    portal_id: null,
-    access_token: 'token123',
-    refresh_token: 'refreshTokenXYZ',
-    expires_in: 3600,
-    created_at: new Date(),
-    updated_at: null,
-  };
+  // const hubToken: HubToken = {
+  //   id: 1,
+  //   portal_id: null,
+  //   access_token: 'token123',
+  //   refresh_token: 'refreshTokenXYZ',
+  //   expires_in: 3600,
+  //   created_at: new Date(),
+  //   updated_at: null,
+  // };
 
   const mockCompany: Company = {
     dossier_number: '123456',
