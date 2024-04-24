@@ -13,7 +13,7 @@ import logger from '../utils/Logger';
 
 const router = Router();
 
-router.get('', isLoggedIn, async (req: Request, res: Response) => {
+router.get('/hubspot', isLoggedIn, async (req: Request, res: Response) => {
   try {
     if (req.user && req.user.emailAddress) {
       const emailAddress: string | undefined = req.user?.emailAddress;
@@ -27,7 +27,7 @@ router.get('', isLoggedIn, async (req: Request, res: Response) => {
           const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
           if (hubToken) {
-            const properties: PropertyField[] | null = await propertiesController.getProperties(
+            const properties: PropertyField[] | null = await propertiesController.getHubSpotProperties(
                 hubToken.access_token, objectType);
 
             if (properties) {
@@ -62,7 +62,7 @@ router.get('', isLoggedIn, async (req: Request, res: Response) => {
   }
 });
 
-router.post('', isLoggedIn, async (req: Request, res: Response) => {
+router.post('/hubspot', isLoggedIn, async (req: Request, res: Response) => {
   try {
     if (req.user && req.user.emailAddress) {
       const emailAddress: string | undefined = req.user?.emailAddress;
@@ -76,7 +76,7 @@ router.post('', isLoggedIn, async (req: Request, res: Response) => {
           const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
           if (hubToken) {
-            const result = await propertiesController.createProperties(
+            const result = await propertiesController.createHubSpotProperties(
                 hubToken.access_token, objectType, missingProperties);
 
             if (result) {
@@ -105,7 +105,7 @@ router.post('', isLoggedIn, async (req: Request, res: Response) => {
   }
 });
 
-router.delete('/:objectType/:propertyName', isLoggedIn, async (req: Request, res: Response) => {
+router.delete('/hubspot/:objectType/:propertyName', isLoggedIn, async (req: Request, res: Response) => {
   try {
     if (req.user && req.user.emailAddress) {
       const emailAddress = req.user.emailAddress;
@@ -118,7 +118,7 @@ router.delete('/:objectType/:propertyName', isLoggedIn, async (req: Request, res
           const hubToken = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
           if (hubToken) {
-            const result = await propertiesController.deleteProperty(hubToken.access_token, objectType, propertyName);
+            const result = await propertiesController.deleteHubSpotProperty(hubToken.access_token, objectType, propertyName);
 
             if (result.success) {
               return res.status(200).json({ message: `Property ${propertyName} deleted successfully` });
@@ -140,6 +140,129 @@ router.delete('/:objectType/:propertyName', isLoggedIn, async (req: Request, res
   } catch (error) {
     console.error('Error in DELETE endpoint:', error);
     return res.status(500).json({ error: `An error occurred deleting a property: ${error}` });
+  }
+});
+
+router.post('/', isLoggedIn, async (req: Request, res: Response) => {
+  try {
+    if (req.user && req.user.emailAddress) {
+      const emailAddress: string | undefined = req.user?.emailAddress;
+      const currentUser: User | null = emailAddress? await userController.getUser(emailAddress) : null;
+
+      if (req.body && req.body.properties) {
+        const { properties } = req.body.properties;
+
+        if (currentUser && currentUser.hubSpotPortalId && currentUser.id) {
+          const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
+
+          if (hubToken) {
+            const createdProperties = propertiesController.createProperties(properties, currentUser.id)
+
+            if (createdProperties) {
+                res
+                    .status(StatusCodes.CREATED)
+                    .json(createdProperties);
+              } else {
+                res
+                    .status(StatusCodes.BAD_REQUEST)
+                    .json({ error: 'Failed to create properties.' });
+              }
+            } else {
+              res
+                  .status(StatusCodes.UNAUTHORIZED)
+                  .json({ error: 'Unauthorized' });
+            }
+          } else {
+            res
+                .status(StatusCodes.UNAUTHORIZED)
+                .json({ error: 'Not logged in.' });
+          }
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+router.put('/', isLoggedIn, async (req: Request, res: Response) => {
+  try {
+    if (req.user && req.user.emailAddress) {
+      const emailAddress: string | undefined = req.user?.emailAddress;
+      const currentUser: User | null = emailAddress? await userController.getUser(emailAddress) : null;
+
+      if (req.body && req.body.properties) {
+        const { properties } = req.body.properties;
+
+        if (currentUser && currentUser.hubSpotPortalId) {
+          const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
+
+          if (hubToken) {
+            const updatedProperties = propertiesController.updateProperties(properties)
+
+            if (updatedProperties) {
+                res
+                    .status(StatusCodes.CREATED)
+                    .json(updatedProperties);
+              } else {
+                res
+                    .status(StatusCodes.BAD_REQUEST)
+                    .json({ error: 'Failed to update properties.' });
+              }
+            } else {
+              res
+                  .status(StatusCodes.UNAUTHORIZED)
+                  .json({ error: 'Unauthorized' });
+            }
+          } else {
+            res
+                .status(StatusCodes.UNAUTHORIZED)
+                .json({ error: 'Not logged in.' });
+          }
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+router.delete('/:propertyId', isLoggedIn, async (req: Request, res: Response) => {
+  try {
+    if (req.user && req.user.emailAddress) {
+      const emailAddress: string | undefined = req.user?.emailAddress;
+      const currentUser: User | null = emailAddress? await userController.getUser(emailAddress) : null;
+
+      if (req.params && req.params.propertyId) {
+        const propertyId = parseInt(req.params.propertyId, 10);
+
+        if (currentUser && currentUser.hubSpotPortalId) {
+          const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
+
+          if (hubToken) {
+            const deletedProperty = propertiesController.deleteProperty(propertyId);
+
+            if (deletedProperty) {
+                res
+                    .status(StatusCodes.CREATED)
+                    .json(deletedProperty);
+              } else {
+                res
+                    .status(StatusCodes.BAD_REQUEST)
+                    .json({ error: 'Failed to update properties.' });
+              }
+            } else {
+              res
+                  .status(StatusCodes.UNAUTHORIZED)
+                  .json({ error: 'Unauthorized' });
+            }
+          } else {
+            res
+                .status(StatusCodes.UNAUTHORIZED)
+                .json({ error: 'Not logged in.' });
+          }
+      }
+    }
+  } catch (error) {
+    console.error(error);
   }
 });
 

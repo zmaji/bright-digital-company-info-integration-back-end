@@ -2,8 +2,11 @@ import type { PropertyField } from '../typings/PropertyField';
 
 import axios, { AxiosResponse } from 'axios';
 import logger from '../utils/Logger';
+import { Property } from '../typings/Property';
+import prisma from '../database/Client';
+import { User } from '../typings/User';
 
-const getProperties = async (accessToken: string, objectType: string): Promise<PropertyField[] | null> => {
+const getHubSpotProperties = async (accessToken: string, objectType: string): Promise<PropertyField[] | null> => {
   logger.info(`Getting HubSpot properties..`);
 
   try {
@@ -34,7 +37,7 @@ const getProperties = async (accessToken: string, objectType: string): Promise<P
 };
 
 // eslint-disable-next-line
-const createProperties = async (accessToken: string, objectType: string, missingProperties: PropertyField[]): Promise<PropertyField[] | null> => {
+const createHubSpotProperties = async (accessToken: string, objectType: string, missingProperties: PropertyField[]): Promise<PropertyField[] | null> => {
   logger.info(`Creating HubSpot properties..`);
 
   try {
@@ -69,7 +72,7 @@ const createProperties = async (accessToken: string, objectType: string, missing
 };
 
 // eslint-disable-next-line
-const deleteProperty = async (accessToken: string, objectType: string, propertyName: string) => {
+const deleteHubSpotProperty = async (accessToken: string, objectType: string, propertyName: string) => {
   try {
     logger.info(`Trying to delete property: ${propertyName}..`);
 
@@ -96,10 +99,106 @@ const deleteProperty = async (accessToken: string, objectType: string, propertyN
   }
 };
 
+const getProperties = async (userId: number) => {
+  logger.info("Retrieving all properties for user ID:", userId);
+
+  try {
+    const userProperties = await prisma.property.findMany({
+      where: {
+        userId: userId,
+      },
+    });
+
+    logger.success(`Successfully retrieved ${userProperties.length} properties for user ID: ${userId}`);
+    return userProperties;
+  } catch (error) {
+    logger.error("Error retrieving properties for user ID:", userId, error);
+    throw error;
+  }
+};
+
+const createProperties = async (properties: Property[], userId: number) => {
+  logger.info("Creating properties...");
+
+  try {
+    const newProperties = await Promise.all(
+      properties.map(async (property) => {
+        const newProperty: Property = await prisma.property.create({
+          data: {
+            name: property.name,
+            toSave: property.toSave,
+            userId: userId
+          },
+        });
+
+        return newProperty;
+      })
+    );
+
+    logger.success("Successfully created new properties");
+    return newProperties;
+  } catch (error) {
+    logger.error("Error creating properties", error);
+    throw error;
+  }
+};
+
+const updateProperties = async (properties: Property[]) => {
+  logger.info("Updating properties...");
+
+  try {
+    const updatedProperties = await Promise.all(
+      properties.map(async (property) => {
+        const currentProperty = await prisma.property.findUnique({
+          where: { id: property.id },
+          select: { toSave: true },
+        });
+
+        if (currentProperty?.toSave !== property.toSave) {
+          const updatedProperty = await prisma.property.update({
+            where: { id: property.id },
+            data: { toSave: property.toSave },
+          });
+
+          return updatedProperty;
+        }
+
+        return property;
+      })
+    );
+
+    logger.success("Properties updated successfully");
+    return updatedProperties;
+  } catch (error) {
+    logger.error("Error updating properties", error);
+    throw error;
+  }
+};
+
+const deleteProperty = async (propertyId: number) => {
+  logger.info(`Deleting a property with id ${propertyId}...`);
+
+  try {
+    const deletedProperty = await prisma.property.delete({
+      where: { id: propertyId },
+    });
+
+    logger.success(`Successfully deleted property with id ${propertyId}`);
+    return deletedProperty; 
+  } catch (error) {
+    logger.error(`Error deleting property with id ${propertyId}`, error);
+    throw error; 
+  }
+};
+
 const propertiesController = {
-  createProperties,
+  getHubSpotProperties,
+  createHubSpotProperties,
+  deleteHubSpotProperty,
   getProperties,
-  deleteProperty,
+  createProperties,
+  updateProperties,
+  deleteProperty
 };
 
 export default propertiesController;

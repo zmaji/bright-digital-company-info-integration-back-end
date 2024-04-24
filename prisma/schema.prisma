@@ -14,19 +14,19 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  hubSpotPortalId    Int?
-  firstName   String
-  lastName   String
-  emailAddress  String   @unique
-  domain  String?
-  password   String
-  secret     String
-  roles      String[]
-  activationToken   String   @unique
-  isActive   Boolean   @default(false)
-  companyInfoUserName  String?   @unique
-  companyInfoPassword  String?   @unique
+  id                  Int      @id @default(autoincrement())
+  hubSpotPortalId     Int?
+  firstName           String
+  lastName            String
+  emailAddress        String   @unique
+  domain              String?
+  password            String
+  secret              String
+  roles               String[]
+  activationToken     String   @unique
+  isActive            Boolean  @default(false)
+  companyInfoUserName String?  @unique
+  companyInfoPassword String?  @unique
 }
 
 model HubToken {
@@ -37,4 +37,11 @@ model HubToken {
   expires_in    Int
   created_at    DateTime  @default(now())
   updated_at    DateTime?
+}
+
+model Property {
+  id     Int     @id @default(autoincrement())
+  name   String
+  toSave Boolean @default(false)
+  userId Int
 }
