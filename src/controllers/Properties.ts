@@ -1,7 +1,7 @@
 import type { PropertyField } from '../typings/PropertyField';
 
 import axios, { AxiosResponse } from 'axios';
-import logger from '../utils/Logger';
+import logger from '../utils/Logger'
 import { Property } from '../typings/Property';
 import prisma from '../database/Client';
 

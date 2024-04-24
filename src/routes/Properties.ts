@@ -186,7 +186,7 @@ router.post('/', isLoggedIn, async (req: Request, res: Response) => {
   try {
     if (req.user && req.user.emailAddress) {
       const emailAddress: string | undefined = req.user?.emailAddress;
-      const currentUser: User | null = emailAddress? await userController.getUser(emailAddress) : null;
+      const currentUser: User | null = emailAddress? await userController.getUser(emailAddress) : null
 
       if (req.body && req.body) {
         if (currentUser && currentUser.hubSpotPortalId && currentUser.id) {
@@ -227,14 +227,12 @@ router.put('/', isLoggedIn, async (req: Request, res: Response) => {
       const emailAddress: string | undefined = req.user?.emailAddress;
       const currentUser: User | null = emailAddress? await userController.getUser(emailAddress) : null;
 
-      if (req.body && req.body.properties) {
-        const { properties } = req.body.properties;
-
+      if (req.body && req.body) {
         if (currentUser && currentUser.hubSpotPortalId) {
           const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
           if (hubToken) {
-            const updatedProperties = propertiesController.updateProperties(properties)
+            const updatedProperties = propertiesController.updateProperties(req.body.propertiesToUpdate);
 
             if (updatedProperties) {
                 res
