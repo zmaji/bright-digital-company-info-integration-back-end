@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import logger from '../utils/Logger';
 import { Group } from '../typings/Group';
-import propertiesController from './Properties';
+// import propertiesController from './Properties';
 
 const getGroup = async (accessToken: string, groupName: string, objectType: string): Promise<Group | null> => {
   logger.info(`Getting a ${objectType} group with name ${groupName}..`);
@@ -77,48 +77,48 @@ const createGroup = async (accessToken: string, groupName: string, objectType: s
   }
 };
 
-const deleteGroup = async (accessToken: string, groupName: string, objectType: string): Promise<Group | null> => {
-  try {
-    logger.info(`Trying to delete a ${objectType} group with name ${groupName}..`);
+// const deleteGroup = async (accessToken: string, groupName: string, objectType: string): Promise<Group | null> => {
+//   try {
+//     logger.info(`Trying to delete a ${objectType} group with name ${groupName}..`);
 
-    const existingProperties = await propertiesController.getProperties(accessToken, objectType);
+//     const existingProperties = await propertiesController.getProperties(accessToken, objectType);
 
-    if (existingProperties) {
-      // eslint-disable-next-line
-      await Promise.all(existingProperties.map((property: any) =>
-        propertiesController.deleteProperty(accessToken, property.name, objectType),
-      ));
-    }
+//     if (existingProperties) {
+//       // eslint-disable-next-line
+//       await Promise.all(existingProperties.map((property: any) =>
+//         propertiesController.deleteProperty(accessToken, property.name, objectType),
+//       ));
+//     }
 
-    const response: AxiosResponse<Group> = await axios.delete(
-        `https://api.hubapi.com/crm/v3/properties/${objectType}/${groupName}`, {
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        });
+//     const response: AxiosResponse<Group> = await axios.delete(
+//         `https://api.hubapi.com/crm/v3/properties/${objectType}/${groupName}`, {
+//           headers: {
+//             'Authorization': `Bearer ${accessToken}`,
+//             'Content-Type': 'application/json',
+//           },
+//         });
 
-    const result: Group = response.data;
+//     const result: Group = response.data;
 
-    if (result) {
-      logger.info(`Successfully deleted a ${objectType} group with name ${groupName}`);
+//     if (result) {
+//       logger.info(`Successfully deleted a ${objectType} group with name ${groupName}`);
 
-      return result;
-    } else {
-      logger.error('No result received');
+//       return result;
+//     } else {
+//       logger.error('No result received');
 
-      return null;
-    }
-  } catch (error) {
-    logger.error(`Something went wrong deleting a ${objectType} group with name ${groupName}`, error);
-    throw error;
-  }
-};
+//       return null;
+//     }
+//   } catch (error) {
+//     logger.error(`Something went wrong deleting a ${objectType} group with name ${groupName}`, error);
+//     throw error;
+//   }
+// };
 
 const groupsController = {
   createGroup,
   getGroup,
-  deleteGroup,
+  // deleteGroup,
 };
 
 export default groupsController;

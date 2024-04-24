@@ -4,7 +4,6 @@ import axios, { AxiosResponse } from 'axios';
 import logger from '../utils/Logger';
 import { Property } from '../typings/Property';
 import prisma from '../database/Client';
-import { User } from '../typings/User';
 
 const getHubSpotProperties = async (accessToken: string, objectType: string): Promise<PropertyField[] | null> => {
   logger.info(`Getting HubSpot properties..`);
@@ -109,16 +108,24 @@ const getProperties = async (userId: number) => {
       },
     });
 
+    if (userProperties.length === 0) {
+      logger.info(`No properties found for user ID: ${userId}`);
+      return null;
+    }
+
     logger.success(`Successfully retrieved ${userProperties.length} properties for user ID: ${userId}`);
     return userProperties;
   } catch (error) {
     logger.error("Error retrieving properties for user ID:", userId, error);
-    throw error;
+    throw error; 
   }
 };
 
 const createProperties = async (properties: Property[], userId: number) => {
   logger.info("Creating properties...");
+
+  console.log('properties')
+  console.log(properties)
 
   try {
     const newProperties = await Promise.all(

@@ -143,20 +143,57 @@ router.delete('/hubspot/:objectType/:propertyName', isLoggedIn, async (req: Requ
   }
 });
 
+router.get('/', isLoggedIn, async (req: Request, res: Response) => {
+  try {
+    if (req.user && req.user.emailAddress) {
+      const emailAddress: string | undefined = req.user?.emailAddress;
+      const currentUser: User | null = emailAddress? await userController.getUser(emailAddress) : null;
+      
+        if (currentUser && currentUser.hubSpotPortalId && currentUser.id) {
+          const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
+
+          if (hubToken) {
+            const properties = await propertiesController.getProperties(currentUser.id);
+
+            if (properties || properties === null) {
+              res
+                  .status(StatusCodes.OK)
+                  .json(properties);
+            } else {
+              res
+                  .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                  .json({ error: `Retrieved properties from user ${currentUser.id}` });
+            }
+          } else {
+            res
+                .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                .json({ error: `Unable to retrieve hub token` });
+          }
+        } else {
+          res
+              .status(StatusCodes.UNAUTHORIZED)
+              .json({ error: `Unauthorized` });
+        }
+    }
+  } catch {
+    res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: `An error occurred retrieving properties` });
+  }
+});
+
 router.post('/', isLoggedIn, async (req: Request, res: Response) => {
   try {
     if (req.user && req.user.emailAddress) {
       const emailAddress: string | undefined = req.user?.emailAddress;
       const currentUser: User | null = emailAddress? await userController.getUser(emailAddress) : null;
 
-      if (req.body && req.body.properties) {
-        const { properties } = req.body.properties;
-
+      if (req.body && req.body) {
         if (currentUser && currentUser.hubSpotPortalId && currentUser.id) {
           const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
           if (hubToken) {
-            const createdProperties = propertiesController.createProperties(properties, currentUser.id)
+            const createdProperties = propertiesController.createProperties(req.body.propertiesToCreate, currentUser.id)
 
             if (createdProperties) {
                 res
