@@ -149,11 +149,11 @@ router.get('/', isLoggedIn, async (req: Request, res: Response) => {
       const emailAddress: string | undefined = req.user?.emailAddress;
       const currentUser: User | null = emailAddress? await userController.getUser(emailAddress) : null;
       
-        if (currentUser && currentUser.hubSpotPortalId && currentUser.id) {
+        if (currentUser && currentUser.hubSpotPortalId) {
           const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
           if (hubToken) {
-            const properties = await propertiesController.getProperties(currentUser.id);
+            const properties = await propertiesController.getProperties(currentUser.hubSpotPortalId);
 
             if (properties || properties === null) {
               res
@@ -162,7 +162,7 @@ router.get('/', isLoggedIn, async (req: Request, res: Response) => {
             } else {
               res
                   .status(StatusCodes.INTERNAL_SERVER_ERROR)
-                  .json({ error: `Retrieved properties from user ${currentUser.id}` });
+                  .json({ error: `Retrieved properties from portal ${currentUser.hubSpotPortalId}` });
             }
           } else {
             res
@@ -193,7 +193,7 @@ router.post('/', isLoggedIn, async (req: Request, res: Response) => {
           const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
           if (hubToken) {
-            const createdProperties = propertiesController.createProperties(req.body.propertiesToCreate, currentUser.id)
+            const createdProperties = propertiesController.createProperties(req.body.propertiesToCreate, currentUser.hubSpotPortalId)
 
             if (createdProperties) {
                 res

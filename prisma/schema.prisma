@@ -40,8 +40,8 @@ model HubToken {
 }
 
 model Property {
-  id     Int     @id @default(autoincrement())
-  name   String
-  toSave Boolean @default(false)
-  userId Int
+  id       Int     @id @default(autoincrement())
+  name     String
+  toSave   Boolean @default(false)
+  portalId Int
 }

@@ -98,30 +98,30 @@ const deleteHubSpotProperty = async (accessToken: string, objectType: string, pr
   }
 };
 
-const getProperties = async (userId: number) => {
-  logger.info("Retrieving all properties for user ID:", userId);
+const getProperties = async (portalId: number) => {
+  logger.info("Retrieving all properties for portal ID:", portalId);
 
   try {
     const userProperties = await prisma.property.findMany({
       where: {
-        userId: userId,
+        portalId: portalId,
       },
     });
 
     if (userProperties.length === 0) {
-      logger.info(`No properties found for user ID: ${userId}`);
+      logger.info(`No properties found for portal ID: ${portalId}`);
       return null;
     }
 
-    logger.success(`Successfully retrieved ${userProperties.length} properties for user ID: ${userId}`);
+    logger.success(`Successfully retrieved ${userProperties.length} properties for portal ID: ${portalId}`);
     return userProperties;
   } catch (error) {
-    logger.error("Error retrieving properties for user ID:", userId, error);
+    logger.error("Error retrieving properties for portal ID:", portalId, error);
     throw error; 
   }
 };
 
-const createProperties = async (properties: Property[], userId: number) => {
+const createProperties = async (properties: Property[], portalId: number) => {
   logger.info("Creating properties...");
 
   console.log('properties')
@@ -134,7 +134,7 @@ const createProperties = async (properties: Property[], userId: number) => {
           data: {
             name: property.name,
             toSave: property.toSave,
-            userId: userId
+            portalId: portalId
           },
         });
 
