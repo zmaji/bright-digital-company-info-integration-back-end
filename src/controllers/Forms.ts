@@ -9,7 +9,7 @@ const createForm = async (hubToken: HubToken, formData: any) => {
     try {
       const response = await axios({
         method: 'post',
-        url: 'https://api.hubapi.com/forms/v2/forms',
+        url: 'https://api.hubapi.com/marketing/v3/forms/',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${hubToken.access_token}`,
