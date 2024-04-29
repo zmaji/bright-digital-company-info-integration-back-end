@@ -9,6 +9,7 @@ import companyRoutes from '../routes/Companies';
 import groupRoutes from '../routes/Groups';
 import propertyRoutes from '../routes/Properties';
 import webhookRoutes from '../routes/Webhooks';
+import formRoutes from '../routes/Forms';
 
 const createServer = () => {
   const app: Express = express();
@@ -23,6 +24,7 @@ const createServer = () => {
   app.use('/groups', groupRoutes);
   app.use('/properties', propertyRoutes);
   app.use('/webhooks', webhookRoutes);
+  app.use('/forms', formRoutes);
 
   return app;
 };
