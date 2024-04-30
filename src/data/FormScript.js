@@ -1,4 +1,10 @@
 const domReady = (fn)  => {
+  console.log('test!!')
+  console.log('test!!')
+  console.log('test!!')
+  console.log('test!!')
+  console.log('test!!')
+  console.log('test!!')
     //See if DOM is already available
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
       //Call on next available tick
