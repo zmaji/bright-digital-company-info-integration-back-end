@@ -1,0 +1,78 @@
+/* @import url('http://example.com/example_style.css'); */
+
+/***********************************************/
+/* CSS @imports must be at the top of the file */
+/* Add them above this section                 */
+/***********************************************/
+
+/*****************************************/
+/* Start your style declarations here    */
+/*****************************************/
+
+.c-company-select {
+    --ci-border-color: #08286a;
+    --ci-background-color: #fff;
+    --ci-text-color: #010933;
+    --ci-font-family: arial,helvetica,sans-serif; 
+    
+    position: absolute;
+    top: 2.65rem;
+    margin-bottom: 0.75rem;
+    width: 100%;
+    z-index: 2;
+    max-height: 265px;
+    overflow: scroll;
+    border-top: 1px solid var(--ci-border-color);
+    border-bottom: 1px solid var(--ci-border-color);
+    font-family: var(--ci-font-family);
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+  }
+  .c-company-select__element {
+    padding: 0.75rem 0.5rem;
+    background: var(--ci-background-color);
+    color: var(--ci-text-color);
+    border: 1px solid var(--ci-border-color);
+    border-top: 0;
+    transition: 0.3s;
+    width: 100%;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  .c-company-select__element:hover {
+    background: var(--ci-text-color);
+    color: var(--ci-background-color);
+  }
+  .c-company-select__span {
+    font-size: 14px;
+    font-style: italic;
+    text-transform: capitalize;
+    margin-top: 0.25rem !important;
+    float: none !important;
+  }
+  
+  .c-search-loader {
+    position: absolute;
+    top: 0;
+    right: 0.5rem;
+    z-index: 2;
+  }
+  .c-search-loader::after {
+    content: ' ';
+    display: block;
+    width: 26px;
+    height: 26px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 3px solid black;
+    border-color: black transparent black transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+  }
+  @keyframes lds-dual-ring {
+    0% {
+      transform: rotate(0deg);
+   }
+    100% {
+      transform: rotate(360deg);
+   }
+  }

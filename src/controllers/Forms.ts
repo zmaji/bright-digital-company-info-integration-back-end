@@ -19,7 +19,7 @@ const getForms = async (hubToken: HubToken) => {
     logger.info('HTTP Status:', response.status);
 
     if (response && response.data) {
-      logger.info('HubSpot form has successfully been created');
+      logger.info('HubSpot forms have successfully been retrieved');
       logger.info('Result:', response.data);
 
       return response.data;

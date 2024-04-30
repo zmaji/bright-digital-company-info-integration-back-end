@@ -123,10 +123,6 @@ const getProperties = async (portalId: number) => {
 
 const createProperties = async (properties: Property[], portalId: number) => {
   logger.info("Creating properties...");
-
-  console.log('properties')
-  console.log(properties)
-
   try {
     const newProperties = await Promise.all(
       properties.map(async (property) => {
