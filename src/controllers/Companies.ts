@@ -175,7 +175,6 @@ const createCompany = async (hubToken: HubToken, companyData: CompanyDetail): Pr
   }
 };
 
-// eslint-disable-next-line
 const updateCompany = async (hubToken: HubToken, companyId: string, companyData: CompanyDetail): Promise<CompanyDetail | null> => {
   logger.info(`Trying to update company`);
 
