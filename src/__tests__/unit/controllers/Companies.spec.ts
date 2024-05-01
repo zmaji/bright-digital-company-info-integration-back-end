@@ -1,4 +1,4 @@
-import type { HubToken } from '../../../typings/HubToken';
+// import type { HubToken } from '../../../typings/HubToken';
 
 import companiesController from '../../../controllers/Companies';
 import * as soap from 'soap';

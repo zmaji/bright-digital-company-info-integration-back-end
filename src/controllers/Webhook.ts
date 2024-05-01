@@ -124,6 +124,7 @@ const getSubcriptions = async () => {
       return [];
     } else {
       logger.info('Webhook subscriptions successfully found');
+
       return response.data.results;
     }
   } catch (error) {

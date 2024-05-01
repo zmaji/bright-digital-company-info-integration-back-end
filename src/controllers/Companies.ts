@@ -41,6 +41,7 @@ const getCompanies = async (tradeName: string, companyInfoUsername: string, comp
   }
 };
 
+// eslint-disable-next-line
 const getCompanyInfo = async (dossierNumber: number, companyInfoUsername: string, companyInfoPassword: string): Promise<CompanyDetail | null> => {
   logger.info('Trying to get company info');
   const headerArguments = { username: companyInfoUsername, password: companyInfoPassword };
@@ -174,7 +175,7 @@ const createCompany = async (hubToken: HubToken, companyData: CompanyDetail): Pr
   }
 };
 
-   // eslint-disable-next-line
+// eslint-disable-next-line
 const updateCompany = async (hubToken: HubToken, companyId: string, companyData: any): Promise<CompanyDetail | null> => {
   logger.info(`Trying to update company`);
 

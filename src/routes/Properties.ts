@@ -118,6 +118,7 @@ router.delete('/hubspot/:objectType/:propertyName', isLoggedIn, async (req: Requ
           const hubToken = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
           if (hubToken) {
+            // eslint-disable-next-line
             const result = await propertiesController.deleteHubSpotProperty(hubToken.access_token, objectType, propertyName);
 
             if (result?.success) {
@@ -139,6 +140,7 @@ router.delete('/hubspot/:objectType/:propertyName', isLoggedIn, async (req: Requ
     }
   } catch (error) {
     console.error('Error in DELETE endpoint:', error);
+
     return res.status(500).json({ error: `An error occurred deleting a property: ${error}` });
   }
 });
@@ -148,32 +150,32 @@ router.get('/', isLoggedIn, async (req: Request, res: Response) => {
     if (req.user && req.user.emailAddress) {
       const emailAddress: string | undefined = req.user?.emailAddress;
       const currentUser: User | null = emailAddress? await userController.getUser(emailAddress) : null;
-      
-        if (currentUser && currentUser.hubSpotPortalId) {
-          const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
-          if (hubToken) {
-            const properties = await propertiesController.getProperties(currentUser.hubSpotPortalId);
+      if (currentUser && currentUser.hubSpotPortalId) {
+        const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
-            if (properties || properties === null) {
-              res
-                  .status(StatusCodes.OK)
-                  .json(properties);
-            } else {
-              res
-                  .status(StatusCodes.INTERNAL_SERVER_ERROR)
-                  .json({ error: `Retrieved properties from portal ${currentUser.hubSpotPortalId}` });
-            }
+        if (hubToken) {
+          const properties = await propertiesController.getProperties(currentUser.hubSpotPortalId);
+
+          if (properties || properties === null) {
+            res
+                .status(StatusCodes.OK)
+                .json(properties);
           } else {
             res
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)
-                .json({ error: `Unable to retrieve hub token` });
+                .json({ error: `Retrieved properties from portal ${currentUser.hubSpotPortalId}` });
           }
         } else {
           res
-              .status(StatusCodes.UNAUTHORIZED)
-              .json({ error: `Unauthorized` });
+              .status(StatusCodes.INTERNAL_SERVER_ERROR)
+              .json({ error: `Unable to retrieve hub token` });
         }
+      } else {
+        res
+            .status(StatusCodes.UNAUTHORIZED)
+            .json({ error: `Unauthorized` });
+      }
     }
   } catch {
     res
@@ -186,34 +188,35 @@ router.post('/', isLoggedIn, async (req: Request, res: Response) => {
   try {
     if (req.user && req.user.emailAddress) {
       const emailAddress: string | undefined = req.user?.emailAddress;
-      const currentUser: User | null = emailAddress? await userController.getUser(emailAddress) : null
+      const currentUser: User | null = emailAddress? await userController.getUser(emailAddress) : null;
 
       if (req.body && req.body) {
         if (currentUser && currentUser.hubSpotPortalId && currentUser.id) {
           const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
           if (hubToken) {
-            const createdProperties = propertiesController.createProperties(req.body.propertiesToCreate, currentUser.hubSpotPortalId)
+            // eslint-disable-next-line
+            const createdProperties = propertiesController.createProperties(req.body.propertiesToCreate, currentUser.hubSpotPortalId);
 
             if (createdProperties) {
-                res
-                    .status(StatusCodes.CREATED)
-                    .json(createdProperties);
-              } else {
-                res
-                    .status(StatusCodes.BAD_REQUEST)
-                    .json({ error: 'Failed to create properties.' });
-              }
+              res
+                  .status(StatusCodes.CREATED)
+                  .json(createdProperties);
             } else {
               res
-                  .status(StatusCodes.UNAUTHORIZED)
-                  .json({ error: 'Unauthorized' });
+                  .status(StatusCodes.BAD_REQUEST)
+                  .json({ error: 'Failed to create properties.' });
             }
           } else {
             res
                 .status(StatusCodes.UNAUTHORIZED)
-                .json({ error: 'Not logged in.' });
+                .json({ error: 'Unauthorized' });
           }
+        } else {
+          res
+              .status(StatusCodes.UNAUTHORIZED)
+              .json({ error: 'Not logged in.' });
+        }
       }
     }
   } catch (error) {
@@ -235,24 +238,24 @@ router.put('/', isLoggedIn, async (req: Request, res: Response) => {
             const updatedProperties = propertiesController.updateProperties(req.body.propertiesToUpdate);
 
             if (updatedProperties) {
-                res
-                    .status(StatusCodes.CREATED)
-                    .json(updatedProperties);
-              } else {
-                res
-                    .status(StatusCodes.BAD_REQUEST)
-                    .json({ error: 'Failed to update properties.' });
-              }
+              res
+                  .status(StatusCodes.CREATED)
+                  .json(updatedProperties);
             } else {
               res
-                  .status(StatusCodes.UNAUTHORIZED)
-                  .json({ error: 'Unauthorized' });
+                  .status(StatusCodes.BAD_REQUEST)
+                  .json({ error: 'Failed to update properties.' });
             }
           } else {
             res
                 .status(StatusCodes.UNAUTHORIZED)
-                .json({ error: 'Not logged in.' });
+                .json({ error: 'Unauthorized' });
           }
+        } else {
+          res
+              .status(StatusCodes.UNAUTHORIZED)
+              .json({ error: 'Not logged in.' });
+        }
       }
     }
   } catch (error) {
@@ -276,24 +279,24 @@ router.delete('/:propertyId', isLoggedIn, async (req: Request, res: Response) =>
             const deletedProperty = propertiesController.deleteProperty(propertyId);
 
             if (deletedProperty) {
-                res
-                    .status(StatusCodes.CREATED)
-                    .json(deletedProperty);
-              } else {
-                res
-                    .status(StatusCodes.BAD_REQUEST)
-                    .json({ error: 'Failed to update properties.' });
-              }
+              res
+                  .status(StatusCodes.CREATED)
+                  .json(deletedProperty);
             } else {
               res
-                  .status(StatusCodes.UNAUTHORIZED)
-                  .json({ error: 'Unauthorized' });
+                  .status(StatusCodes.BAD_REQUEST)
+                  .json({ error: 'Failed to update properties.' });
             }
           } else {
             res
                 .status(StatusCodes.UNAUTHORIZED)
-                .json({ error: 'Not logged in.' });
+                .json({ error: 'Unauthorized' });
           }
+        } else {
+          res
+              .status(StatusCodes.UNAUTHORIZED)
+              .json({ error: 'Not logged in.' });
+        }
       }
     }
   } catch (error) {
