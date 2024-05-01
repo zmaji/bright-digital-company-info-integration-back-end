@@ -8,10 +8,12 @@ export const initializeWebhook = async () => {
 
   if (webHook && targetUrl !== '' && webHook.targetUrl !== targetUrl) {
     webHookController.updateWebHook('ROLLING_MINUTE', 10, targetUrl);
+    logger.info('Webhook target URL updated');
   }
 
   if (!webHook && targetUrl !== '' ) {
     await webHookController.createWebHook('ROLLING_MINUTE', 10, targetUrl);
+    logger.info('Webhook target URL created');
   }
 
   const webHookSubscriptions = await webHookController.getSubcriptions();

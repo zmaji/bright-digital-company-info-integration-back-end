@@ -18,7 +18,6 @@ const getWebHook = async () => {
     );
 
     if (response.data) {
-      logger.info(JSON.stringify(response.data));
       logger.info('HubSpot Webhook already initialized');
 
       return response.data;
@@ -124,8 +123,7 @@ const getSubcriptions = async () => {
 
       return [];
     } else {
-      logger.info('Returning all webhook subscriptions');
-
+      logger.info('Webhook subscriptions successfully found');
       return response.data.results;
     }
   } catch (error) {
