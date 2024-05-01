@@ -61,7 +61,7 @@ const createFile = async (hubToken: HubToken, title: string) => {
       const formData = {
         file: fileContent,
         options: JSON.stringify(fileOptions),
-        folderPath: 'docs',
+        folderPath: 'scripts',
       }
   
       const response = await axios({
