@@ -1,6 +1,6 @@
 import type { PropertyField } from '../typings/PropertyField';
 
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import logger from '../utils/Logger'
 import { Property } from '../typings/Property';
 import prisma from '../database/Client';
@@ -92,9 +92,16 @@ const deleteHubSpotProperty = async (accessToken: string, objectType: string, pr
       logger.error(`Unexpected status code while deleting property: ${response.status}`);
       return { success: false, message: `Unexpected status code: ${response.status}` };
     }
-  } catch (error) {
-    logger.error(`Something went wrong deleting a HubSpot property: ${propertyName}`, error);
-    throw new Error(`Error deleting property ${propertyName}: ${error}`);
+  } catch (error: any) {
+    if (error instanceof AxiosError) {
+      if (error.response) {
+        logger.error(`Error while deleting a HubSpot property - Status: ${error.response.status}, Message: ${error.response.statusText}, Data: ${JSON.stringify(error.response.data)}`);
+      } else {
+        logger.error(`Error while deleting a HubSpot property - Message: ${error.message}`);
+      }
+    } else {
+      logger.error('An unexpected error occurred:', error.toString());
+    }
   }
 };
 
@@ -172,9 +179,16 @@ const updateProperties = async (properties: Property[]) => {
 
     logger.success("Properties updated successfully");
     return updatedProperties;
-  } catch (error) {
-    logger.error("Error updating properties", error);
-    throw error;
+  } catch (error: any) {
+    if (error instanceof AxiosError) {
+      if (error.response) {
+        logger.error(`Error while updating a property - Status: ${error.response.status}, Message: ${error.response.statusText}, Data: ${JSON.stringify(error.response.data)}`);
+      } else {
+        logger.error(`Error while updating a property - Message: ${error.message}`);
+      }
+    } else {
+      logger.error('An unexpected error occurred:', error.toString());
+    }
   }
 };
 

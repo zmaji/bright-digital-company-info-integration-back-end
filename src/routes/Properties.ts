@@ -120,10 +120,10 @@ router.delete('/hubspot/:objectType/:propertyName', isLoggedIn, async (req: Requ
           if (hubToken) {
             const result = await propertiesController.deleteHubSpotProperty(hubToken.access_token, objectType, propertyName);
 
-            if (result.success) {
+            if (result?.success) {
               return res.status(200).json({ message: `Property ${propertyName} deleted successfully` });
             } else {
-              return res.status(500).json({ error: `Unable to delete property: ${result.message}` });
+              return res.status(500).json({ error: `Unable to delete property: ${result?.message}` });
             }
           } else {
             return res.status(500).json({ error: `Unable to retrieve hub token` });
