@@ -1,12 +1,11 @@
-// import type { HubToken } from '../../../typings/HubToken';
-
 import companiesController from '../../../controllers/Companies';
 import * as soap from 'soap';
-// import axios from 'axios';
+import axios from 'axios';
 import logger from '../../../utils/Logger';
 import { Company } from '../../../typings/Company';
 import { CompanyDetail } from '../../../typings/CompanyDetail';
-// import { formatCompanyData } from '../../../helpers/hubspot/formatCompanyData';
+import { HubToken } from '../../../typings/HubToken';
+import { formatCompanyData } from '../../../helpers/hubspot/formatCompanyData';
 
 jest.mock('soap');
 jest.mock('axios');
@@ -16,17 +15,17 @@ jest.mock('../../../helpers/hubspot/formatCompanyData');
 describe('companiesController Tests', () => {
   const tradeName = 'ExampleTrade';
   const dossierNumber = 123456;
-  // const companyId = '1001';
+  const companyId = '1001';
 
-  // const hubToken: HubToken = {
-  //   id: 1,
-  //   portal_id: null,
-  //   access_token: 'token123',
-  //   refresh_token: 'refreshTokenXYZ',
-  //   expires_in: 3600,
-  //   created_at: new Date(),
-  //   updated_at: null,
-  // };
+  const hubToken: HubToken = {
+    id: 1,
+    portal_id: null,
+    access_token: 'token123',
+    refresh_token: 'refreshTokenXYZ',
+    expires_in: 3600,
+    created_at: new Date(),
+    updated_at: null,
+  };
 
   const mockCompany: Company = {
     dossier_number: '123456',
@@ -70,7 +69,7 @@ describe('companiesController Tests', () => {
   const mockCompanyInfoUsername = 'xxx';
   const mockCompanyInfoPassword = '123';
 
-  const mockCompanyDetailResponse: CompanyDetail = {
+  const mockCompanyDetailResponse = {
     out: {
       ...mockCompanyDetail,
     },
@@ -78,6 +77,8 @@ describe('companiesController Tests', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // @ts-ignore
+    formatCompanyData.mockReturnValue(mockCompanyDetail);
   });
 
   test('getCompanies should retrieve companies successfully', async () => {
@@ -100,6 +101,7 @@ describe('companiesController Tests', () => {
       addSoapHeader: jest.fn(),
       dutchBusinessSearchParametersV2Async: jest.fn().mockResolvedValue([{ out: { results: null } }]),
     };
+
     // @ts-ignore
     soap.createClientAsync.mockResolvedValue(mockClient);
 
@@ -164,81 +166,67 @@ describe('companiesController Tests', () => {
     expect(logger.error).toHaveBeenCalledWith('Something went wrong getting company information', expect.any(Error));
   });
 
-  // test('updateCompany should update company successfully', async () => {
-  //   // @ts-ignore
-  //   formatCompanyData.mockReturnValue(formatCompanyData(mockCompanyDetail));
+  test('updateCompany should update company successfully', async () => {
+    const expectedResponse = { properties: formatCompanyData(mockCompanyDetail) };
 
-  //   const responseData = { mockCompanyDetail };
-  //   // @ts-ignore
-  //   axios.mockResolvedValue({ data: responseData });
+    // @ts-ignore
+    axios.mockResolvedValue({ data: expectedResponse });
 
-  //   const result = await companiesController.updateCompany(hubToken, companyId, mockCompanyDetail);
+    const result = await companiesController.updateCompany(hubToken, companyId, mockCompanyDetail);
 
-  //   expect(formatCompanyData).toHaveBeenCalledWith(mockCompanyDetail);
-  //   expect(axios).toHaveBeenCalledWith({
-  //     method: 'patch',
-  //     url: `https://api.hubapi.com/crm/v3/objects/company/${companyId}`,
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Authorization': `Bearer ${hubToken.access_token}`,
-  //     },
-  //     data: JSON.stringify({
-  //       properties: formatCompanyData,
-  //     }),
-  //   });
-  //   expect(logger.info).toHaveBeenCalledWith('HubSpot company has successfully been updated');
-  //   expect(logger.info).toHaveBeenCalledWith('Result:', responseData);
-  //   expect(result).toEqual(responseData);
-  // });
+    expect(axios).toHaveBeenCalledWith({
+      method: 'patch',
+      url: `https://api.hubapi.com/crm/v3/objects/company/${companyId}`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${hubToken.access_token}`,
+      },
+      data: JSON.stringify({ properties: expectedResponse.properties }),
+    });
 
-  // test('updateCompany should handle empty response data', async () => {
-  //   // @ts-ignore
-  //   formatCompanyData.mockReturnValue(formatCompanyData(mockCompanyDetail));
+    expect(logger.info).toHaveBeenCalledWith('HubSpot company has successfully been updated');
+    expect(result).toEqual(expectedResponse);
+  });
 
-  //   // @ts-ignore
-  //   axios.mockResolvedValue({ data: null });
+  test('updateCompany should handle empty response data', async () => {
+    // @ts-ignore
+    axios.mockResolvedValue({ data: null });
 
-  //   const result = await companiesController.updateCompany(hubToken, companyId, mockCompanyDetail);
+    const result = await companiesController.updateCompany(hubToken, companyId, mockCompanyDetail);
 
-  //   expect(formatCompanyData).toHaveBeenCalledWith(mockCompanyDetail);
-  //   expect(axios).toHaveBeenCalledWith({
-  //     method: 'patch',
-  //     url: `https://api.hubapi.com/crm/v3/objects/company/${companyId}`,
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Authorization': `Bearer ${hubToken.access_token}`,
-  //     },
-  //     data: JSON.stringify({
-  //       properties: formatCompanyData,
-  //     }),
-  //   });
-  //   expect(logger.error).toHaveBeenCalledWith('HubSpot company has not been updated');
-  //   expect(result).toBeNull();
-  // });
+    expect(axios).toHaveBeenCalledWith({
+      method: 'patch',
+      url: `https://api.hubapi.com/crm/v3/objects/company/${companyId}`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${hubToken.access_token}`,
+      },
+      data: JSON.stringify({ properties: formatCompanyData(mockCompanyDetail) }),
+    });
 
-  // test('updateCompany should handle error during update', async () => {
-  //   // @ts-ignore
-  //   formatCompanyData.mockResolvedValue(formatCompanyData(mockCompanyDetail));
+    expect(logger.error).toHaveBeenCalledWith('HubSpot company has not been updated');
+    expect(result).toBeNull();
+  });
 
-  //   const error = new Error('Axios error');
-  //   // @ts-ignore
-  //   axios.mockRejectedValue(error);
+  test('updateCompany should handle error during update', async () => {
+    const error = new Error('Axios error');
 
-  //   const result = await companiesController.updateCompany(hubToken, companyId, mockCompanyDetail);
+    // @ts-ignore
+    axios.mockRejectedValue(error);
 
-  //   expect(formatCompanyData).toHaveBeenCalledWith(mockCompanyDetail);
-  //   expect(axios).toHaveBeenCalledWith({
-  //     method: 'patch',
-  //     url: `https://api.hubapi.com/crm/v3/objects/company/${companyId}`,
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Authorization': `Bearer ${hubToken.access_token}`,
-  //     },
-  //     data: JSON.stringify({
-  //       properties: formatCompanyData,
-  //     }),
-  //   });
-  //   expect(logger.error).toHaveBeenCalledWith('Error while updating company:', error);
-  //   expect(result).toBeNull();
-  // });
+    const result = await companiesController.updateCompany(hubToken, companyId, mockCompanyDetail);
+
+    expect(axios).toHaveBeenCalledWith({
+      method: 'patch',
+      url: `https://api.hubapi.com/crm/v3/objects/company/${companyId}`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${hubToken.access_token}`,
+      },
+      data: JSON.stringify({ properties: formatCompanyData(mockCompanyDetail) }),
+    });
+
+    expect(logger.error).toHaveBeenCalledWith('Error while updating company:', error);
+    expect(result).toBeNull();
+  });
 });

@@ -105,6 +105,7 @@ const deleteHubSpotProperty = async (accessToken: string, objectType: string, pr
       }
     } else {
       logger.error('An unexpected error occurred:', error.toString());
+      throw error;
     }
   }
 };

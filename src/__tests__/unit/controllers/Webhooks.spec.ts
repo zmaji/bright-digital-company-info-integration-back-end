@@ -60,7 +60,6 @@ describe('webHookController Tests', () => {
     });
 
     expect(logger.info).toHaveBeenCalledWith('Finding HubSpot webhook..');
-    expect(logger.info).toHaveBeenCalledWith(JSON.stringify(webhookReponse));
     expect(logger.info).toHaveBeenCalledWith('HubSpot Webhook already initialized');
     expect(result).toEqual(webhookReponse);
   });
@@ -109,7 +108,7 @@ describe('webHookController Tests', () => {
       params: { hapikey: process.env.HUBSPOT_APP_DEVELOPER_KEY },
     });
     expect(logger.info).toHaveBeenCalledWith('Finding Webhook subscription..');
-    expect(logger.info).toHaveBeenCalledWith('Returning all webhook subscriptions');
+    expect(logger.info).toHaveBeenCalledWith('Webhook subscriptions successfully found');
     expect(result).toEqual(subscriptionResponse.results);
   });
 

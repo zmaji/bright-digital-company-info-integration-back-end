@@ -1,5 +1,5 @@
 import usersController from '../../../controllers/Users';
-// import logger from '../../../utils/Logger';
+import logger from '../../../utils/Logger';
 import { prismaMock } from '../../utils/singleton';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
@@ -13,7 +13,7 @@ describe('Users Controller Tests', () => {
   const userId = 1;
   const secret = uuidv4();
   const activationCode = '12345';
-  // const nonExistingActivationCode = '324213';
+  const nonExistingActivationCode = '324213';
 
   const data = {
     firstName: 'Maurice',
@@ -121,37 +121,37 @@ describe('Users Controller Tests', () => {
     await expect(usersController.updateUser(userId, updateFields)).rejects.toThrow('Failed to update user');
   });
 
-  // test('should return true if matching activation token is found', async () => {
-  //   prismaMock.user.findUnique.mockResolvedValueOnce({
-  //     id: userId,
-  //     hubSpotPortalId: null,
-  //     domain: null,
-  //     companyInfoUserName: null,
-  //     companyInfoPassword: null,
-  //     ...data,
-  //   });
+  test('should return true if matching activation token is found', async () => {
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: userId,
+      hubSpotPortalId: null,
+      domain: null,
+      companyInfoUserName: null,
+      companyInfoPassword: null,
+      ...data,
+    });
 
-  //   const result = await usersController.verifyUser(activationCode);
+    const result = await usersController.verifyUser(userId, activationCode);
 
-  //   expect(result).toBe(true);
-  //   expect(logger.info).toHaveBeenCalledWith('Matching activation token found found!');
-  // });
+    expect(result).toBe(true);
+    expect(logger.info).toHaveBeenCalledWith('Matching activation token found found!');
+  });
 
-  // test('should return false if no matching activation token is found', async () => {
-  //   prismaMock.user.findUnique.mockResolvedValueOnce(null);
+  test('should return false if no matching activation token is found', async () => {
+    prismaMock.user.findUnique.mockResolvedValueOnce(null);
 
-  //   const result = await usersController.verifyUser(nonExistingActivationCode);
+    const result = await usersController.verifyUser(userId, nonExistingActivationCode);
 
-  //   expect(result).toBe(false);
-  //   expect(logger.error).toHaveBeenCalledWith('No matching token!');
-  // });
+    expect(result).toBe(false);
+    expect(logger.error).toHaveBeenCalledWith('No matching token!');
+  });
 
-  // test('should handle error when retrieving activation token', async () => {
-  //   const error = new Error('Failed to retrieve activation token');
+  test('should handle error when retrieving activation token', async () => {
+    const error = new Error('Failed to retrieve activation token');
 
-  //   prismaMock.user.findUnique.mockRejectedValueOnce(error);
+    prismaMock.user.findUnique.mockRejectedValueOnce(error);
 
-  //   await expect(usersController.verifyUser(activationCode)).rejects.toThrow(error);
-  //   expect(logger.fatal).toHaveBeenCalledWith('Something went wrong retrieving an activation token');
-  // });
+    await expect(usersController.verifyUser(userId, activationCode)).rejects.toThrow(error);
+    expect(logger.fatal).toHaveBeenCalledWith('Something went wrong retrieving an activation token');
+  });
 });
