@@ -6,9 +6,8 @@
   "license": "ISC",
   "main": "src/index.ts",
   "scripts": {
-    "postinstall": "tsc",
-    "start": "echo \"Starting index.ts\" && ts-node src/index.ts",
-    "start:heroku": "echo \"Starting index.ts\" && ts-node src/index.ts",
+    "start": "echo \"Starting index.ts\" && ts-node --transpile-only src/index",
+    "typings": "src/index",
     "start:dev": "echo \"Starting index.ts with nodemon\" && nodemon src/index.ts",
     "start:tunnel": "echo \"Starting index.ts with ngrok\" && ts-node src/utils/Ngrok.ts",
     "test": "echo \"Starting Jest tests\" && jest --detectOpenHandles",
@@ -164,8 +163,5 @@
     "wrappy": "^1.0.2",
     "yallist": "^4.0.0",
     "yocto-queue": "^0.1.0"
-  },
-  "engines": {
-    "node": "16.20.2"
   }
 }
