@@ -1,9 +1,8 @@
+import type { HubToken } from '../../../typings/HubToken';
+
 import filesController from '../../../controllers/Files';
 import axios from 'axios';
 import logger from '../../../utils/Logger';
-import path from 'path';
-import fs from 'fs';
-import type { HubToken } from '../../../typings/HubToken';
 
 jest.mock('axios');
 jest.mock('../../../utils/Logger');
@@ -38,7 +37,7 @@ describe('filesController Tests', () => {
 
   describe('getFiles', () => {
     test('should retrieve files successfully', async () => {
-      //@ts-ignore
+      // @ts-ignore
       axios.mockResolvedValue({ status: 200, data: mockFileData });
 
       const result = await filesController.getFiles(hubToken);
@@ -59,7 +58,7 @@ describe('filesController Tests', () => {
     });
 
     test('should handle no files found', async () => {
-      //@ts-ignore
+      // @ts-ignore
       axios.mockResolvedValue({ status: 200, data: null });
 
       const result = await filesController.getFiles(hubToken);
@@ -81,18 +80,18 @@ describe('filesController Tests', () => {
       const axiosError = new Error(errorMessage);
       // @ts-ignore
       axios.mockRejectedValue(axiosError);
-    
+
       const result = await filesController.getFiles(hubToken);
-    
+
       expect(result).toBeNull();
       expect(logger.error).toHaveBeenCalledWith('An unexpected error occurred:', axiosError.toString());
     });
 
     test('should handle AxiosError with response', async () => {
       const axiosError = new Error('Request failed');
-      //@ts-ignore
+      // @ts-ignore
       axiosError.response = { status: 404, statusText: 'Not Found', data: { message: 'File not found' } };
-      //@ts-ignore
+      // @ts-ignore
       axios.mockRejectedValue(axiosError);
 
       const result = await filesController.getFiles(hubToken);

@@ -29,7 +29,7 @@ describe('formsController Tests', () => {
 
   test('getForms should retrieve forms successfully', async () => {
     const mockResponse = { results: [{ id: '1', name: 'Contact Form' }] };
-    //@ts-ignore
+    // @ts-ignore
     axios.mockResolvedValue({ data: mockResponse, status: 200 });
 
     const result = await formsController.getForms(hubToken);
@@ -50,7 +50,7 @@ describe('formsController Tests', () => {
   });
 
   test('getForms should handle empty response data', async () => {
-        //@ts-ignore
+    // @ts-ignore
     axios.mockResolvedValue({ data: null, status: 200 });
 
     const result = await formsController.getForms(hubToken);
@@ -71,7 +71,7 @@ describe('formsController Tests', () => {
 
   test('createForm should create form successfully', async () => {
     const mockResponse = { id: '1', name: 'Example Form' };
-        //@ts-ignore
+    // @ts-ignore
     axios.mockResolvedValue({ data: mockResponse, status: 201 });
 
     const result = await formsController.createForm(hubToken, mockFormData);
@@ -93,7 +93,7 @@ describe('formsController Tests', () => {
   });
 
   test('createForm should handle empty response data', async () => {
-        //@ts-ignore
+    // @ts-ignore
     axios.mockResolvedValue({ data: null, status: 201 });
 
     const result = await formsController.createForm(hubToken, mockFormData);
