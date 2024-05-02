@@ -1,1 +1,1 @@
-web: npm run migrate && npm run start
+web: npm run prisma:migrate && npm run start
