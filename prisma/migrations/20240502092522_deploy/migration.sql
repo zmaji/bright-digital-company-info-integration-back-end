@@ -30,6 +30,16 @@ CREATE TABLE "HubToken" (
     CONSTRAINT "HubToken_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Property" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "toSave" BOOLEAN NOT NULL DEFAULT false,
+    "portalId" INTEGER NOT NULL,
+
+    CONSTRAINT "Property_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_emailAddress_key" ON "User"("emailAddress");
 
