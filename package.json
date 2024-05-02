@@ -14,7 +14,8 @@
     "test:watch": "echo \"Starting Jest tests in watch mode\" && jest --detectOpenHandles --watchAll",
     "test:coverage": "echo \"Generating code coverage report\" && jest --coverage --detectOpenHandles",
     "lint:check": "eslint .",
-    "lint:fix": "eslint . --fix src/**/*.ts"
+    "lint:fix": "eslint . --fix src/**/*.ts",
+    "migrate": "npx prisma migrate deploy"
   },
   "devDependencies": {
     "@prisma/client": "^5.12.1",
