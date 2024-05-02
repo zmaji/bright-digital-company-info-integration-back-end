@@ -6,6 +6,7 @@
   "license": "ISC",
   "main": "src/index.ts",
   "scripts": {
+    "build": "tsc",
     "start": "echo \"Starting index.ts\" && ts-node src/index.ts",
     "start:dev": "echo \"Starting index.ts with nodemon\" && nodemon src/index.ts",
     "start:tunnel": "echo \"Starting index.ts with ngrok\" && ts-node src/utils/Ngrok.ts",
