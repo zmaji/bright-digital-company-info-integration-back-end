@@ -174,6 +174,7 @@ describe('authController', () => {
 
   describe('retrieveHubToken', () => {
     it('should retrieve HubSpot token for a given portal ID', async () => {
+      // @ts-ignore
       prismaMock.hubToken.findUnique.mockResolvedValue(hubToken);
 
       if (user.hubSpotPortalId !== undefined && user.hubSpotPortalId !== null) {

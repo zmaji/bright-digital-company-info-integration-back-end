@@ -160,6 +160,7 @@ describe('Properties Controller Tests', () => {
 
   describe('Properties', () => {
     test('should get properties for a given portal ID', async () => {
+      // @ts-ignore
       (prismaMock.property.findMany as jest.MockedFunction<typeof prismaMock.property.findMany>).mockResolvedValueOnce(
           // @ts-ignore
           sampleProperties,
