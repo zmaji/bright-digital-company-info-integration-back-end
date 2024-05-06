@@ -1,7 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import logger from '../utils/Logger';
 import { Group } from '../typings/Group';
-// import propertiesController from './Properties';
 
 const getGroup = async (accessToken: string, groupName: string, objectType: string): Promise<Group | null> => {
   logger.info(`Getting a ${objectType} group with name ${groupName}..`);

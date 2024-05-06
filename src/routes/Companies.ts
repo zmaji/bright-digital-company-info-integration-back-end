@@ -37,6 +37,10 @@ router.get('', isLoggedIn, async (req: Request, res: Response) => {
               .status(StatusCodes.INTERNAL_SERVER_ERROR)
               .json({ error: 'Trade name has not been provided' });
         }
+      } else {
+        res
+          .status(StatusCodes.UNAUTHORIZED)
+          .json({ error: 'Company.info credentials not found' });
       }
     }
   } catch {
