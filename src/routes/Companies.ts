@@ -39,8 +39,8 @@ router.get('', isLoggedIn, async (req: Request, res: Response) => {
         }
       } else {
         res
-          .status(StatusCodes.UNAUTHORIZED)
-          .json({ error: 'Company.info credentials not found' });
+            .status(StatusCodes.UNAUTHORIZED)
+            .json({ error: 'Company.info credentials not found' });
       }
     }
   } catch {

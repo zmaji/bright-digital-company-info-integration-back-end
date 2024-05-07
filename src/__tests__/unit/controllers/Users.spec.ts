@@ -31,7 +31,7 @@ describe('Users Controller Tests', () => {
   });
 
   test('should create a new system user', async () => {
-     // @ts-ignore
+    // @ts-ignore
     prismaMock.user.create.mockResolvedValueOnce({
       id: userId,
       hubSpotPortalId: null,
