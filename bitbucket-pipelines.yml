@@ -74,8 +74,13 @@ pipelines:
             - node
 
       - step:
-          name: Deploy
+          name: Deploy to Heroku
           script:
-            - git push heroku acceptance:master
+            - curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
+            - git remote add heroku https://heroku:${HEROKU_API_KEY}@git.heroku.com/${HEROKU_APP_NAME}.git
+              - git push heroku acceptance:master
+          env:
+            HEROKU_API_KEY: $HEROKU_API_KEY
+            HEROKU_APP_NAME: $HEROKU_APP_NAME
           caches:
-            - node              
+            - node
