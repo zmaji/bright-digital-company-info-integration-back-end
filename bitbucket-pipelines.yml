@@ -50,3 +50,32 @@ pipelines:
             - npm run test
           caches:
             - node
+
+    acceptance:
+      - step:
+          name: Build
+          caches:
+            - node
+          script:
+            - npm install
+
+      - step:
+          name: Code linting
+          script:
+            - npm run lint:check
+          caches:
+            - node
+
+      - step:
+          name: Tests
+          script:
+            - npm run test
+          caches:
+            - node
+
+      - step:
+          name: Deploy
+          script:
+            - git push heroku acceptance:master
+          caches:
+            - node              
