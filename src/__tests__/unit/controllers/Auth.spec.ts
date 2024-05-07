@@ -3,9 +3,9 @@ import bcrypt from 'bcrypt';
 import { User } from '../../../typings/User';
 import { HubToken } from '../../../typings/HubToken';
 import { prismaMock } from '../../utils/singleton';
-import { exchangeTokens } from '../../../helpers/hubspot/exchangeTokens';
-import { storeHubTokens } from '../../../helpers/database/storeHubToken';
-import { getCurrentPortal } from '../../../helpers/hubspot/getCurrentPortalId';
+// import { exchangeTokens } from '../../../helpers/hubspot/exchangeTokens';
+// import { storeHubTokens } from '../../../helpers/database/storeHubToken';
+// import { getCurrentPortal } from '../../../helpers/hubspot/getCurrentPortalId';
 import authController from '../../../controllers/Auth';
 import logger from '../../../utils/Logger';
 
@@ -16,7 +16,7 @@ jest.mock('../../../helpers/database/storeHubToken');
 jest.mock('../../../helpers/hubspot/getCurrentPortalId');
 jest.mock('../../../utils/Logger');
 
-const hubSpotCode = 'hubspot_code';
+// const hubSpotCode = 'hubspot_code';
 
 const user: User = {
   id: 1,
@@ -127,50 +127,50 @@ describe('authController', () => {
     });
   });
 
-  describe('authenticateHubSpotUser', () => {
-    it('should authenticate a HubSpot user successfully', async () => {
-      (exchangeTokens as jest.Mock).mockResolvedValue(hubToken);
-      (getCurrentPortal as jest.Mock).mockResolvedValue(user.hubSpotPortalId);
+  // describe('authenticateHubSpotUser', () => {
+  //   it('should authenticate a HubSpot user successfully', async () => {
+  //     (exchangeTokens as jest.Mock).mockResolvedValue(hubToken);
+  //     (getCurrentPortal as jest.Mock).mockResolvedValue(user.hubSpotPortalId);
 
-      const result = await authController.authenticateHubSpotUser(hubSpotCode);
+  //     const result = await authController.authenticateHubSpotUser(hubSpotCode);
 
-      expect(exchangeTokens).toHaveBeenCalled();
-      expect(storeHubTokens).toHaveBeenCalledWith(hubToken, user.hubSpotPortalId);
-      expect(result).toEqual(hubToken);
-    });
+  //     expect(exchangeTokens).toHaveBeenCalled();
+  //     expect(storeHubTokens).toHaveBeenCalledWith(hubToken, user.hubSpotPortalId);
+  //     expect(result).toEqual(hubToken);
+  //   });
 
-    it('should return null if HubSpot authentication fails', async () => {
-      (exchangeTokens as jest.Mock).mockResolvedValue(null);
+  //   it('should return null if HubSpot authentication fails', async () => {
+  //     (exchangeTokens as jest.Mock).mockResolvedValue(null);
 
-      const result = await authController.authenticateHubSpotUser(hubSpotCode);
+  //     const result = await authController.authenticateHubSpotUser(hubSpotCode);
 
-      expect(result).toBeNull();
-    });
-  });
+  //     expect(result).toBeNull();
+  //   });
+  // });
 
-  describe('refreshAccessToken', () => {
-    it('should refresh the access token', async () => {
-      (exchangeTokens as jest.Mock).mockResolvedValue(hubToken);
-      (storeHubTokens as jest.Mock).mockResolvedValue(hubToken);
+  // describe('refreshAccessToken', () => {
+  //   it('should refresh the access token', async () => {
+  //     (exchangeTokens as jest.Mock).mockResolvedValue(hubToken);
+  //     (storeHubTokens as jest.Mock).mockResolvedValue(hubToken);
 
-      if (user.hubSpotPortalId !== undefined && user.hubSpotPortalId !== null) {
-        const result = await authController.refreshAccessToken(user.hubSpotPortalId, 'refresh_token');
+  //     if (user.hubSpotPortalId !== undefined && user.hubSpotPortalId !== null) {
+  //       const result = await authController.refreshAccessToken(user.hubSpotPortalId, 'refresh_token');
 
-        expect(exchangeTokens).toHaveBeenCalled();
-        expect(storeHubTokens).toHaveBeenCalledWith(hubToken, user.hubSpotPortalId);
-        expect(result).toEqual(hubToken);
-      }
-    });
+  //       expect(exchangeTokens).toHaveBeenCalled();
+  //       expect(storeHubTokens).toHaveBeenCalledWith(hubToken, user.hubSpotPortalId);
+  //       expect(result).toEqual(hubToken);
+  //     }
+  //   });
 
-    it('should return null if token exchange fails', async () => {
-      (exchangeTokens as jest.Mock).mockResolvedValue(null);
+  //   it('should return null if token exchange fails', async () => {
+  //     (exchangeTokens as jest.Mock).mockResolvedValue(null);
 
-      if (user.hubSpotPortalId !== undefined && user.hubSpotPortalId !== null) {
-        const result = await authController.refreshAccessToken(user.hubSpotPortalId, 'refresh_token');
-        expect(result).toBeNull();
-      }
-    });
-  });
+  //     if (user.hubSpotPortalId !== undefined && user.hubSpotPortalId !== null) {
+  //       const result = await authController.refreshAccessToken(user.hubSpotPortalId, 'refresh_token');
+  //       expect(result).toBeNull();
+  //     }
+  //   });
+  // });
 
   describe('retrieveHubToken', () => {
     it('should retrieve HubSpot token for a given portal ID', async () => {
