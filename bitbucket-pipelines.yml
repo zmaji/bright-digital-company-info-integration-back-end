@@ -76,8 +76,6 @@ pipelines:
       - step:
           name: Deploy to Heroku
           script:
-            - echo ${HEROKU_API_KEY}
-            - echo ${HEROKU_APP_NAME}
             - curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
             - git remote add heroku https://heroku:${HEROKU_API_KEY}@git.heroku.com/${HEROKU_APP_NAME}.git
             - git push heroku acceptance:master
