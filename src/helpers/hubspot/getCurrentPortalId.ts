@@ -10,7 +10,7 @@ export const getCurrentPortal = async (accessToken: string): Promise<number | nu
       },
     });
     const portalId: number = response.data.portalId;
-    logger.info(`Successfully retrieved portal ID: ${portalId}`);
+    logger.success(`Successfully retrieved portal ID: ${portalId}`);
 
     return portalId;
   } catch (error) {

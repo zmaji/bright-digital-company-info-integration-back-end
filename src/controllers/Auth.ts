@@ -84,7 +84,7 @@ const authenticateUser = async (emailAddress: string, password: string): Promise
         const matchedPassword = bcrypt.compareSync(password, existingUser.password);
 
         if (matchedPassword) {
-          logger.info('User authenticated successfully');
+          logger.success('User authenticated successfully');
 
           return generateAuthToken(existingUser);
         } else {
@@ -159,7 +159,7 @@ export const retrieveHubToken = async (portalId: number): Promise<HubToken | nul
         const newToken: HubToken | null = await refreshAccessToken(portalId, hubToken.refresh_token);
 
         if (newToken && newToken.access_token) {
-          logger.info('Successfully refreshed access token..');
+          logger.success('Successfully refreshed access token..');
 
           return newToken;
         }

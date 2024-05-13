@@ -27,7 +27,7 @@ const getCompanies = async (tradeName: string, companyInfoUsername: string, comp
     const result = await client.dutchBusinessSearchParametersV2Async(searchParameters);
 
     if (result && result[0]?.out?.results) {
-      logger.info(`Successfully found companies with trade name ${tradeName}`);
+      logger.success(`Successfully found companies with trade name ${tradeName}`);
 
       return result[0].out.results as Company[];
     } else {
@@ -71,7 +71,7 @@ const getCompanyInfo = async (dossierNumber: number, companyInfoUsername: string
     });
 
     if (result && result.out) {
-      logger.info(`Successfully found company with dossier number ${dossierNumber}`);
+      logger.success(`Successfully found company with dossier number ${dossierNumber}`);
 
       return result.out;
     } else {
@@ -104,7 +104,7 @@ const getCompany = async (accessToken: string) => {
     const result = response.data;
 
     if (result) {
-      logger.info('Successfully retrieved all companies');
+      logger.success('Successfully retrieved all companies');
 
       return result;
     } else {
@@ -151,7 +151,7 @@ const createCompany = async (hubToken: HubToken, companyData: CompanyDetail): Pr
     logger.info('HTTP Status:', response.status);
 
     if (response && response.data) {
-      logger.info('HubSpot company has successfully been created');
+      logger.success('HubSpot company has successfully been created');
       logger.info('Result:', response.data);
 
       return response.data;
@@ -195,7 +195,7 @@ const updateCompany = async (hubToken: HubToken, companyId: string, companyData:
     });
 
     if (response && response.data) {
-      logger.info('HubSpot company has successfully been updated');
+      logger.success('HubSpot company has successfully been updated');
       logger.info('Result:', response.data);
 
       return response.data;

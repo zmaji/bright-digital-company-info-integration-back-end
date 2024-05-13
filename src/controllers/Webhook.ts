@@ -56,7 +56,7 @@ const createWebHook = async (period: string, maxConcurrentRequests: number, targ
 
     if (response.data) {
       logger.info(JSON.stringify(response.data));
-      logger.info('Webhook created successfully');
+      logger.success('Webhook created successfully');
 
       return response.data;
     }
@@ -94,7 +94,7 @@ const updateWebHook = async (period: string, maxConcurrentRequests: number, targ
 
     if (response.data) {
       logger.info(JSON.stringify(response.data));
-      logger.info('Webhook updated successfully');
+      logger.success('Webhook updated successfully');
       logger.info('Webhook target URL changed to:', targetUrl);
       logger.info(targetUrl);
 
@@ -123,7 +123,7 @@ const getSubcriptions = async () => {
 
       return [];
     } else {
-      logger.info('Webhook subscriptions successfully found');
+      logger.success('Webhook subscriptions successfully found');
 
       return response.data.results;
     }
@@ -157,7 +157,7 @@ const createSubscription = async (propertyName: string, active: boolean, eventTy
 
     if (response.data) {
       logger.info(JSON.stringify(response.data));
-      logger.info('Subscription created successfully');
+      logger.success('Subscription created successfully');
 
       return response.data;
     }

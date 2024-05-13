@@ -33,7 +33,7 @@ router.post('/company', async (req: Request, res: Response) => {
               const companyData = await companiesController.getCompanyInfo(event.propertyValue, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
 
               if (companyData) {
-                logger.info(`Successfully retrieved data for company with dossier number ${event.propertyName}`);
+                logger.success(`Successfully retrieved data for company with dossier number ${event.propertyName}`);
 
                 const hubToken = await retrieveHubToken(event.portalId);
 

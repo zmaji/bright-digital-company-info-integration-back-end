@@ -17,7 +17,7 @@ const getGroup = async (accessToken: string, groupName: string, objectType: stri
     const result: Group = response.data;
 
     if (result) {
-      logger.info(`Successfully retrieved ${objectType} group with name ${groupName}`);
+      logger.success(`Successfully retrieved ${objectType} group with name ${groupName}`);
 
       return result;
     } else {
@@ -62,7 +62,7 @@ const createGroup = async (accessToken: string, groupName: string, objectType: s
     const result: Group = response.data;
 
     if (result) {
-      logger.info(`Successfully created a ${objectType} group`);
+      logger.success(`Successfully created a ${objectType} group`);
 
       return result;
     } else {
