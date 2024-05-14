@@ -6,9 +6,9 @@ jest.mock('axios');
 jest.mock('../../../utils/Logger');
 
 describe('webHookController Tests', () => {
-  const period = 'weekly';
-  const maxConcurrentRequests = 20;
-  const targetUrl = 'https://www.example.com/hubspot/target';
+  // const period = 'weekly';
+  // const maxConcurrentRequests = 20;
+  // const targetUrl = 'https://www.example.com/hubspot/target';
 
   // const webhook = {
   //   throttling: {

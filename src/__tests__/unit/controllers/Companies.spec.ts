@@ -69,11 +69,11 @@ describe('companiesController Tests', () => {
   const mockCompanyInfoUsername = 'xxx';
   const mockCompanyInfoPassword = '123';
 
-  const mockCompanyDetailResponse = {
-    out: {
-      ...mockCompanyDetail,
-    },
-  };
+  // const mockCompanyDetailResponse = {
+  //   out: {
+  //     ...mockCompanyDetail,
+  //   },
+  // };
 
   beforeEach(() => {
     jest.clearAllMocks();
