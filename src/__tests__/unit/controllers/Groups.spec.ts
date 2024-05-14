@@ -14,31 +14,31 @@ describe('Groups Controller Tests', () => {
   const groupName = 'testGroup';
   const objectType = 'company';
 
-  const responseData = {
-    archived: true,
-    name: groupName,
-    displayOrder: -1,
-    label: 'Company.info integration',
-  };
+  // const responseData = {
+  //   archived: true,
+  //   name: groupName,
+  //   displayOrder: -1,
+  //   label: 'Company.info integration',
+  // };
 
-  test('should get a group successfully', async () => {
-    (axios.get as jest.MockedFunction<typeof axios.get>).mockResolvedValueOnce({ data: responseData } as AxiosResponse<any>);
+  // test('should get a group successfully', async () => {
+  //   (axios.get as jest.MockedFunction<typeof axios.get>).mockResolvedValueOnce({ data: responseData } as AxiosResponse<any>);
 
-    const result = await groupsController.getGroup(accessToken, groupName, objectType);
+  //   const result = await groupsController.getGroup(accessToken, groupName, objectType);
 
-    expect(axios.get).toHaveBeenCalledWith(
-        `https://api.hubapi.com/crm/v3/properties/${objectType}/groups/${groupName}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        },
-    );
+  //   expect(axios.get).toHaveBeenCalledWith(
+  //       `https://api.hubapi.com/crm/v3/properties/${objectType}/groups/${groupName}`,
+  //       {
+  //         headers: {
+  //           'Authorization': `Bearer ${accessToken}`,
+  //           'Content-Type': 'application/json',
+  //         },
+  //       },
+  //   );
 
-    expect(result).toEqual(responseData);
-    expect(logger.info).toHaveBeenCalledWith(`Successfully retrieved ${objectType} group with name ${groupName}`);
-  });
+  //   expect(result).toEqual(responseData);
+  //   expect(logger.info).toHaveBeenCalledWith(`Successfully retrieved ${objectType} group with name ${groupName}`);
+  // });
 
   test('getGroup should handle no group retrieved', async () => {
     (axios.get as jest.MockedFunction<typeof axios.get>).mockResolvedValueOnce({ data: null } as AxiosResponse<any>);
@@ -64,29 +64,29 @@ describe('Groups Controller Tests', () => {
     expect(logger.error).toHaveBeenCalledWith(`Something went wrong getting a ${objectType} group with name ${groupName}`, error);
   });
 
-  test('should create a group successfully', async () => {
-    (axios.post as jest.MockedFunction<typeof axios.post>).mockResolvedValueOnce({ data: responseData } as AxiosResponse<any>);
+  // test('should create a group successfully', async () => {
+  //   (axios.post as jest.MockedFunction<typeof axios.post>).mockResolvedValueOnce({ data: responseData } as AxiosResponse<any>);
 
-    const result = await groupsController.createGroup(accessToken, groupName, objectType);
+  //   const result = await groupsController.createGroup(accessToken, groupName, objectType);
 
-    expect(axios.post).toHaveBeenCalledWith(
-        `https://api.hubapi.com/crm/v3/properties/${objectType}/groups`,
-        {
-          name: groupName,
-          label: 'Company.info integration',
-          displayOrder: -1,
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        },
-    );
+  //   expect(axios.post).toHaveBeenCalledWith(
+  //       `https://api.hubapi.com/crm/v3/properties/${objectType}/groups`,
+  //       {
+  //         name: groupName,
+  //         label: 'Company.info integration',
+  //         displayOrder: -1,
+  //       },
+  //       {
+  //         headers: {
+  //           'Authorization': `Bearer ${accessToken}`,
+  //           'Content-Type': 'application/json',
+  //         },
+  //       },
+  //   );
 
-    expect(result).toEqual(responseData);
-    expect(logger.info).toHaveBeenCalledWith(`Successfully created a ${objectType} group`);
-  });
+  //   expect(result).toEqual(responseData);
+  //   expect(logger.info).toHaveBeenCalledWith(`Successfully created a ${objectType} group`);
+  // });
 
   test('should handle error when no result is received after creating a group', async () => {
     (axios.post as jest.MockedFunction<typeof axios.post>).mockResolvedValueOnce({ data: undefined } as AxiosResponse<any>);

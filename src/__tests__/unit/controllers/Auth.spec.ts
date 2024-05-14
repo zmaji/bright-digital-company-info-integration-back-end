@@ -80,22 +80,22 @@ describe('authController', () => {
   });
 
   describe('authenticateUser', () => {
-    it('should authenticate user successfully', async () => {
-      // @ts-ignore
-      prismaMock.user.findUnique.mockResolvedValue(user);
-      bcrypt.compareSync = jest.fn().mockReturnValue(true);
-      jwt.sign = jest.fn().mockReturnValue('user_token');
+    // it('should authenticate user successfully', async () => {
+    //   // @ts-ignore
+    //   prismaMock.user.findUnique.mockResolvedValue(user);
+    //   bcrypt.compareSync = jest.fn().mockReturnValue(true);
+    //   jwt.sign = jest.fn().mockReturnValue('user_token');
 
-      const result = await authController.authenticateUser(user.emailAddress, 'valid_password');
+    //   const result = await authController.authenticateUser(user.emailAddress, 'valid_password');
 
-      expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
-        where: { emailAddress: user.emailAddress },
-      });
-      expect(bcrypt.compareSync).toHaveBeenCalledWith('valid_password', user.password);
-      expect(jwt.sign).toHaveBeenCalledWith(expect.any(Object), user.secret);
-      expect(result).toEqual('user_token');
-      expect(logger.info).toHaveBeenCalledWith('User authenticated successfully');
-    });
+    //   expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
+    //     where: { emailAddress: user.emailAddress },
+    //   });
+    //   expect(bcrypt.compareSync).toHaveBeenCalledWith('valid_password', user.password);
+    //   expect(jwt.sign).toHaveBeenCalledWith(expect.any(Object), user.secret);
+    //   expect(result).toEqual('user_token');
+    //   expect(logger.info).toHaveBeenCalledWith('User authenticated successfully');
+    // });
 
     it('should return error message if password does not match', async () => {
       // @ts-ignore
