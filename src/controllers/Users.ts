@@ -4,7 +4,7 @@ import prisma from '../database/Client';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
 import logger from '../utils/Logger';
-// import { sendActivationEmail } from '../helpers/sendActivationEmail';
+import { sendActivationEmail } from '../helpers/sendActivationEmail';
 
 const getUser = async (emailAddress: string): Promise<User | null> => {
   try {
@@ -60,7 +60,7 @@ const createUser = async (userData: User): Promise<User | null> => {
     const hashedPassword = await bcrypt.hash(password, 12);
     const activationToken = uuidv4();
 
-    // await sendActivationEmail(emailAddress, activationToken);
+    await sendActivationEmail(emailAddress, activationToken);
 
     const newUser: User = await prisma.user.create({
       data: {
