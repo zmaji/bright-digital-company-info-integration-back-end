@@ -60,7 +60,7 @@ const createUser = async (userData: User): Promise<User | null> => {
     const hashedPassword = await bcrypt.hash(password, 12);
     const activationToken = uuidv4();
 
-    await sendActivationEmail(emailAddress, activationToken);
+    await sendActivationEmail(firstName, lastName, emailAddress, activationToken);
 
     const newUser: User = await prisma.user.create({
       data: {
