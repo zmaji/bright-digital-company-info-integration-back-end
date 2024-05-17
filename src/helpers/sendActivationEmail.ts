@@ -159,6 +159,31 @@ const emailTemplate = (firstName: string, lastName:string, activationToken: stri
             font-weight: 300;
             margin-bottom: 25px;
         }
+
+        a {
+            color: inherit; 
+            text-decoration: none; 
+        }
+
+        a:visited {
+            color: inherit;
+        }
+
+        a:hover {
+            color: inherit;
+        }
+
+        a:active {
+            color: inherit; 
+        }
+
+        .ii a[href] {
+            color: #fff;
+        }
+
+        a:hover {
+            color: #fff !important;
+        }
     </style>
 </head>
 <body class="v-template">
