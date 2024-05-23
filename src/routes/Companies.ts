@@ -7,8 +7,34 @@ import { User } from '../typings/User';
 import usersController from '../controllers/Users';
 import { HubToken } from '../typings/HubToken';
 import authController from '../controllers/Auth';
+import * as soap from 'soap';
 
 const router = Router();
+
+const url = 'https://ws1.webservices.nl/soap_doclit?wsdl'
+const args = { username: process.env.COMPANY_INFO_TEST_USERNAME, password: process.env.COMPANY_INFO_TEST_PASSWORD }
+
+router.get('webhook', isLoggedIn, async (req: Request, res: Response) => {
+  soap.createClient(url, async (err, client) => {
+    const soapHeader = {
+      "HeaderLogin": args
+    }
+    client.addSoapHeader(soapHeader)
+    client.dutchBusinessSearchParametersV2({
+      trade_name: req.query.name
+    }, (err, result) => {
+      if (err) {
+        res.send({ body: err, statusCode: 400 });
+      } else {
+        if (result.out.results) {
+          res.send({ body: result.out.results, statusCode: 200 });
+        } else {
+          res.send({ body: { message: 'No results' }, statusCode: 200 });
+        }
+      }
+    })
+  });
+});
 
 router.get('', isLoggedIn, async (req: Request, res: Response) => {
   try {

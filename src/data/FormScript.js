@@ -1,10 +1,4 @@
 const domReady = (fn) => {
-  console.log('test!!');
-  console.log('test!!');
-  console.log('test!!');
-  console.log('test!!');
-  console.log('test!!');
-  console.log('test!!');
   // See if DOM is already available
   if (document.readyState === 'complete' || document.readyState === 'interactive') {
     // Call on next available tick
@@ -53,7 +47,7 @@ const companySearch = () => {
         input.parentElement.appendChild(loader);
 
         window
-            .fetch(`https://.herokuapp.com/get-companies?name=${encodeURIComponent(target)}`, {
+            .fetch(`https://company-info-bright-c6c99ec34e11.herokuapp.com/companies/webhook?name=${encodeURIComponent(target)}`, {
               method: 'GET',
               headers: {
                 'Content-Type': 'text/plain',
