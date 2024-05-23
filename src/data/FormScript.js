@@ -13,6 +13,7 @@ const companySearch = () => {
     if (event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormReady') {
       const input = document.querySelector('input[name="company"]');
       const hiddenCheck = document.querySelector('input[name="0-2/dossier_number"]');
+      const submitButton = document.querySelector('.hs-submit .hs-button')
 
       if (!input || !hiddenCheck) return;
 
@@ -37,6 +38,10 @@ const companySearch = () => {
         console.log(input.value);
         input.value = e.currentTarget.value;
       });
+
+      submitButton.addEventListener('click', () => {
+        console.log('Clicked!')
+      })
 
       const getCompanies = (target, input) => {
         // If results allready exist, whipe those
