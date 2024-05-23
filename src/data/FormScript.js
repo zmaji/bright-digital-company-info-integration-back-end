@@ -55,6 +55,7 @@ const companySearch = () => {
             })
             .then((response) => response.json())
             .then((result) => {
+              console.log(result);
               if (result.body.message) {
                 loader.remove();
                 hiddenCheck.value = 'Niet beschikbaar';
