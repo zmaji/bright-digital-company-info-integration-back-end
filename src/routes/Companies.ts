@@ -17,14 +17,14 @@ const args = { username: process.env.COMPANY_INFO_TEST_USERNAME, password: proce
 router.get('/webhook', async (req: Request, res: Response) => {
   console.log('Entered form webhook');
 
-  soap.createClient(url, async (_err, client) => {
+  soap.createClient(url, async (err, client) => {
     const soapHeader = {
       "HeaderLogin": args
     }
     client.addSoapHeader(soapHeader)
     client.dutchBusinessSearchParametersV2({
       trade_name: req.query.name
-    }, (err: any, result: { out: { results: any; }; }) => {
+    }, (err, result) => {
       if (err) {
         res.send({ body: err, statusCode: 400 });
       } else {
