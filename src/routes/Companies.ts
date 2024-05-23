@@ -15,6 +15,8 @@ const url = 'https://ws1.webservices.nl/soap_doclit?wsdl'
 const args = { username: process.env.COMPANY_INFO_TEST_USERNAME, password: process.env.COMPANY_INFO_TEST_PASSWORD }
 
 router.get('webhook', isLoggedIn, async (req: Request, res: Response) => {
+  console.log('Entered form webhook');
+
   soap.createClient(url, async (err, client) => {
     const soapHeader = {
       "HeaderLogin": args
