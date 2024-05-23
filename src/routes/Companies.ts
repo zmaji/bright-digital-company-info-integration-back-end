@@ -18,6 +18,7 @@ router.get('/webhook', async (req: Request, res: Response) => {
   console.log('Entered form webhook');
 
   soap.createClient(url, async (err, client) => {
+    console.log('Create soap client');
     // res.append('Access-Control-Allow-Methods', 'GET,OPTIONS');
     // res.append('Access-Control-Allow-Headers', 'Content-Type');
     // res.append('Access-Control-Allow-Origin', '*');
