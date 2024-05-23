@@ -17,6 +17,11 @@ const args = { username: process.env.COMPANY_INFO_TEST_USERNAME, password: proce
 router.get('/webhook', async (req: Request, res: Response) => {
   console.log('Entered form webhook');
 
+  console.log('process.env.COMPANY_INFO_TEST_USERNAME');
+  console.log(process.env.COMPANY_INFO_TEST_USERNAME);
+  console.log('process.env.COMPANY_INFO_TEST_PASSWORD');
+  console.log(process.env.COMPANY_INFO_TEST_PASSWORD);
+
   soap.createClient(url, async (err, client) => {
     const soapHeader = {
       "HeaderLogin": args
