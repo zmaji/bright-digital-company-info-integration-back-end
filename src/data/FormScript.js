@@ -22,7 +22,7 @@ const companySearch = () => {
       loader.setAttribute('class', 'c-search-loader');
 
       input.parentElement.style.position = 'relative';
-      // hiddenCheck.parentElement.parentElement.style.display = 'none';
+      hiddenCheck.parentElement.parentElement.style.display = 'none';
 
       input.addEventListener('input', (e) => {
         if (!e.isTrusted) return; // If the event is not triggered by the user but by JS, do not proceed
