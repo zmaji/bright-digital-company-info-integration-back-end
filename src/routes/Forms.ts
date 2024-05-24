@@ -57,8 +57,6 @@ router.post('/', isLoggedIn, async (req: Request, res: Response) => {
         const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
         if (hubToken && req.body) {
-          console.log('req.body');
-          console.log(req.body);
           const formData = req.body;
 
           if (formData) {
