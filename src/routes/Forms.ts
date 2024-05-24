@@ -19,7 +19,7 @@ router.get('/', isLoggedIn, async (req: Request, res: Response) => {
       if (currentUser && currentUser.hubSpotPortalId) {
         const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
-        if (hubToken && req.body) {
+        if (hubToken) {
           const result = await formsController.getForms(hubToken);
 
           if (result) {
