@@ -6,6 +6,7 @@ import { User } from '../typings/User';
 import usersController from '../controllers/Users';
 import { HubToken } from '../typings/HubToken';
 import authController from '../controllers/Auth';
+import logger from '../utils/Logger';
 
 const router = Router();
 
@@ -45,6 +46,8 @@ router.get('/', isLoggedIn, async (req: Request, res: Response) => {
 });
 
 router.post('/', isLoggedIn, async (req: Request, res: Response) => {
+  logger.info('Trying to create a HubSpot form..');
+  
   try {
     if (req.user && req.user.emailAddress) {
       const emailAddress: string = req.user.emailAddress;
@@ -54,10 +57,14 @@ router.post('/', isLoggedIn, async (req: Request, res: Response) => {
         const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
         if (hubToken && req.body) {
+          console.log('req.body');
+          console.log(req.body);
           const formData = req.body;
 
           if (formData) {
             const result = await formsController.createForm(hubToken, formData);
+            console.log('result')
+            console.log(result)
 
             if (result) {
               res
