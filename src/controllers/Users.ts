@@ -6,6 +6,8 @@ import bcrypt from 'bcrypt';
 import logger from '../utils/Logger';
 import { sendActivationEmail } from '../helpers/sendActivationEmail';
 
+// This is a temporary function made for version 1
+// In the next version, Company.info credentials will be saved at a HubToken in the database
 const getUser = async (identifier: string | number): Promise<User | null> => {
   try {
     if (typeof identifier === 'string') {
