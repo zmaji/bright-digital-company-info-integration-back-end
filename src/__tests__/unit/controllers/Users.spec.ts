@@ -5,7 +5,9 @@ import { prismaMock } from '../../utils/singleton';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 
-jest.mock('../../../helpers/sendActivationEmail');
+jest.mock('../../../helpers/sendActivationEmail', () => ({
+  sendActivationEmail: jest.fn().mockResolvedValue(Promise.resolve()),
+}));
 jest.mock('../../../utils/Logger');
 
 describe('Users Controller Tests', () => {
