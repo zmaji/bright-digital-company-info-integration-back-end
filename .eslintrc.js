@@ -43,7 +43,12 @@ module.exports = {
     ],
     'import/order': importOrderRule,
   },
-  ignorePatterns: ['apidoc', 'src/helpers/hubspot/formatCompanyData.ts'],
+  ignorePatterns: [
+    'apidoc',
+    'src/helpers/hubspot/formatCompanyData.ts',
+    'src/data/FormScript.js',
+    'src/helpers/sendActivationEmail.ts',
+  ],
   overrides: [
     {
       files: ['src/__tests__/**/*'],

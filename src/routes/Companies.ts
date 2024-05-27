@@ -11,17 +11,17 @@ import * as soap from 'soap';
 
 const router = Router();
 
-const url = 'https://ws1.webservices.nl/soap_doclit?wsdl'
-const args = { username: process.env.COMPANY_INFO_TEST_USERNAME, password: process.env.COMPANY_INFO_TEST_PASSWORD }
+const url = 'https://ws1.webservices.nl/soap_doclit?wsdl';
+const args = { username: process.env.COMPANY_INFO_TEST_USERNAME, password: process.env.COMPANY_INFO_TEST_PASSWORD };
 
 router.get('/webhook', async (req: Request, res: Response) => {
   soap.createClient(url, async (err, client) => {
     const soapHeader = {
-      "HeaderLogin": args
-    }
-    client.addSoapHeader(soapHeader)
+      'HeaderLogin': args,
+    };
+    client.addSoapHeader(soapHeader);
     client.dutchBusinessSearchParametersV2({
-      trade_name: req.query.name
+      trade_name: req.query.name,
     }, (err, result) => {
       if (err) {
         res.send({ body: err, statusCode: 400 });
@@ -32,7 +32,7 @@ router.get('/webhook', async (req: Request, res: Response) => {
           res.send({ body: { message: 'No results' }, statusCode: 200 });
         }
       }
-    })
+    });
   });
 });
 

@@ -47,7 +47,7 @@ router.get('/', isLoggedIn, async (req: Request, res: Response) => {
 
 router.post('/', isLoggedIn, async (req: Request, res: Response) => {
   logger.info('Trying to create a HubSpot form..');
-  
+
   try {
     if (req.user && req.user.emailAddress) {
       const emailAddress: string = req.user.emailAddress;
@@ -61,8 +61,8 @@ router.post('/', isLoggedIn, async (req: Request, res: Response) => {
 
           if (formData) {
             const result = await formsController.createForm(hubToken, formData);
-            console.log('result')
-            console.log(result)
+            console.log('result');
+            console.log(result);
 
             if (result) {
               res

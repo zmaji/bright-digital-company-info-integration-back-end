@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const SPARKPOST_API_KEY = process.env.SPARKPOST_API_KEY;
-const sparkpostClient = new SparkPost(SPARKPOST_API_KEY, { origin: "https://api.eu.sparkpost.com:443" });
+const sparkpostClient = new SparkPost(SPARKPOST_API_KEY, { origin: 'https://api.eu.sparkpost.com:443' });
 
 const emailTemplate = (firstName: string, lastName:string, activationToken: string) => `
 <!DOCTYPE html>
@@ -260,18 +260,18 @@ const emailTemplate = (firstName: string, lastName:string, activationToken: stri
 `;
 
 export const sendActivationEmail = async (firstName: string, lastName: string, email: string, activationToken: string) => {
-    logger.info(`Sending activation email to ${email}`);
-    try {
-        await sparkpostClient.transmissions.send({
-            content: {
-                from: 'noreply@brightdigital.dev',
-                subject: 'Activate Your Account',
-                html: emailTemplate(firstName, lastName, activationToken),
-            },
-            recipients: [{ address: email }],
-        });
-    } catch (error) {
-        logger.error('Error sending email verification:', error);
-        throw error;
-    }
+  logger.info(`Sending activation email to ${email}`);
+  try {
+    await sparkpostClient.transmissions.send({
+      content: {
+        from: 'noreply@brightdigital.dev',
+        subject: 'Activate Your Account',
+        html: emailTemplate(firstName, lastName, activationToken),
+      },
+      recipients: [{ address: email }],
+    });
+  } catch (error) {
+    logger.error('Error sending email verification:', error);
+    throw error;
+  }
 };
