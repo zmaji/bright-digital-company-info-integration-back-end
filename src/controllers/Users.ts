@@ -13,7 +13,7 @@ const getUser = async (identifier: string | number): Promise<User | null> => {
     if (typeof identifier === 'string') {
       query = { emailAddress: identifier };
     } else if (typeof identifier === 'number') {
-      query = { portalId: identifier };
+      query = { hubSpotPortalId: identifier };
     } else {
       throw new Error('Either emailAddress (string) or portalId (number) must be provided');
     }
