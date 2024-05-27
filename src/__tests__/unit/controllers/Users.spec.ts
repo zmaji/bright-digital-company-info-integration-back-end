@@ -9,7 +9,7 @@ jest.mock('../../../utils/Logger');
 describe('Users Controller Tests', () => {
   let hashedPassword = '';
   const password = '123';
-  const emailAddress = 'maurice@brightdigital.com';
+  const emailAddress = 'maurice@brightdigital1.com';
   const userId = 1;
   const secret = uuidv4();
   const activationCode = '12345';
