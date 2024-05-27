@@ -8,31 +8,34 @@ import { sendActivationEmail } from '../helpers/sendActivationEmail';
 
 const getUser = async (identifier: string | number): Promise<User | null> => {
   try {
-    let query = {};
-
     if (typeof identifier === 'string') {
-      query = { emailAddress: identifier };
+      const existingUser = await prisma.user.findUnique({
+        where: { emailAddress: identifier },
+      });
+
+      if (existingUser) {
+        logger.info(`User with email: ${identifier} found!`);
+        return existingUser;
+      } else {
+        logger.warn(`Could not find an existing user with email: ${identifier}`);
+        return null;
+      }
     } else if (typeof identifier === 'number') {
-      query = { hubSpotPortalId: identifier };
+      const users = await prisma.user.findMany({
+        where: { hubSpotPortalId: identifier },
+      });
+
+      const userWithCompanyInfo = users.find(user => user.companyInfoUserName && user.companyInfoPassword);
+
+      if (userWithCompanyInfo) {
+        logger.info(`User with hubSpotPortalId: ${identifier} and company info found!`);
+        return userWithCompanyInfo;
+      } else {
+        logger.warn(`No user with hubSpotPortalId: ${identifier} has both companyInfoUserName and companyInfoPassword`);
+        return null;
+      }
     } else {
-      throw new Error('Either emailAddress (string) or portalId (number) must be provided');
-    }
-
-    const existingUser = await prisma.user.findUnique({
-      // @ts-expect-error QUERY
-      where: query,
-    });
-
-    if (existingUser) {
-      // eslint-disable-next-line
-      logger.info(`User with ${typeof identifier === 'string' ? `email: ${identifier}` : `portalId: ${identifier}`} found!`);
-
-      return existingUser;
-    } else {
-      // eslint-disable-next-line
-      logger.warn(`Could not find an existing user with ${typeof identifier === 'string' ? `email: ${identifier}` : `portalId: ${identifier}`}`);
-
-      return null;
+      throw new Error('Either emailAddress (string) or hubSpotPortalId (number) must be provided');
     }
   } catch (error) {
     logger.error('Something went wrong getting a user', error);
