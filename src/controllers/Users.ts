@@ -6,25 +6,58 @@ import bcrypt from 'bcrypt';
 import logger from '../utils/Logger';
 import { sendActivationEmail } from '../helpers/sendActivationEmail';
 
-const getUser = async (emailAddress: string): Promise<User | null> => {
+// const getUser = async (emailAddress?: string, portalId?: number): Promise<User | null> => {
+//   try {
+//     const existingUser = await prisma.user.findUnique({
+//       where: {
+//         emailAddress: emailAddress,
+//       },
+//     });
+
+//     if (existingUser) {
+//       logger.info(`User with emailaddress: ${emailAddress} found!`);
+
+//       return existingUser;
+//     } else {
+//       logger.warn(`Could not find an existing user with email: ${emailAddress}`);
+
+//       return null;
+//     }
+//   } catch (error) {
+//     logger.fatal('Something went wrong getting a user');
+//     throw error;
+//   }
+// };
+
+const getUser = async (emailAddress?: string, portalId?: number): Promise<User | null> => {
   try {
+    let query = {};
+
+    if (emailAddress) {
+      query = { emailAddress: emailAddress };
+    } else if (portalId) {
+      query = { portalId: portalId };
+    } else {
+      throw new Error('Either emailAddress or portalId must be provided');
+    }
+
     const existingUser = await prisma.user.findUnique({
-      where: {
-        emailAddress: emailAddress,
-      },
+      // @ts-expect-error QUERY
+      where: query,
     });
 
     if (existingUser) {
-      logger.info(`User with emailaddress: ${emailAddress} found!`);
+      logger.info(`User with ${emailAddress ? `email: ${emailAddress}` : `portalId: ${portalId}`} found!`);
 
       return existingUser;
     } else {
-      logger.warn(`Could not find an existing user with email: ${emailAddress}`);
+      // eslint-disable-next-line
+      logger.warn(`Could not find an existing user with ${emailAddress ? `email: ${emailAddress}` : `portalId: ${portalId}`}`);
 
       return null;
     }
   } catch (error) {
-    logger.fatal('Something went wrong getting a user');
+    logger.error('Something went wrong getting a user', error);
     throw error;
   }
 };

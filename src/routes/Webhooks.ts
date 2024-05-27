@@ -5,12 +5,14 @@ import companiesController from '../controllers/Companies';
 import logger from '../utils/Logger';
 import { retrieveHubToken } from '../controllers/Auth';
 import { formatCompanyData } from '../helpers/hubspot/formatCompanyData';
+import { User } from '../typings/User';
+import usersController from '../controllers/Users';
 
 const router = Router();
 
 // TODO: Change to Heroku env. variable when hosted
-const COMPANY_INFO_USERNAME = process.env.COMPANY_INFO_TEST_USERNAME;
-const COMPANY_INFO_PASSWORD = process.env.COMPANY_INFO_TEST_PASSWORD;
+let COMPANY_INFO_USERNAME: string;
+let COMPANY_INFO_PASSWORD: string;
 
 router.post('/company', async (req: Request, res: Response) => {
   logger.info('Entered webhook routes!');
@@ -22,13 +24,18 @@ router.post('/company', async (req: Request, res: Response) => {
 
       if (events) {
         for (const event of events) {
-          console.log('event')
-          console.log(event)
           if (event.propertyName === 'dossier_number') {
             logger.info(
                 `Property kvk_nummer has changed to ${event.propertyValue}` + `
                 for company ${event.objectId}, retrieving company details..`,
             );
+
+            if (event.portalId) {
+              const currentUser: User | null = await usersController.getUser(event.portalId);
+
+              COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
+              COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
+            }
 
             if (COMPANY_INFO_USERNAME && COMPANY_INFO_PASSWORD) {
               // eslint-disable-next-line
