@@ -6,39 +6,16 @@ import bcrypt from 'bcrypt';
 import logger from '../utils/Logger';
 import { sendActivationEmail } from '../helpers/sendActivationEmail';
 
-// const getUser = async (emailAddress?: string, portalId?: number): Promise<User | null> => {
-//   try {
-//     const existingUser = await prisma.user.findUnique({
-//       where: {
-//         emailAddress: emailAddress,
-//       },
-//     });
-
-//     if (existingUser) {
-//       logger.info(`User with emailaddress: ${emailAddress} found!`);
-
-//       return existingUser;
-//     } else {
-//       logger.warn(`Could not find an existing user with email: ${emailAddress}`);
-
-//       return null;
-//     }
-//   } catch (error) {
-//     logger.fatal('Something went wrong getting a user');
-//     throw error;
-//   }
-// };
-
-const getUser = async (emailAddress?: string, portalId?: number): Promise<User | null> => {
+const getUser = async (identifier: string | number): Promise<User | null> => {
   try {
     let query = {};
 
-    if (emailAddress) {
-      query = { emailAddress: emailAddress };
-    } else if (portalId) {
-      query = { portalId: portalId };
+    if (typeof identifier === 'string') {
+      query = { emailAddress: identifier };
+    } else if (typeof identifier === 'number') {
+      query = { portalId: identifier };
     } else {
-      throw new Error('Either emailAddress or portalId must be provided');
+      throw new Error('Either emailAddress (string) or portalId (number) must be provided');
     }
 
     const existingUser = await prisma.user.findUnique({
@@ -47,12 +24,13 @@ const getUser = async (emailAddress?: string, portalId?: number): Promise<User |
     });
 
     if (existingUser) {
-      logger.info(`User with ${emailAddress ? `email: ${emailAddress}` : `portalId: ${portalId}`} found!`);
+      // eslint-disable-next-line
+      logger.info(`User with ${typeof identifier === 'string' ? `email: ${identifier}` : `portalId: ${identifier}`} found!`);
 
       return existingUser;
     } else {
       // eslint-disable-next-line
-      logger.warn(`Could not find an existing user with ${emailAddress ? `email: ${emailAddress}` : `portalId: ${portalId}`}`);
+      logger.warn(`Could not find an existing user with ${typeof identifier === 'string' ? `email: ${identifier}` : `portalId: ${identifier}`}`);
 
       return null;
     }
