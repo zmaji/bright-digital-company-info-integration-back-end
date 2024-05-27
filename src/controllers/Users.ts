@@ -15,9 +15,11 @@ const getUser = async (identifier: string | number): Promise<User | null> => {
 
       if (existingUser) {
         logger.info(`User with email: ${identifier} found!`);
+
         return existingUser;
       } else {
         logger.warn(`Could not find an existing user with email: ${identifier}`);
+
         return null;
       }
     } else if (typeof identifier === 'number') {
@@ -25,13 +27,15 @@ const getUser = async (identifier: string | number): Promise<User | null> => {
         where: { hubSpotPortalId: identifier },
       });
 
-      const userWithCompanyInfo = users.find(user => user.companyInfoUserName && user.companyInfoPassword);
+      const userWithCompanyInfo = users.find((user) => user.companyInfoUserName && user.companyInfoPassword);
 
       if (userWithCompanyInfo) {
         logger.info(`User with hubSpotPortalId: ${identifier} and company info found!`);
+
         return userWithCompanyInfo;
       } else {
         logger.warn(`No user with hubSpotPortalId: ${identifier} has both companyInfoUserName and companyInfoPassword`);
+
         return null;
       }
     } else {
