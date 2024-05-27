@@ -31,41 +31,41 @@ To get the application up and running, follow these steps:
 
 2. **Install dependencies:**
 
-```sh
-npm install
-```
+   ```sh
+   npm install
+   ```
 
 3. **Set up environment variables (for development):**
 
 Create a .env file in the root directory and add necessary environment variables. Example:
 
-```sh
-HUBSPOT_APP_ID = xyz
-HUBSPOT_APP_DEVELOPER_KEY = xyz
-HUBSPOT_WEBHOOK_TARGET_URL = xyz
-HUBSPOT_CLIENT_ID = xyz
-HUBSPOT_CLIENT_SECRET = xyz
-HUBSPOT_REDIRECT_URL = xyz
-HUBSPOT_SCOPE = xyz
-HUBSPOT_GROUP_NAME = xyz
-HUBSPOT_COMPANY_OBJECT_TYPE = xyz
-FRONT_END_BASE_URL = xyz
-SPARKPOST_API_KEY = xyz
-DATABASE_URL= xyz
-NGROK_FORWARDING_URL= xyz
-```
+   ```sh
+   HUBSPOT_APP_ID = xyz
+   HUBSPOT_APP_DEVELOPER_KEY = xyz
+   HUBSPOT_WEBHOOK_TARGET_URL = xyz
+   HUBSPOT_CLIENT_ID = xyz
+   HUBSPOT_CLIENT_SECRET = xyz
+   HUBSPOT_REDIRECT_URL = xyz
+   HUBSPOT_SCOPE = xyz
+   HUBSPOT_GROUP_NAME = xyz
+   HUBSPOT_COMPANY_OBJECT_TYPE = xyz
+   FRONT_END_BASE_URL = xyz
+   SPARKPOST_API_KEY = xyz
+   DATABASE_URL= xyz
+   NGROK_FORWARDING_URL= xyz
+   ```
 
 4. **Run database migrations:**
 
-```sh
-npm run prisma:migrate
-```
+   ```sh
+   npm run prisma:migrate
+   ```
 
 5. **Start the application:**
 
-```sh
-npm run start:dev
-```
+   ```sh
+   npm run start:dev
+   ```
 
 ## **Scripts**
 The following scripts are available in the project:
