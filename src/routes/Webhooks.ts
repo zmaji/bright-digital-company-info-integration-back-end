@@ -22,6 +22,8 @@ router.post('/company', async (req: Request, res: Response) => {
 
       if (events) {
         for (const event of events) {
+          console.log('event')
+          console.log(event)
           if (event.propertyName === 'dossier_number') {
             logger.info(
                 `Property kvk_nummer has changed to ${event.propertyValue}` + `
