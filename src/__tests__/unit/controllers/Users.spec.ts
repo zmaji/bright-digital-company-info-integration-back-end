@@ -5,7 +5,7 @@ import { prismaMock } from '../../utils/singleton';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 
-jest.mock('../../../helpers/sendActivationEmail'); 
+jest.mock('../../../helpers/sendActivationEmail');
 jest.mock('../../../utils/Logger');
 
 describe('Users Controller Tests', () => {
@@ -35,7 +35,7 @@ describe('Users Controller Tests', () => {
   test('should create a new system user', async () => {
     // @ts-ignore
     sendActivationEmail.mockResolvedValueOnce();
-    
+
     // @ts-ignore
     prismaMock.user.create.mockResolvedValueOnce({
       id: userId,
