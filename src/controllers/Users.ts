@@ -27,7 +27,13 @@ const getUser = async (identifier: string | number): Promise<User | null> => {
         where: { hubSpotPortalId: identifier },
       });
 
-      const userWithCompanyInfo = users.find((user) => user.companyInfoUserName && user.companyInfoPassword);
+      const userWithCompanyInfo = users.find(
+          (user) =>
+            user.companyInfoUserName != null &&
+          user.companyInfoUserName !== '' &&
+          user.companyInfoPassword != null &&
+          user.companyInfoPassword !== '',
+      );
 
       if (userWithCompanyInfo) {
         logger.info(`User with hubSpotPortalId: ${identifier} and company info found!`);
