@@ -97,6 +97,12 @@ router.get('/datarequest', async (req: Request, res: Response) => {
   try {
     // const verified = await basicVerification(req);
 
+// DEFAULT: Grey
+// SUCCESS: Green
+// WARNING: Yellow
+// DANGER: Red
+// INFO: Blue
+
     // if (verified) {
     // const portalId = req.query.portalId;
     const dossierNumber = req.query.dossier_number;
@@ -120,8 +126,8 @@ router.get('/datarequest', async (req: Request, res: Response) => {
             },
             {
               'label': 'Status',
-              'dataType': 'STATUSxDDDDDDD',
-              'value': 'TEST2',
+              'dataType': 'STATUS',
+              'value': 'TEST2!!!!!',
               "optionType": "DANGER",
             },
             {
