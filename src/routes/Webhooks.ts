@@ -172,7 +172,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
             height: 748,
             // @ts-ignore
             // uri: `https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/iframe-contents`,
-            uri: `https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/iframe-contents?portalId=${encodeURIComponent(portalId)}?tradeName=${encodeURIComponent(tradeName)}`,
+            uri: `https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/iframe-contents?portalId=${encodeURIComponent(portalId)}&tradeName=${encodeURIComponent(tradeName)}`,
             label: buttonLabel,
           },
       // ]
@@ -188,14 +188,13 @@ router.get('/datarequest', async (req: Request, res: Response) => {
 });
 
 router.get('/iframe-contents', async (req: Request, res: Response) => {
-  const portalId = req.query.portalId;
+  const portalId = parseInt(req.query.portalId as string, 10);
   const tradeName = req.query.tradeName;
 
   console.log('req.query');
   console.log(req.query);
 
   if (portalId) {
-    // @ts-ignore
     const currentUser: User | null = await usersController.getUser(portalId);
 
     const companyInfoUserName = currentUser.companyInfoUserName;
