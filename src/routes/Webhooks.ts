@@ -127,7 +127,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
             {
               'label': 'Company.info status',
               'dataType': 'STATUS',
-              'value': status,
+              'value': 'status',
               "optionType": "DANGER",
             },
           ],
