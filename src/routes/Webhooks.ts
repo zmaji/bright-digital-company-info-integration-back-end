@@ -165,20 +165,19 @@ router.get('/datarequest', async (req: Request, res: Response) => {
           'updated': '2016-09-23',
           'properties': [
             {
-              'label': 'Resolved by',
-              'dataType': 'EMAIL',
-              'value': 'ijones@hubspot.com',
-            },
-            {
-              'label': 'Resolution type',
+              'label': 'Test1',
               'dataType': 'STRING',
-              'value': 'Referred to documentation',
+              'value': 'TEST1',
             },
             {
-              'label': 'Resolution impact',
-              'dataType': 'CURRENCY',
-              'value': '94.34',
-              'currencyCode': 'GBP',
+              'label': 'Test2',
+              'dataType': 'STRING',
+              'value': 'TEST2',
+            },
+            {
+              'label': 'Test3',
+              'dataType': 'STRING',
+              'value': 'TEST3',
             },
           ],
           'actions': [
