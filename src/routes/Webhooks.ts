@@ -127,8 +127,8 @@ router.get('/datarequest', async (req: Request, res: Response) => {
     const cardInformation = {
       'results': [
         {
-          // 'objectId': objectId,
-          'title': tradeName,
+          'objectId': objectId,
+          'title': 'Sync or update company info',
           // 'reporter_type': 'Account Manager',
           // 'status': 'In Progress',
           // 'ticket_type': 'Bug',
