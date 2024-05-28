@@ -99,7 +99,8 @@ router.get('/datarequest', async (req: Request, res: Response) => {
 
     // if (verified) {
     // const portalId = req.query.portalId;
-    const dossierNumber = req.query.dossier_number;
+    let dossierNumber = req.query.dossier_number;
+    let dossierDataType = 'NUMERIC';
     const tradeName = req.query.name;
     const objectId = req.query.associatedObjectId;
     let status: string;
@@ -122,6 +123,8 @@ router.get('/datarequest', async (req: Request, res: Response) => {
       statusType = 'DANGER';
       buttonLabel = 'Sync with Company.info';
       confirmationMessage = `Are you sure you want to sync ${tradeName}?`
+      dossierNumber = 'Unknown';
+      dossierDataType = 'STRING';
     }
 
     const cardInformation = {
@@ -141,7 +144,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
             },
             {
               'label': 'Dossier number',
-              'dataType': 'NUMERIC',
+              'dataType': dossierDataType,
               'value': dossierNumber,
             },
             {
@@ -165,13 +168,15 @@ router.get('/datarequest', async (req: Request, res: Response) => {
         "confirmButtonText": "Yes",
         "cancelButtonText": "No"
       },
-      'settingsAction': {
-        'type': 'IFRAME',
-        'width': 890,
-        'height': 748,
-        'uri': 'https://example.com/settings-iframe-contents',
-        'label': 'Settings',
-      }
+      // 'secondarySettings':[
+      //   {
+      //     'type': 'IFRAME',
+      //     'width': 890,
+      //     'height': 748,
+      //     'uri': 'https://example.com/settings-iframe-contents',
+      //     'label': 'Settings',
+      //   },
+      // ]
     };
 
     res.send(cardInformation);
