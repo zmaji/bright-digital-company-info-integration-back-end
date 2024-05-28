@@ -174,11 +174,11 @@ router.get('/datarequest', async (req: Request, res: Response) => {
         'cancelButtonText': 'No',
       },
       'primaryAction': {
-        'type': 'IFRAME',
-        'width': 890,
-        'height': 748,
-        'uri': 'https://example.com/create-iframe-contents',
-        'label': 'Create Ticket',
+        'type': 'ACTION_HOOK',
+        'httpMethod': 'PUT',
+        'associatedObjectProperties': [],
+        'uri': 'https://example.com/tickets/245/resolve',
+        'label': 'Resolve',
       },
     };
 
