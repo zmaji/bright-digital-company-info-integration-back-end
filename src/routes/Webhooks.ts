@@ -115,7 +115,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
 
     if (dossierNumber !== '' && dossierNumber !== undefined && dossierNumber !== null) {
       status = 'Synced';
-      statusType = 'DANGER';
+      statusType = 'SUCCESS';
       buttonLabel = 'Sync with Company.info';
       confirmationMessage = `Are you sure you want to sync ${tradeName}?`
     } else {
