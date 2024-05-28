@@ -128,7 +128,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
       'results': [
         {
           'objectId': objectId,
-          // 'title': tradeName,
+          'title': tradeName,
           // 'reporter_type': 'Account Manager',
           // 'status': 'In Progress',
           // 'ticket_type': 'Bug',
