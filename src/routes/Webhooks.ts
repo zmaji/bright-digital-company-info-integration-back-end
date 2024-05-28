@@ -99,120 +99,79 @@ router.get('/datarequest', async (req: Request, res: Response) => {
 
     // if (verified) {
     // const portalId = req.query.portalId;
-    // const tradeName = req.query.name;
+    const dossierNumber = req.query.dossier_number;
+    const tradeName = req.query.name;
+    const objectId = req.query.associatedObjectId;
 
     const cardInformation = {
       'results': [
         {
-          'objectId': 245,
-          'title': 'API-22: APIs working too fast',
-          'link': 'http://example.com/1',
-          'created': '2016-09-15',
-          'priority': 'HIGH',
-          'project': 'API',
-          'description': 'Customer reported that the APIs are just running too fast',
-          'reporter_type': 'Account Manager',
-          'status': 'In Progress',
-          'ticket_type': 'Bug',
-          'updated': '2016-09-28',
-          'actions': [
-            {
-              'type': 'IFRAME',
-              'width': 890,
-              'height': 748,
-              'uri': 'https://example.com/edit-iframe-contents',
-              'label': 'Edit',
-              'associatedObjectProperties': [],
-            },
-            {
-              'type': 'IFRAME',
-              'width': 890,
-              'height': 748,
-              'uri': 'https://example.com/reassign-iframe-contents',
-              'label': 'Reassign',
-              'associatedObjectProperties': [],
-            },
-            {
-              'type': 'ACTION_HOOK',
-              'httpMethod': 'PUT',
-              'associatedObjectProperties': [],
-              'uri': 'https://example.com/tickets/245/resolve',
-              'label': 'Resolve',
-            },
-            {
-              'type': 'CONFIRMATION_ACTION_HOOK',
-              'confirmationMessage': 'Are you sure you want to delete this ticket?',
-              'confirmButtonText': 'Yes',
-              'cancelButtonText': 'No',
-              'httpMethod': 'DELETE',
-              'associatedObjectProperties': [
-                'protected_account',
-              ],
-              'uri': 'https://example.com/tickets/245',
-              'label': 'Delete',
-            },
-          ],
-        },
-        {
-          'objectId': 988,
-          'title': 'API-54: Question about bulk APIs',
-          'link': 'http://example.com/2',
-          'created': '2016-08-04',
-          'priority': 'HIGH',
-          'project': 'API',
-          'reported_by': 'ksmith@hubspot.com',
-          'description': 'Customer is not able to find documentation about our bulk Contacts APIs.',
-          'reporter_type': 'Support Rep',
-          'status': 'Resolved',
-          'ticket_type': 'Bug',
-          'updated': '2016-09-23',
+          'objectId': objectId,
+          'title': tradeName,
+          'dossier number': dossierNumber,
+          'status': 'STATUS',
           'properties': [
             {
-              'label': 'Resolved by',
-              'dataType': 'EMAIL',
-              'value': 'ijones@hubspot.com',
+              'label': 'dossier number',
+              'dataType': 'NUMBER',
+              'value': dossierNumber,
             },
             {
-              'label': 'Resolution type',
+              'label': 'Status',
               'dataType': 'STRING',
-              'value': 'Referred to documentation',
-            },
-            {
-              'label': 'Resolution impact',
-              'dataType': 'CURRENCY',
-              'value': '94.34',
-              'currencyCode': 'GBP',
+              'value': 'STATUS: TBA',
             },
           ],
-          'actions': [
-            {
-              'type': 'IFRAME',
-              'width': 890,
-              'height': 748,
-              'uri': 'https://example.com/edit-iframe-contents',
-              'label': 'Edit',
-            },
-            {
-              'type': 'CONFIRMATION_ACTION_HOOK',
-              'confirmationMessage': 'Are you sure you want to delete this ticket?',
-              'confirmButtonText': 'Yes',
-              'cancelButtonText': 'No',
-              'httpMethod': 'DELETE',
-              'associatedObjectProperties': [
-                'protected_account',
-              ],
-              'uri': 'https://example.com/tickets/245',
-              'label': 'Delete',
-            },
-          ],
+          // 'actions': [
+          //   {
+          //     'type': 'IFRAME',
+          //     'width': 890,
+          //     'height': 748,
+          //     'uri': 'https://example.com/edit-iframe-contents',
+          //     'label': 'Edit',
+          //     'associatedObjectProperties': [],
+          //   },
+          //   {
+          //     'type': 'IFRAME',
+          //     'width': 890,
+          //     'height': 748,
+          //     'uri': 'https://example.com/reassign-iframe-contents',
+          //     'label': 'Reassign',
+          //     'associatedObjectProperties': [],
+          //   },
+          //   {
+          //     'type': 'ACTION_HOOK',
+          //     'httpMethod': 'PUT',
+          //     'associatedObjectProperties': [],
+          //     'uri': 'https://example.com/tickets/245/resolve',
+          //     'label': 'Resolve',
+          //   },
+          //   {
+          //     'type': 'CONFIRMATION_ACTION_HOOK',
+          //     'confirmationMessage': 'Are you sure you want to delete this ticket?',
+          //     'confirmButtonText': 'Yes',
+          //     'cancelButtonText': 'No',
+          //     'httpMethod': 'DELETE',
+          //     'associatedObjectProperties': [
+          //       'protected_account',
+          //     ],
+          //     'uri': 'https://example.com/tickets/245',
+          //     'label': 'Delete',
+          //   },
+          // ],
         },
       ],
       'settingsAction': {
-        'type': 'IFRAME',
-        'width': 890,
-        'height': 748,
-        'uri': 'https://example.com/settings-iframe-contents',
-        'label': 'Settings',
+        'type': 'CONFIRMATION_ACTION_HOOK',
+        'httpMethod': 'POST',
+        'uri': 'https://example.com/action-hook',
+        'label': 'Example action',
+        // "associatedObjectProperties": [
+        //   "some_crm_property"
+        // ],
+        'confirmationMessage': 'Are you sure you want to run example action?',
+        'confirmButtonText': 'Yes',
+        'cancelButtonText': 'No',
       },
       'primaryAction': {
         'type': 'IFRAME',
