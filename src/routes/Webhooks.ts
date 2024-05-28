@@ -98,7 +98,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
     // const verified = await basicVerification(req);
 
     // if (verified) {
-    // const portalId = req.query.portalId;
+    const portalId = req.query.portalId;
     let dossierNumber = req.query.dossier_number;
     let dossierDataType = 'NUMERIC';
     const tradeName = req.query.name;
@@ -170,7 +170,8 @@ router.get('/datarequest', async (req: Request, res: Response) => {
             type: 'IFRAME',
             width: 890,
             height: 748,
-            uri: 'https://your-domain.com/iframe-contents',
+            // @ts-ignore
+            uri: `https://your-domain.com/iframe-contents?portalId=${encodeURIComponent(portalId)}?tradeName=${encodeURIComponent(tradeName)}`,
             label: buttonLabel,
           },
       // ]
@@ -186,6 +187,14 @@ router.get('/datarequest', async (req: Request, res: Response) => {
 });
 
 router.get('/iframe-contents', (req: Request, res: Response) => {
+  const portalId = req.query.portalId;
+  const tradeName = req.query.tradeName;
+
+  console.log('portalId');
+  console.log(portalId);
+  console.log('tradeName');
+  console.log(tradeName);
+
   res.send(`
     <!DOCTYPE html>
     <html lang="en">
@@ -194,61 +203,15 @@ router.get('/iframe-contents', (req: Request, res: Response) => {
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Select Option</title>
       <style>
-        body {
-          font-family: Arial, sans-serif;
-          padding: 20px;
-          background-color: #f9f9f9;
-        }
-        .v-search-results__content-wrapper {
-          padding: 20px;
-          background: #ffffff;
-          border-radius: 8px;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .v-search-results__title {
-          font-size: 24px;
-          font-weight: 500;
-          margin-bottom: 10px;
-          color: #333;
-        }
-        .v-search-results__text {
-          font-size: 16px;
-          font-weight: 300;
-          margin-bottom: 20px;
-          color: #666;
-        }
-        .option {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 10px;
-          border-bottom: 1px solid #eee;
-        }
-        .option:last-child {
-          border-bottom: none;
-        }
-        .option button {
-          padding: 10px 20px;
-          background-color: #007bff;
-          color: #fff;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          transition: background-color 0.3s;
-        }
-        .option button:hover {
-          background-color: #0056b3;
-        }
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .option { margin: 10px 0; }
+        .option button { padding: 10px; }
       </style>
     </head>
     <body>
-      <div class="v-search-results__content-wrapper">
-        <h2 class="v-search-results__title">Select an Option</h2>
-        <p class="v-search-results__text">Please select one of the following options to proceed:</p>
-        <div id="options-container"></div>
-      </div>
+      <h1>Select an Option</h1>
+      <div id="options-container"></div>
       <script>
-        // Simulate fetching options from the server
         const options = [
           { id: 1, name: 'Option 1' },
           { id: 2, name: 'Option 2' },
@@ -260,10 +223,7 @@ router.get('/iframe-contents', (req: Request, res: Response) => {
         options.forEach(option => {
           const div = document.createElement('div');
           div.className = 'option';
-          div.innerHTML = \`
-            <span>\${option.name}</span>
-            <button onclick="selectOption(\${option.id})">Select</button>
-          \`;
+          div.innerHTML = \`<button onclick="selectOption(\${option.id})">\${option.name}</button>\`;
           container.appendChild(div);
         });
 
