@@ -152,6 +152,18 @@ router.get('/datarequest', async (req: Request, res: Response) => {
         'uri': 'https://example.com/create-iframe-contents',
         'label': 'Create Ticket',
       },
+      'secondaryAction': {
+        "type": "CONFIRMATION_ACTION_HOOK",
+        "httpMethod": "POST",
+        "uri": "https://example.com/action-hook",
+        "label": "Example action",
+        "associatedObjectProperties": [
+          "some_crm_property"
+        ],
+        "confirmationMessage": "Are you sure you want to run example action?",
+        "confirmButtonText": "Yes",
+        "cancelButtonText": "No"
+      }
     };
 
     res.send(cardInformation);
