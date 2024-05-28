@@ -149,18 +149,18 @@ router.get('/datarequest', async (req: Request, res: Response) => {
           ],
         },
       ],
-      'primaryAction': {
-        "type": "CONFIRMATION_ACTION_HOOK",
-        "httpMethod": "POST",
-        "uri": "https://example.com/action-hook",
-        "label": buttonLabel,
-        "associatedObjectProperties": [
-          "some_crm_property"
-        ],
-        "confirmationMessage": confirmationMessage,
-        "confirmButtonText": "Yes",
-        "cancelButtonText": "No"
-      },
+      // 'primaryAction': {
+      //   "type": "CONFIRMATION_ACTION_HOOK",
+      //   "httpMethod": "POST",
+      //   "uri": "https://example.com/action-hook",
+      //   "label": buttonLabel,
+      //   "associatedObjectProperties": [
+      //     "some_crm_property"
+      //   ],
+      //   "confirmationMessage": confirmationMessage,
+      //   "confirmButtonText": "Yes",
+      //   "cancelButtonText": "No"
+      // },
       'secondaryActions':[
         {
         'type': 'IFRAME',
