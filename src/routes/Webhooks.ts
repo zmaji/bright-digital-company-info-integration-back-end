@@ -191,6 +191,9 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
   const portalId = parseInt(req.query.portalId as string, 10);
   const tradeName = req.query.tradeName as string;
 
+  console.log('req.query');
+  console.log(req.query);
+
   if (portalId) {
     const currentUser: User | null = await usersController.getUser(portalId);
     // const result = await companiesController.getCompanies(tradeName, currentUser.companyInfoUserName, currentUser.companyInfoPassword);
@@ -242,7 +245,7 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
         },
       ]
     };
-  
+
     res.send(`
       <!DOCTYPE html>
       <html lang="en">  
@@ -252,13 +255,41 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
         <title>Select Option</title>
         <style>
           body { font-family: Arial, sans-serif; padding: 20px; }
-          .option { margin: 10px 0; }
-          .option button { padding: 10px; }
+          .u-flex { display: flex; }
+          .c-search-row__line {
+            width: 100%;
+            height: 1px;
+            background-color: lightblue;
+            margin-top: 24px;
+            margin-bottom: 24px;
+          }
+          .c-search-row__content-container {
+            width: 100%;
+            align-items: center;
+          }
+          .c-search-row__name-container {
+            width: 25%;
+          }
+          .c-search-row__name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-right: 48px;
+          }
+          .c-search-row__address {
+            font-size: 16px;
+            font-weight: 300;
+          }
+          .c-search-row__location {
+            font-size: 16px;
+            font-weight: 300;
+          }
+          .c-search-row__button-container {
+            margin-left: auto;
+          }
         </style>
       </head>
       <body>
         <h1>Search results for trade name ${tradeName}</h1>
-
         <div id="options-container"></div>
 
         <script>
@@ -268,24 +299,27 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
           
           result.forEach(item => {
             const div = document.createElement('div');
-            div.className = 'option';
+            div.className = 'c-search-row u-flex';
             div.innerHTML = \`
-              <div>
-                <h2>\${item.name}</h2>
-                <p><strong>Dossier Number:</strong> \${item.dossier_number}</p>
-                <p><strong>Establishment Number:</strong> \${item.establishment_number}</p>
-                <p><strong>City:</strong> \${item.establishment_city}</p>
-                <p><strong>Street:</strong> \${item.establishment_street}</p>
-                <p><strong>Correspondence City:</strong> \${item.correspondence_city}</p>
-                <p><strong>Correspondence Street:</strong> \${item.correspondence_street}</p>
-                <p><strong>Economically Active:</strong> \${item.indication_economically_active}</p>
+              <div class="c-search-row__line"></div>
+              <div class="c-search-row__content-container u-flex">
+                <div class="c-search-row__name-container u-flex">
+                  <div class="c-search-row__name">\${item.name}</div>
+                </div>
+                <div class="c-search-row__address-container u-flex">
+                  <div class="c-search-row__address">\${item.establishment_street} \${item.establishment_city} |</div>
+                  <div class="c-search-row__location">\${item.correspondence_street} \${item.correspondence_city}</div>
+                </div>
+                <div class="c-search-row__button-container">
+                  <button onclick="selectOption('\${item.dossier_number}')">Select</button>
+                </div>
               </div>
             \`;
             container.appendChild(div);
           });
 
-          function selectOption(optionId) {
-            console.log('Selected option:', optionId);
+          function selectOption(dossierNumber) {
+            console.log('Selected option:', dossierNumber);
           }
         </script>
       </body>
