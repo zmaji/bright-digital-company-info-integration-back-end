@@ -191,11 +191,19 @@ router.get('/iframe-contents', (req: Request, res: Response) => {
   const portalId = req.query.portalId;
   const tradeName = req.query.tradeName;
 
-  console.log('portalId');
-  console.log(portalId);
-  console.log('tradeName');
-  console.log(tradeName);
+  if (portalId) {
+    // @ts-ignore
+    const currentUser: User | null = await usersController.getUser(portalId);
 
+    const companyInfoUserName = currentUser.companyInfoUserName;
+    const companyInfoPassword = currentUser.companyInfoPassword;
+
+    console.log('companyInfoUserName');
+    console.log(companyInfoUserName);
+    console.log('companyInfoPassword');
+    console.log(companyInfoPassword);
+  }
+  
   res.send(`
     <!DOCTYPE html>
     <html lang="en">
@@ -210,8 +218,10 @@ router.get('/iframe-contents', (req: Request, res: Response) => {
       </style>
     </head>
     <body>
-      <h1>Select an Option</h1>
+      <h1>Search results for trade name ${tradeName}</h1>
+
       <div id="options-container"></div>
+
       <script>
         const options = [
           { id: 1, name: 'Option 1' },
@@ -229,9 +239,6 @@ router.get('/iframe-contents', (req: Request, res: Response) => {
         });
 
         function selectOption(optionId) {
-          // Handle the selection logic
-          alert('Selected option: ' + optionId);
-          // You can also send this selection back to your server for processing
         }
       </script>
     </body>
