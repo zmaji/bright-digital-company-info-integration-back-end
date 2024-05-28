@@ -158,7 +158,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
         "type": "CONFIRMATION_ACTION_HOOK",
         "httpMethod": "POST",
         "uri": "https://example.com/action-hook",
-        "label": "Example action",
+        "label": buttonLabel,
         "associatedObjectProperties": [
           "some_crm_property"
         ],
