@@ -152,26 +152,25 @@ router.get('/datarequest', async (req: Request, res: Response) => {
           ],
         },
       ],
-      'primaryAction': {
-        "type": "CONFIRMATION_ACTION_HOOK",
-        "httpMethod": "POST",
-        "uri": "https://example.com/action-hook",
-        "label": buttonLabel,
-        "associatedObjectProperties": [
-          "some_crm_property"
-        ],
-        "confirmationMessage": confirmationMessage,
-        "confirmButtonText": "Yes",
-        "cancelButtonText": "No"
+      // 'primaryAction': {
+      //   "type": "CONFIRMATION_ACTION_HOOK",
+      //   "httpMethod": "POST",
+      //   "uri": "https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/iframe-contents",
+      //   "label": buttonLabel,
+      //   "associatedObjectProperties": [
+      //     "some_crm_property"
+      //   ],
+      //   "confirmationMessage": confirmationMessage,
+      //   "confirmButtonText": "Yes",
+      //   "cancelButtonText": "No"
+      // },
+      primaryAction: {
+        type: 'IFRAME',
+        width: 890,
+        height: 748,
+        uri: 'https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/iframe-contents',
+        label: buttonLabel,
       },
-      // 'secondarySettings':[
-      //   {
-      //     'type': 'IFRAME',
-      //     'width': 890,
-      //     'height': 748,
-      //     'uri': 'https://example.com/settings-iframe-contents',
-      //     'label': 'Settings',
-      //   },
       // ]
     };
 
@@ -182,6 +181,51 @@ router.get('/datarequest', async (req: Request, res: Response) => {
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ error: 'An error occurred processing the webhook' });
   }
+});
+
+router.get('/iframe-contents', (req: Request, res: Response) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Select Option</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .option { margin: 10px 0; }
+        .option button { padding: 10px; }
+      </style>
+    </head>
+    <body>
+      <h1>Select an Option</h1>
+      <div id="options-container"></div>
+      <script>
+        // Simulate fetching options from the server
+        const options = [
+          { id: 1, name: 'Option 1' },
+          { id: 2, name: 'Option 2' },
+          { id: 3, name: 'Option 3' },
+        ];
+        
+        const container = document.getElementById('options-container');
+        
+        options.forEach(option => {
+          const div = document.createElement('div');
+          div.className = 'option';
+          div.innerHTML = \`<button onclick="selectOption(\${option.id})">\${option.name}</button>\`;
+          container.appendChild(div);
+        });
+
+        function selectOption(optionId) {
+          // Handle the selection logic
+          alert('Selected option: ' + optionId);
+          // You can also send this selection back to your server for processing
+        }
+      </script>
+    </body>
+    </html>
+  `);
 });
 
 export default router;
