@@ -187,7 +187,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
   }
 });
 
-router.get('/iframe-contents', (req: Request, res: Response) => {
+router.get('/iframe-contents', async (req: Request, res: Response) => {
   const portalId = req.query.portalId;
   const tradeName = req.query.tradeName;
 
