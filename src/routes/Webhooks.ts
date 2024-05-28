@@ -114,17 +114,18 @@ router.get('/datarequest', async (req: Request, res: Response) => {
           'updated': '2016-09-28',
           'properties': [
             {
-              'label': 'Test1',
+              'label': 'Bedrijfsnaam',
               'dataType': 'STRING',
-              'value': 'TEST1',
+              'value': tradeName,
             },
             {
-              'label': 'Test2',
-              'dataType': 'STRING',
+              'label': 'Status',
+              'dataType': 'STATUS',
               'value': 'TEST2',
+              "optionType": "DANGER",
             },
             {
-              'label': 'Test3',
+              'label': '121221',
               'dataType': 'STRING',
               'value': 'TEST3',
             },
