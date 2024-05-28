@@ -189,21 +189,16 @@ router.get('/datarequest', async (req: Request, res: Response) => {
 
 router.get('/iframe-contents', async (req: Request, res: Response) => {
   const portalId = parseInt(req.query.portalId as string, 10);
-  const tradeName = req.query.tradeName;
+  const tradeName = req.query.tradeName as string;
 
   console.log('req.query');
   console.log(req.query);
 
   if (portalId) {
     const currentUser: User | null = await usersController.getUser(portalId);
-
-    const companyInfoUserName = currentUser.companyInfoUserName;
-    const companyInfoPassword = currentUser.companyInfoPassword;
-
-    console.log('companyInfoUserName');
-    console.log(companyInfoUserName);
-    console.log('companyInfoPassword');
-    console.log(companyInfoPassword);
+    const result = await companiesController.getCompanies(tradeName, currentUser.companyInfoUserName, currentUser.companyInfoPassword);
+    console.log('result')
+    console.log(result)
   }
   
   res.send(`
