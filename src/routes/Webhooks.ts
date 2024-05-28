@@ -191,6 +191,9 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
   const portalId = req.query.portalId;
   const tradeName = req.query.tradeName;
 
+  console.log('req.query');
+  console.log(req.query);
+
   if (portalId) {
     // @ts-ignore
     const currentUser: User | null = await usersController.getUser(portalId);
