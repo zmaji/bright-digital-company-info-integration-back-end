@@ -92,4 +92,25 @@ router.post('/company', async (req: Request, res: Response) => {
   }
 });
 
+router.get('/datarequest', async (req: Request, res: Response) => {
+  logger.info('Entered datarequest webhook route!');
+  try {
+    const verified = await verifySignature(req);
+
+    if (verified) {
+      const portalId = req.query.portalId;
+      const tradeName = req.query.tradeName;
+
+      console.log('portalId');
+      console.log(portalId);
+      console.log('tradeName');
+      console.log(tradeName);
+    }
+  } catch (error) {
+    res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: 'An error occurred processing the webhook' });
+  }
+});
+
 export default router;
