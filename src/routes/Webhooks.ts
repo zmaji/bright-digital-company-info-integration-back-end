@@ -122,56 +122,19 @@ router.get('/datarequest', async (req: Request, res: Response) => {
               'value': 'STATUS: TBA',
             },
           ],
-          // 'actions': [
-          //   {
-          //     'type': 'IFRAME',
-          //     'width': 890,
-          //     'height': 748,
-          //     'uri': 'https://example.com/edit-iframe-contents',
-          //     'label': 'Edit',
-          //     'associatedObjectProperties': [],
-          //   },
-          //   {
-          //     'type': 'IFRAME',
-          //     'width': 890,
-          //     'height': 748,
-          //     'uri': 'https://example.com/reassign-iframe-contents',
-          //     'label': 'Reassign',
-          //     'associatedObjectProperties': [],
-          //   },
-          //   {
-          //     'type': 'ACTION_HOOK',
-          //     'httpMethod': 'PUT',
-          //     'associatedObjectProperties': [],
-          //     'uri': 'https://example.com/tickets/245/resolve',
-          //     'label': 'Resolve',
-          //   },
-          //   {
-          //     'type': 'CONFIRMATION_ACTION_HOOK',
-          //     'confirmationMessage': 'Are you sure you want to delete this ticket?',
-          //     'confirmButtonText': 'Yes',
-          //     'cancelButtonText': 'No',
-          //     'httpMethod': 'DELETE',
-          //     'associatedObjectProperties': [
-          //       'protected_account',
-          //     ],
-          //     'uri': 'https://example.com/tickets/245',
-          //     'label': 'Delete',
-          //   },
-          // ],
         },
       ],
       'settingsAction': {
         'type': 'CONFIRMATION_ACTION_HOOK',
-        'httpMethod': 'POST',
-        'uri': 'https://example.com/action-hook',
-        'label': 'Example action',
-        // "associatedObjectProperties": [
-        //   "some_crm_property"
-        // ],
-        'confirmationMessage': 'Are you sure you want to run example action?',
+        'confirmationMessage': 'Are you sure you want to delete this ticket?',
         'confirmButtonText': 'Yes',
         'cancelButtonText': 'No',
+        'httpMethod': 'DELETE',
+        'associatedObjectProperties': [
+          'protected_account',
+        ],
+        'uri': 'https://example.com/tickets/245',
+        'label': 'Delete',
       },
       'primaryAction': {
         'type': 'ACTION_HOOK',
