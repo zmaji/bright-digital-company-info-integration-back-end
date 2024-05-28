@@ -171,8 +171,8 @@ router.get('/datarequest', async (req: Request, res: Response) => {
             width: 890,
             height: 748,
             // @ts-ignore
-            uri: `https://your-domain.com/iframe-contents`,
-            // uri: `https://your-domain.com/iframe-contents?portalId=${encodeURIComponent(portalId)}?tradeName=${encodeURIComponent(tradeName)}`,
+            // uri: `https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/iframe-contents`,
+            uri: `https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/iframe-contents?portalId=${encodeURIComponent(portalId)}?tradeName=${encodeURIComponent(tradeName)}`,
             label: buttonLabel,
           },
       // ]
@@ -188,13 +188,13 @@ router.get('/datarequest', async (req: Request, res: Response) => {
 });
 
 router.get('/iframe-contents', (req: Request, res: Response) => {
-  // const portalId = req.query.portalId;
-  // const tradeName = req.query.tradeName;
+  const portalId = req.query.portalId;
+  const tradeName = req.query.tradeName;
 
-  // console.log('portalId');
-  // console.log(portalId);
-  // console.log('tradeName');
-  // console.log(tradeName);
+  console.log('portalId');
+  console.log(portalId);
+  console.log('tradeName');
+  console.log(tradeName);
 
   res.send(`
     <!DOCTYPE html>
