@@ -162,7 +162,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
         "associatedObjectProperties": [
           "some_crm_property"
         ],
-        "confirmationMessage": "Are you sure you want to run example action?",
+        "confirmationMessage": confirmationMessage,
         "confirmButtonText": "Yes",
         "cancelButtonText": "No"
       },
