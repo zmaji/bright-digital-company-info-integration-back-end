@@ -120,7 +120,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
             },
             {
               'label': 'Status',
-              'dataType': 'STATUS',
+              'dataType': 'STATUSxDDDDDDD',
               'value': 'TEST2',
               "optionType": "DANGER",
             },
