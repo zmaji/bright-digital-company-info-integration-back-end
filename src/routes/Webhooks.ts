@@ -131,17 +131,13 @@ router.get('/datarequest', async (req: Request, res: Response) => {
       'results': [
         {
           'objectId': objectId,
-          'title': 'Sync or update company info',
-          // 'reporter_type': 'Account Manager',
-          // 'status': 'In Progress',
-          // 'ticket_type': 'Bug',
-          // 'updated': '2016-09-28',
+          'title': `Current company: ${tradeName}`,
           'properties': [
-            {
-              'label': 'Trade name',
-              'dataType': 'STRING',
-              'value': tradeName,
-            },
+            // {
+            //   'label': 'Trade name',
+            //   'dataType': 'STRING',
+            //   'value': tradeName,
+            // },
             {
               'label': 'Dossier number',
               'dataType': dossierDataType,
