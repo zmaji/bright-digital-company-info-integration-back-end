@@ -138,21 +138,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
           ],
         },
       ],
-      'settingsAction': {
-        'type': 'IFRAME',
-        'width': 890,
-        'height': 748,
-        'uri': 'https://example.com/settings-iframe-contents',
-        'label': 'Settings',
-      },
       'primaryAction': {
-        'type': 'IFRAME',
-        'width': 890,
-        'height': 748,
-        'uri': 'https://example.com/create-iframe-contents',
-        'label': 'Create Ticket',
-      },
-      'secondaryAction': {
         "type": "CONFIRMATION_ACTION_HOOK",
         "httpMethod": "POST",
         "uri": "https://example.com/action-hook",
@@ -163,7 +149,16 @@ router.get('/datarequest', async (req: Request, res: Response) => {
         "confirmationMessage": "Are you sure you want to run example action?",
         "confirmButtonText": "Yes",
         "cancelButtonText": "No"
-      }
+      },
+      'secondaryActions':[
+        {
+        'type': 'IFRAME',
+        'width': 890,
+        'height': 748,
+        'uri': 'https://example.com/settings-iframe-contents',
+        'label': 'Settings',
+        }
+      ]   
     };
 
     res.send(cardInformation);
