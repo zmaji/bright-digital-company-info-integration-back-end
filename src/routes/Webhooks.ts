@@ -98,9 +98,12 @@ router.get('/datarequest', async (req: Request, res: Response) => {
     // const verified = await verifySignature(req);
 
     // if (verified) {
+
     const portalId = req.query.portalId;
     const tradeName = req.query.tradeName;
 
+    console.log('req.query');
+    console.log(req.query);
     console.log('portalId');
     console.log(portalId);
     console.log('tradeName');
