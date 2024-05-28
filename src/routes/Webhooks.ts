@@ -108,22 +108,25 @@ router.get('/datarequest', async (req: Request, res: Response) => {
     const dossierNumber = req.query.dossier_number;
     const tradeName = req.query.name;
     const objectId = req.query.associatedObjectId;
-    let status: string;s
-    let statusType: string;
-    let buttonLabel: string;
-    let confirmationMessage: string;
+    // let status: string;
+    // let statusType: string;
+    // let buttonLabel: string;
+    // let confirmationMessage: string;
 
-    if (dossierNumber !== '' && dossierNumber !== undefined && dossierNumber !== null) {
-      status = 'Synced';
-      statusType = 'SUCCESS';
-      buttonLabel = 'Sync with Company.info';
-      confirmationMessage = `Are you sure you want to sync ${tradeName}?`
-    } else {
-      status = 'Not synced';
-      statusType = 'DANGER';
-      buttonLabel = 'Update company';
-      confirmationMessage = `Are you sure you want to update ${tradeName}?`
-    }
+    const status = 'Status';
+    const statusType = 'DANGER';
+
+    // if (dossierNumber !== '' && dossierNumber !== undefined && dossierNumber !== null) {
+    //   status = 'Synced';
+    //   statusType = 'SUCCESS';
+    //   buttonLabel = 'Sync with Company.info';
+    //   confirmationMessage = `Are you sure you want to sync ${tradeName}?`
+    // } else {
+    //   status = 'Not synced';
+    //   statusType = 'DANGER';
+    //   buttonLabel = 'Update company';
+    //   confirmationMessage = `Are you sure you want to update ${tradeName}?`
+    // }
 
     const cardInformation = {
       'results': [
