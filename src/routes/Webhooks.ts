@@ -103,37 +103,48 @@ router.get('/datarequest', async (req: Request, res: Response) => {
 // DANGER: Red
 // INFO: Blue
 
+// CURRENCY, DATE, DATETIME, EMAIL, LINK, NUMERIC, STATUS, STRING
+
     // if (verified) {
     // const portalId = req.query.portalId;
     const dossierNumber = req.query.dossier_number;
     const tradeName = req.query.name;
-    const objectId = req.query.associatedObjectId;
+    let status: string;
+    let statusType: string;
+    let buttonLabel: string;
+    let confirmationMessage: string;
+
+    if (dossierNumber !== '' && dossierNumber !== undefined && dossierNumber !== null) {
+      status = 'Synced';
+      statusType = 'SUCCESS';
+      buttonLabel = 'Sync with Company.info';
+      confirmationMessage = `Are you sure you want to sync ${tradeName}?`
+    } else {
+      status = 'Not synced';
+      statusType = 'DANGER';
+      buttonLabel = 'Update company';
+      confirmationMessage = `Are you sure you want to update ${tradeName}?`
+    }
 
     const cardInformation = {
       'results': [
         {
-          'objectId': objectId,
-          'title': tradeName,
-          'reporter_type': 'Account Manager',
-          'status': 'In Progress',
-          'ticket_type': 'Bug',
-          'updated': '2016-09-28',
           'properties': [
             {
-              'label': 'Bedrijfsnaam',
+              'label': 'Trade name',
               'dataType': 'STRING',
               'value': tradeName,
             },
             {
-              'label': 'Status',
-              'dataType': 'STATUS',
-              'value': 'TEST2!!!!!',
-              "optionType": "DANGER",
+              'label': 'Dossier number',
+              'dataType': 'NUMERIC',
+              'value': dossierNumber,
             },
             {
-              'label': '121221',
-              'dataType': 'STRING',
-              'value': 'TEST3',
+              'label': 'Company.info status',
+              'dataType': 'STATUS',
+              'value': status,
+              'optionType': statusType,
             },
           ],
         },
@@ -142,11 +153,11 @@ router.get('/datarequest', async (req: Request, res: Response) => {
         "type": "CONFIRMATION_ACTION_HOOK",
         "httpMethod": "POST",
         "uri": "https://example.com/action-hook",
-        "label": "Example action",
+        "label": buttonLabel,
         "associatedObjectProperties": [
           "some_crm_property"
         ],
-        "confirmationMessage": "Are you sure you want to run example action?",
+        "confirmationMessage": confirmationMessage,
         "confirmButtonText": "Yes",
         "cancelButtonText": "No"
       },
