@@ -127,7 +127,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
     const cardInformation = {
       'results': [
         {
-          'objectId': objectId,
+          // 'objectId': objectId,
           'title': tradeName,
           // 'reporter_type': 'Account Manager',
           // 'status': 'In Progress',
