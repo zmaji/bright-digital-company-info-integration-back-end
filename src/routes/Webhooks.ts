@@ -135,11 +135,11 @@ router.get('/datarequest', async (req: Request, res: Response) => {
               'dataType': 'STRING',
               'value': tradeName,
             },
-            {
-              'label': 'Dossier number',
-              'dataType': 'NUMERIC',
-              'value': dossierNumber,
-            },
+            // {
+            //   'label': 'Dossier number',
+            //   'dataType': 'NUMERIC',
+            //   'value': dossierNumber,
+            // },
             {
               'label': 'Company.info status',
               'dataType': 'STATUS',
