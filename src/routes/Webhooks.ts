@@ -191,56 +191,110 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
   const portalId = parseInt(req.query.portalId as string, 10);
   const tradeName = req.query.tradeName as string;
 
-  console.log('req.query');
-  console.log(req.query);
-
   if (portalId) {
     const currentUser: User | null = await usersController.getUser(portalId);
-    const result = await companiesController.getCompanies(tradeName, currentUser.companyInfoUserName, currentUser.companyInfoPassword);
-    console.log('result')
-    console.log(result)
-  }
+    // const result = await companiesController.getCompanies(tradeName, currentUser.companyInfoUserName, currentUser.companyInfoPassword);
+    const result = {
+      "item": [
+        {
+          "dossier_number": "62801406",
+          "establishment_number": "000031778321",
+          "name": "Bright Digital B.V. TEST 1",
+          "match_type": "trade_name",
+          "establishment_city": "APELDOORN",
+          "establishment_street": "Vosselmanstraat",
+          "correspondence_city": "APELDOORN",
+          "correspondence_street": "Vosselmanstraat",
+          "indication_economically_active": true
+        },
+        {
+          "dossier_number": "62801406",
+          "establishment_number": "000031778321",
+          "name": "Bright Digital B.V. TEST 2",
+          "match_type": "trade_name",
+          "establishment_city": "APELDOORN",
+          "establishment_street": "Vosselmanstraat",
+          "correspondence_city": "APELDOORN",
+          "correspondence_street": "Vosselmanstraat",
+          "indication_economically_active": true
+        },
+        {
+          "dossier_number": "62801406",
+          "establishment_number": "000031778321",
+          "name": "Bright Digital B.V. TEST 3",
+          "match_type": "trade_name",
+          "establishment_city": "APELDOORN",
+          "establishment_street": "Vosselmanstraat",
+          "correspondence_city": "APELDOORN",
+          "correspondence_street": "Vosselmanstraat",
+          "indication_economically_active": true
+        },
+        {
+          "dossier_number": "62801406",
+          "establishment_number": "000031778321",
+          "name": "Bright Digital B.V. TEST 4",
+          "match_type": "trade_name",
+          "establishment_city": "APELDOORN",
+          "establishment_street": "Vosselmanstraat",
+          "correspondence_city": "APELDOORN",
+          "correspondence_street": "Vosselmanstraat",
+          "indication_economically_active": true
+        },
+      ]
+    };
   
-  res.send(`
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Select Option</title>
-      <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .option { margin: 10px 0; }
-        .option button { padding: 10px; }
-      </style>
-    </head>
-    <body>
-      <h1>Search results for trade name ${tradeName}</h1>
+    res.send(`
+      <!DOCTYPE html>
+      <html lang="en">  
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Select Option</title>
+        <style>
+          body { font-family: Arial, sans-serif; padding: 20px; }
+          .option { margin: 10px 0; }
+          .option button { padding: 10px; }
+        </style>
+      </head>
+      <body>
+        <h1>Search results for trade name ${tradeName}</h1>
 
-      <div id="options-container"></div>
+        <div id="options-container"></div>
 
-      <script>
-        const options = [
-          { id: 1, name: 'Option 1' },
-          { id: 2, name: 'Option 2' },
-          { id: 3, name: 'Option 3' },
-        ];
-        
-        const container = document.getElementById('options-container');
-        
-        options.forEach(option => {
-          const div = document.createElement('div');
-          div.className = 'option';
-          div.innerHTML = \`<button onclick="selectOption(\${option.id})">\${option.name}</button>\`;
-          container.appendChild(div);
-        });
+        <script>
+          const result = ${JSON.stringify(result.item)};
+          
+          const container = document.getElementById('options-container');
+          
+          result.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'option';
+            div.innerHTML = \`
+              <div>
+                <h2>\${item.name}</h2>
+                <p><strong>Dossier Number:</strong> \${item.dossier_number}</p>
+                <p><strong>Establishment Number:</strong> \${item.establishment_number}</p>
+                <p><strong>City:</strong> \${item.establishment_city}</p>
+                <p><strong>Street:</strong> \${item.establishment_street}</p>
+                <p><strong>Correspondence City:</strong> \${item.correspondence_city}</p>
+                <p><strong>Correspondence Street:</strong> \${item.correspondence_street}</p>
+                <p><strong>Economically Active:</strong> \${item.indication_economically_active}</p>
+              </div>
+            \`;
+            container.appendChild(div);
+          });
 
-        function selectOption(optionId) {
-        }
-      </script>
-    </body>
-    </html>
-  `);
+          function selectOption(optionId) {
+            console.log('Selected option:', optionId);
+          }
+        </script>
+      </body>
+      </html>
+    `);
+  } else {
+    res.status(400).send('Invalid portalId');
+  }
 });
+
 
 export default router;
