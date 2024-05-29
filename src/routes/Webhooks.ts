@@ -293,6 +293,7 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
   </head>
   <body>
     <h1>Search results for trade name ${tradeName}</h1>
+    
     <div id="options-container"></div>
 
     <script>
@@ -306,14 +307,17 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
         div.innerHTML = 
         \`
           <div class="c-search-row__line"></div>
+
           <div class="c-search-row__content-container u-flex">
             <div class="c-search-row__name-container u-flex">
-              <div class="c-search-row__name">\${item.name}</div>
+              <div class="c-search-row__name">{item.name}</div>
             </div>
+
             <div class="c-search-row__address-container u-flex">
-              <div class="c-search-row__address">\${item.correspondence_street} | </div>
-              <div class="c-search-row__location">\${item.correspondence_city}</div>
+              <div class="c-search-row__address">{item.correspondence_street}&nbsp;|</div>
+              <div class="c-search-row__location">&nbsp;\${item.correspondence_city}</div>
             </div>
+
             <div class="c-search-row__button-container">
               <button onclick="selectOption('\${item.dossier_number}')">Select</button>
             </div>
