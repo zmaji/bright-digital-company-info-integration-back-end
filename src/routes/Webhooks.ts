@@ -95,7 +95,7 @@ router.post('/company', async (req: Request, res: Response) => {
   }
 });
 
-router.put('/update', async (req: Request, res: Response) => {
+router.put('/sync', async (req: Request, res: Response) => {
   try {
     const portalId = parseInt(req.body.portalId as string, 10);
 
@@ -131,6 +131,53 @@ router.put('/update', async (req: Request, res: Response) => {
   }
 });
 
+router.put('/update', async (req: Request, res: Response) => {
+  try {
+    const dossierNumber = parseInt(req.query.portalId as string, 10);
+    const portalId = parseInt(req.query.portalId as string, 10);
+
+    if (portalId) {
+      currentUser = await usersController.getUser(portalId);
+
+      if (currentUser) {
+      COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
+      COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
+
+      const company = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
+
+        if (company) {
+          const hubToken: HubToken | null = await authController.retrieveHubToken(portalId);
+          const companyId = req.query.companyId as string;
+      
+            if (hubToken && companyId && company) {
+              if (companyId && companyId !== '') {
+                const result = await companiesController.updateCompany(hubToken, companyId, company);
+
+                if (result) {
+                  res
+                      .status(StatusCodes.OK)
+                      .json(result);
+                } else {
+                  res
+                      .status(StatusCodes.NOT_FOUND)
+                      .json({ error: `Unable to update a company with id ${companyId}` });
+                }
+              } else {
+                res
+                    .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                    .json({ error: 'No company or data provided' });
+              }
+            }
+        }
+      }
+   }
+  } catch {
+    res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: 'An error occurred updating a company' });
+  }
+});
+
 router.get('/datarequest', async (req: Request, res: Response) => {
   logger.info('Entered datarequest webhook route!');
   try {
@@ -146,17 +193,22 @@ router.get('/datarequest', async (req: Request, res: Response) => {
     let status: string;
     let statusType: string;
     let buttonLabel: string;
+    let buttonUri: string;
 
     if (dossierNumber !== '' && dossierNumber !== undefined && dossierNumber !== null) {
       status = 'Synced';
       statusType = 'SUCCESS';
       buttonLabel = 'Update company';
+      // @ts-ignore
+      buttonUri = `https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/update?portalId=${encodeURIComponent(portalId)}&dossierNumber=${encodeURIComponent(dossierNumber)}`
     } else {
       status = 'Not synced';
       statusType = 'DANGER';
       buttonLabel = 'Sync with Company.info';
       dossierNumber = 'Unknown';
       dossierDataType = 'STRING';
+      // @ts-ignore
+      buttonUri = `https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/iframe-contents?portalId=${encodeURIComponent(portalId)}&tradeName=${encodeURIComponent(tradeName)}`
     }
 
     const cardInformation = {
@@ -184,8 +236,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
             type: 'IFRAME',
             width: 890,
             height: 748,
-            // @ts-ignore
-            uri: `https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/iframe-contents?portalId=${encodeURIComponent(portalId)}&tradeName=${encodeURIComponent(tradeName)}`,
+            uri: buttonUri,
             label: buttonLabel,
           },
     };
@@ -309,7 +360,7 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
 
             async function selectOption(dossierNumber) {
                 try {
-                  const response = await fetch('/webhooks/update', {
+                  const response = await fetch('/webhooks/sync', {
                     method: 'PUT',
                     headers: {
                       'Content-Type': 'application/json'
