@@ -168,60 +168,61 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
   const portalId = parseInt(req.query.portalId as string, 10);
   const tradeName = req.query.tradeName as string;
 
-  console.log('req.query');
-  console.log(req.query);
-
   if (portalId) {
     const currentUser: User | null = await usersController.getUser(portalId);
-    const result = await companiesController.getCompanies(tradeName, currentUser.companyInfoUserName, currentUser.companyInfoPassword);
-    // const result = {
-    //   'item': [
-    //     {
-    //       'dossier_number': '62801406',
-    //       'establishment_number': '000031778321',
-    //       'name': 'Bright Digital B.V. TEST 1',
-    //       'match_type': 'trade_name',
-    //       'establishment_city': 'APELDOORN',
-    //       'establishment_street': 'Vosselmanstraat',
-    //       'correspondence_city': 'APELDOORN',
-    //       'correspondence_street': 'Vosselmanstraat',
-    //       'indication_economically_active': true,
-    //     },
-    //     {
-    //       'dossier_number': '62801406',
-    //       'establishment_number': '000031778321',
-    //       'name': 'Bright Digital B.V. TEST 2',
-    //       'match_type': 'trade_name',
-    //       'establishment_city': 'APELDOORN',
-    //       'establishment_street': 'Vosselmanstraat',
-    //       'correspondence_city': 'APELDOORN',
-    //       'correspondence_street': 'Vosselmanstraat',
-    //       'indication_economically_active': true,
-    //     },
-    //     {
-    //       'dossier_number': '62801406',
-    //       'establishment_number': '000031778321',
-    //       'name': 'Bright Digital B.V. TEST 3',
-    //       'match_type': 'trade_name',
-    //       'establishment_city': 'APELDOORN',
-    //       'establishment_street': 'Vosselmanstraat',
-    //       'correspondence_city': 'APELDOORN',
-    //       'correspondence_street': 'Vosselmanstraat',
-    //       'indication_economically_active': true,
-    //     },
-    //     {
-    //       'dossier_number': '62801406',
-    //       'establishment_number': '000031778321',
-    //       'name': 'Bright Digital B.V. TEST 4',
-    //       'match_type': 'trade_name',
-    //       'establishment_city': 'APELDOORN',
-    //       'establishment_street': 'Vosselmanstraat',
-    //       'correspondence_city': 'APELDOORN',
-    //       'correspondence_street': 'Vosselmanstraat',
-    //       'indication_economically_active': true,
-    //     },
-    //   ],
-    // };
+
+    COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
+    COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
+
+    // const result = await companiesController.getCompanies(tradeName, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
+    const result = {
+      'item': [
+        {
+          'dossier_number': '62801406',
+          'establishment_number': '000031778321',
+          'name': 'Bright Digital B.V. TEST 1',
+          'match_type': 'trade_name',
+          'establishment_city': 'APELDOORN',
+          'establishment_street': 'Vosselmanstraat',
+          'correspondence_city': 'APELDOORN',
+          'correspondence_street': 'Vosselmanstraat',
+          'indication_economically_active': true,
+        },
+        {
+          'dossier_number': '62801406',
+          'establishment_number': '000031778321',
+          'name': 'Bright Digital B.V. TEST 2',
+          'match_type': 'trade_name',
+          'establishment_city': 'APELDOORN',
+          'establishment_street': 'Vosselmanstraat',
+          'correspondence_city': 'APELDOORN',
+          'correspondence_street': 'Vosselmanstraat',
+          'indication_economically_active': true,
+        },
+        {
+          'dossier_number': '62801406',
+          'establishment_number': '000031778321',
+          'name': 'Bright Digital B.V. TEST 3',
+          'match_type': 'trade_name',
+          'establishment_city': 'APELDOORN',
+          'establishment_street': 'Vosselmanstraat',
+          'correspondence_city': 'APELDOORN',
+          'correspondence_street': 'Vosselmanstraat',
+          'indication_economically_active': true,
+        },
+        {
+          'dossier_number': '62801406',
+          'establishment_number': '000031778321',
+          'name': 'Bright Digital B.V. TEST 4',
+          'match_type': 'trade_name',
+          'establishment_city': 'APELDOORN',
+          'establishment_street': 'Vosselmanstraat',
+          'correspondence_city': 'APELDOORN',
+          'correspondence_street': 'Vosselmanstraat',
+          'indication_economically_active': true,
+        },
+      ],
+    };
 
     res.send(`
   <!DOCTYPE html>
@@ -316,7 +317,10 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
       });
 
       function selectOption(dossierNumber) {
-        console.log('Selected option:', dossierNumber);
+        if (dossierNumber) {
+          const result = await companiesController.getCompanyInfo(dossierNumber, currentUser.companyInfoUserName, currentUser.companyInfoPassword);
+          console.log(result)
+        }
       }
     </script>
   </body>
