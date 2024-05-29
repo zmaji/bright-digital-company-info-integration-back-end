@@ -314,6 +314,8 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
 
     <script>
       const result = ${JSON.stringify(result.item)};
+      const COMPANY_INFO_USERNAME = ${JSON.stringify(COMPANY_INFO_USERNAME)};
+      const COMPANY_INFO_PASSWORD = ${JSON.stringify(COMPANY_INFO_PASSWORD)};
 
       function capitalizeFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
