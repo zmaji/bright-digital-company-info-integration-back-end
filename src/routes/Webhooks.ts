@@ -153,10 +153,8 @@ router.put('/update', async (req: Request, res: Response) => {
           const hubToken: HubToken | null = await authController.retrieveHubToken(portalId);
           const companyId = req.query.companyId as string;
 
-          console.log('hubToken')
-          console.log(hubToken)
-          console.log('company')
-          console.log(company)
+          console.log('companyId');
+          console.log(companyId);
       
             if (hubToken && companyId && company) {
               console.log('YES');
@@ -211,7 +209,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
       statusType = 'SUCCESS';
       buttonLabel = 'Update company';
       // @ts-ignore
-      buttonUri = `https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/update?portalId=${encodeURIComponent(portalId)}&dossierNumber=${encodeURIComponent(dossierNumber)}`
+      buttonUri = `https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/update?portalId=${encodeURIComponent(portalId)}&dossierNumber=${encodeURIComponent(dossierNumber)}&companyId=${encodedURIComponent(companyId)}`
       primaryAction = {
         type: 'ACTION_HOOK',
         httpMethod: 'PUT',
