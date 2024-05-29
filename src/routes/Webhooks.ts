@@ -315,7 +315,7 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
     <div id="options-container"></div>
 
     <script>
-      const result = ${JSON.stringify(result)};
+      const result = ${JSON.stringify(result.item)};
       const portalId = ${JSON.stringify(portalId)};
       const companyId = ${JSON.stringify(companyId)};
 
