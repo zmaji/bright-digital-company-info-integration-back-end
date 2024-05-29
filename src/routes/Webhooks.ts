@@ -152,9 +152,6 @@ router.put('/update', async (req: Request, res: Response) => {
           console.log('We have a company');
           const hubToken: HubToken | null = await authController.retrieveHubToken(portalId);
           const companyId = req.query.companyId as string;
-
-          console.log('companyId');
-          console.log(companyId);
       
             if (hubToken && companyId && company) {
               console.log('YES');
