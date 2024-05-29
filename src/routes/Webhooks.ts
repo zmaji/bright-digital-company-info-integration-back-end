@@ -13,6 +13,7 @@ const router = Router();
 
 let COMPANY_INFO_USERNAME: string;
 let COMPANY_INFO_PASSWORD: string;
+let currentUser: User | null;
 
 router.post('/company', async (req: Request, res: Response) => {
   logger.info('Entered webhook routes!');
@@ -169,7 +170,9 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
   const tradeName = req.query.tradeName as string;
 
   if (portalId) {
-    const currentUser: User | null = await usersController.getUser(portalId);
+    currentUser = await usersController.getUser(portalId);
+    console.log('currentUser');
+    console.log(currentUser);
 
     COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
     COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
@@ -316,9 +319,25 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
         container.appendChild(div);
       });
 
-      function selectOption(dossierNumber) {
-        if (dossierNumber) {
-          console.log(result)
+      async function selectOption(dossierNumber) {
+        try {
+          const response = await fetch('/https://company-info-bright-c6c99ec34e11.herokuapp.com/companies/info', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ dossierNumber, authToken })
+          });
+
+          const result = await response.json();
+          if (response.ok) {
+            console.log(result);
+            // You can process and display the result as needed
+          } else {
+            console.error(result.error);
+          }
+        } catch (error) {
+          console.error('Error fetching company info:', error);
         }
       }
     </script>
