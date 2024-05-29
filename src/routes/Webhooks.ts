@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import { verifySignature } from '../helpers/hubspot/verifySignature';
 import companiesController from '../controllers/Companies';
 import logger from '../utils/Logger';
-import { retrieveHubToken } from '../controllers/Auth';
+import authController, { retrieveHubToken } from '../controllers/Auth';
 import { formatCompanyData } from '../helpers/hubspot/formatCompanyData';
 import { User } from '../typings/User';
 import usersController from '../controllers/Users';
@@ -173,6 +173,10 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
     currentUser = await usersController.getUser(portalId);
     console.log('currentUser');
     console.log(currentUser);
+
+    const loggedInUser = await authController.authenticateUser(currentUser.emailAddress, currentUser.password);
+    console.log('loggedInUser')
+    console.log(loggedInUser)
 
     COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
     COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
