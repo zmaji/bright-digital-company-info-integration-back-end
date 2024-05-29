@@ -133,26 +133,28 @@ router.put('/sync', async (req: Request, res: Response) => {
 
 router.put('/update', async (req: Request, res: Response) => {
   try {
+    console.log('Received update webhook..');
     const dossierNumber = parseInt(req.query.portalId as string, 10);
     const portalId = parseInt(req.query.portalId as string, 10);
 
     if (portalId) {
+      console.log('We have a portal ID');
       currentUser = await usersController.getUser(portalId);
 
       if (currentUser) {
+      console.log('We have a current user');
       COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
       COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
 
       const company = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
 
-      console.log('company')
-      console.log(company)
-
         if (company) {
+          console.log('We have a company');
           const hubToken: HubToken | null = await authController.retrieveHubToken(portalId);
           const companyId = req.query.companyId as string;
       
             if (hubToken && companyId && company) {
+              console.log('YES');
               if (companyId && companyId !== '') {
                 const result = await companiesController.updateCompany(hubToken, companyId, company);
 
