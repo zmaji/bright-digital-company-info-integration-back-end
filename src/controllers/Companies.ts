@@ -181,18 +181,6 @@ const updateCompany = async (hubToken: HubToken, companyId: string, companyData:
 
   delete companyData.legal_name;
 
-  console.log('test')
-  console.log('test')
-  console.log('test')
-  console.log('test')
-
-  console.log('hubToken')
-  console.log(hubToken)
-  console.log('companyId')
-  console.log(companyId)
-  console.log('companyData')
-  console.log(companyData)
-
   try {
     const response: AxiosResponse = await axios({
       method: 'patch',
@@ -217,8 +205,23 @@ const updateCompany = async (hubToken: HubToken, companyId: string, companyData:
       return null;
     }
   } catch (error) {
-    logger.error('Error while updating company:', error);
-
+    // Log more information from the error
+    if (error.response) {
+      // The request was made and the server responded with a non-2xx status code
+      logger.error('Error response:', {
+        status: error.response.status,
+        statusText: error.response.statusText,
+        headers: error.response.headers,
+        data: error.response.data,
+      });
+    } else if (error.request) {
+      // The request was made but no response was received
+      logger.error('No response received:', error.request);
+    } else {
+      // Something happened in setting up the request that triggered an error
+      logger.error('Request error:', error.message);
+    }
+  
     return null;
   }
 };
