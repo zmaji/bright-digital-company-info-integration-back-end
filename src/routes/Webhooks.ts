@@ -248,14 +248,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
           ],
         },
       ],
-      'primaryAction':
-          {
-            type: 'IFRAME',
-            width: 890,
-            height: 748,
-            uri: buttonUri,
-            label: buttonLabel,
-          },
+      primaryAction
     };
 
     res.send(cardInformation);
@@ -278,7 +271,6 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
     COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
 
     const result = await companiesController.getCompanies(tradeName, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
-    console.log(result);
 
     if (result) { 
       res.send(`
