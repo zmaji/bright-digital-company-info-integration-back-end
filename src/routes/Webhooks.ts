@@ -7,6 +7,7 @@ import { retrieveHubToken } from '../controllers/Auth';
 import { formatCompanyData } from '../helpers/hubspot/formatCompanyData';
 import { User } from '../typings/User';
 import usersController from '../controllers/Users';
+import { capitalizeFirstLetter } from '../helpers/capitalizeFirstLetter';
 // import { basicVerification } from '../helpers/hubspot/basicVerification';
 
 const router = Router();
@@ -300,15 +301,16 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
       result.forEach(item => {
         const div = document.createElement('div');
         div.className = 'c-search-row u-flex';
-        div.innerHTML = \`
+        div.innerHTML = 
+        \`
           <div class="c-search-row__line"></div>
           <div class="c-search-row__content-container u-flex">
             <div class="c-search-row__name-container u-flex">
               <div class="c-search-row__name">\${item.name}</div>
             </div>
             <div class="c-search-row__address-container u-flex">
-              <div class="c-search-row__address">\${item.correspondence_city} |</div>
-              <div class="c-search-row__location">\${item.correspondence_city}</div>
+              <div class="c-search-row__address">\${item.correspondence_street} | </div>
+              <div class="c-search-row__location">\${capitalizeFirstLetter(item.correspondence_city)}</div>
             </div>
             <div class="c-search-row__button-container">
               <button onclick="selectOption('\${item.dossier_number}')">Select</button>
