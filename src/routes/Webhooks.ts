@@ -364,7 +364,7 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
                 portalId: portalId,
                 companyId: companyId,
                 companyData: {
-                  dossierNumber: dossierNumber
+                  "dossierNumber": dossierNumber
                 }
               })
             });
