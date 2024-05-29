@@ -266,13 +266,19 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
       .c-search-row__button-container {
         margin-left: auto;
       }
+      .v-search-results__text {
+        font-size: 16px;
+        font-weight: 300;
+        margin-bottom: 20px;
+      }
     </style>
   </head>
   <body>
     <h1>Search results for trade name ${tradeName}</h1>
-    <div id="options-container"></div>
 
-    <div>These search results display all companies matching your search criteria. Select a result to sync or update.</div>
+    <div className='v-search-results__text'>These search results display all companies matching your search criteria. Select a result to sync or update.</div>
+    
+    <div id="options-container"></div>
 
     <script>
       const result = ${JSON.stringify(result.item)};
