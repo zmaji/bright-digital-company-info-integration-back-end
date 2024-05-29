@@ -350,31 +350,28 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
         container.appendChild(div);
       });
 
-      // async function selectOption(dossierNumber) {
-      //   try {
-      //     const response = await fetch('/https://company-info-bright-c6c99ec34e11.herokuapp.com/companies/info', {
-      //       method: 'GET',
-      //       headers: {
-      //         'Content-Type': 'application/json'
-      //       },
-      //       params: {
-      //         dossierNumber: dossierNumber,
-      //         companyInfoUserName: ${COMPANY_INFO_USERNAME},
-      //         companyInfoPassword: ${COMPANY_INFO_PASSWORD}
-      //       }
-      //     });
+      async function selectOption(dossierNumber) {
+        try {
+          const params = 'dossierNumber=' + encodeURIComponent(dossierNumber) + '&companyInfoUserName=' + encodeURIComponent(COMPANY_INFO_USERNAME) + '&companyInfoPassword=' + encodeURIComponent(COMPANY_INFO_PASSWORD);
+          
+          const response = await fetch('/companies/info?' + params, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+          });
 
-      //     const result = await response.json();
-      //     console.log(result);
-      //     if (response.ok) {
-      //       // You can process and display the result as needed
-      //     } else {
-      //       console.error(result.error);
-      //     }
-      //   } catch (error) {
-      //     console.error('Error fetching company info:', error);
-      //   }
-      // }
+          const result = await response.json();
+          console.log(result);
+          if (response.ok) {
+            // You can process and display the result as needed
+          } else {
+            console.error(result.error);
+          }
+        } catch (error) {
+          console.error('Error fetching company info:', error);
+        }
+      }
     </script>
   </body>
   </html>
