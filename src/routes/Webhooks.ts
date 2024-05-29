@@ -8,6 +8,7 @@ import { formatCompanyData } from '../helpers/hubspot/formatCompanyData';
 import { User } from '../typings/User';
 import usersController from '../controllers/Users';
 // import { basicVerification } from '../helpers/hubspot/basicVerification';
+import crypto from 'crypto';
 
 const router = Router();
 
@@ -173,6 +174,12 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
     currentUser = await usersController.getUser(portalId);
     console.log('currentUser');
     console.log(currentUser);
+
+    const decipher = crypto.createDecipheriv('aes-192-cbc', currentUser.secret, Buffer.alloc(12, 0));
+    let decrypted = decipher.update(currentUser.password, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+
+    console.log("Decrypted Password:", decrypted);
 
     const loggedInUser = await authController.authenticateUser(currentUser.emailAddress, currentUser.password);
     console.log('loggedInUser')
