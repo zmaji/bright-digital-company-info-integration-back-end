@@ -212,7 +212,8 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
     const result = await companiesController.getCompanies(tradeName, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
     console.log(result);
 
-    if (result.length && result.length > 0) { // Check if result.item exists and has length greater than 0
+    // @ts-ignore
+    if (result.item && result.item.length > 0) { // Check if result.item exists and has length greater than 0
       res.send(`
         <!DOCTYPE html>
         <html lang="en">  
