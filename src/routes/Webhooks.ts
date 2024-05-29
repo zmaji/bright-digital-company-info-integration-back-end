@@ -224,7 +224,7 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
       ],
     };
 
-    result.item[0].correspondence_city = capitalizeFirstLetter(result.item[0].correspondence_city);
+    // result.item[0].correspondence_city = capitalizeFirstLetter(result.item[0].correspondence_city);
 
     res.send(`
   <!DOCTYPE html>
@@ -277,15 +277,20 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
     <h1>Search results for trade name ${tradeName}</h1>
 
     <div className='v-search-results__text'>These search results display all companies matching your search criteria. Select a result to sync or update.</div>
-    
+
     <div id="options-container"></div>
 
     <script>
       const result = ${JSON.stringify(result.item)};
+
+      const modifiedResults = result.map(item => ({
+        ...item,
+        correspondence_city: capitalizeFirstLetter(item.correspondence_city)
+      }));
       
       const container = document.getElementById('options-container');
       
-      result.forEach(item => {
+      modifiedResults.forEach(item => {
         const div = document.createElement('div');
         div.className = 'c-search-row u-flex';
         div.innerHTML = 
