@@ -94,6 +94,38 @@ router.post('/company', async (req: Request, res: Response) => {
   }
 });
 
+router.get('/info', async (req: Request, res: Response) => {
+  try {
+        const dossierNumber = req.query.dossierNumber ? Number(req.query.dossierNumber) : undefined;
+        const companyInfoUserName = req.query.companyInfoUserName as string;
+        const companyInfoPassword = req.query.companyInfoPassword as string;
+
+        if (dossierNumber && companyInfoUserName && companyInfoPassword) {
+          // eslint-disable-next-line
+          const result = await companiesController.getCompanyInfo(dossierNumber, companyInfoUserName, companyInfoPassword);
+          const formattedResult = await formatCompanyData(result);
+
+          if (formattedResult) {
+            res
+                .status(StatusCodes.OK)
+                .json(formattedResult);
+          } else {
+            res
+                .status(StatusCodes.NOT_FOUND)
+                .json({ error: `Unable to get information with dossier number ${dossierNumber}` });
+          }
+        } else {
+          res
+              .status(StatusCodes.INTERNAL_SERVER_ERROR)
+              .json({ error: 'Dossier number has not been provided' });
+        }
+  } catch {
+    res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: 'An error occurred retrieving info' });
+  }
+});
+
 router.get('/datarequest', async (req: Request, res: Response) => {
   logger.info('Entered datarequest webhook route!');
   try {
@@ -172,18 +204,6 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
 
   if (portalId) {
     currentUser = await usersController.getUser(portalId);
-    console.log('currentUser');
-    console.log(currentUser);
-
-    const decipher = crypto.createDecipheriv('aes-192-cbc', currentUser.secret, Buffer.alloc(12, 0));
-    let decrypted = decipher.update(currentUser.password, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-
-    console.log("Decrypted Password:", decrypted);
-
-    const loggedInUser = await authController.authenticateUser(currentUser.emailAddress, currentUser.password);
-    console.log('loggedInUser')
-    console.log(loggedInUser)
 
     COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
     COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
@@ -337,12 +357,16 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ dossierNumber, authToken })
+            params: {
+              dossierNumber: dossierNumber,
+              companyInfoUserName: ${COMPANY_INFO_USERNAME},
+              companyInfoPassword: ${COMPANY_INFO_PASSWORD}
+            }
           });
 
           const result = await response.json();
+          console.log(result);
           if (response.ok) {
-            console.log(result);
             // You can process and display the result as needed
           } else {
             console.error(result.error);
