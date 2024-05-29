@@ -103,10 +103,6 @@ router.put('/update', async (req: Request, res: Response) => {
         const hubToken: HubToken | null = await authController.retrieveHubToken(portalId);
         const companyId = req.body.companyId as string;
         const companyData = req.body.companyData;
-        companyData.dossier_number = parseInt(companyData.dossier_number, 10);
-
-        console.log('companyData.dossier_number')
-        console.log(companyData.dossier_number)
   
         if (hubToken && companyId && companyData) {
           if (companyId && companyId !== '' && Object.keys(companyData).length > 0) {
@@ -368,7 +364,7 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
                 portalId: portalId,
                 companyId: companyId,
                 companyData: {
-                  "dossierNumber": dossierNumber
+                  "dossier_number": dossierNumber
                 }
               })
             });
