@@ -356,7 +356,7 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
         try {
           const params = 'dossierNumber=' + encodeURIComponent(dossierNumber) + '&companyInfoUserName=' + encodeURIComponent(COMPANY_INFO_USERNAME) + '&companyInfoPassword=' + encodeURIComponent(COMPANY_INFO_PASSWORD);
           
-          const response = await fetch('/companies/info?' + params, {
+          const response = await fetch('/webhooks/info?' + params, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json'
