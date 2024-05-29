@@ -137,9 +137,7 @@ router.put('/update', async (req: Request, res: Response) => {
     const dossierNumber = parseInt(req.query.portalId as string, 10);
     const portalId = parseInt(req.query.portalId as string, 10);
 
-    console.log(req.body);
-    console.log(req.params);
-    console.log(req.query);
+    console.log(req);
 
     if (portalId) {
       console.log('We have a portal ID');
