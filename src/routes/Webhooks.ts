@@ -3,10 +3,11 @@ import { StatusCodes } from 'http-status-codes';
 import { verifySignature } from '../helpers/hubspot/verifySignature';
 import companiesController from '../controllers/Companies';
 import logger from '../utils/Logger';
-import { retrieveHubToken } from '../controllers/Auth';
+import authController, { retrieveHubToken } from '../controllers/Auth';
 import { formatCompanyData } from '../helpers/hubspot/formatCompanyData';
 import { User } from '../typings/User';
 import usersController from '../controllers/Users';
+import { HubToken } from '../typings/HubToken';
 // import { basicVerification } from '../helpers/hubspot/basicVerification';
 
 const router = Router();
@@ -14,6 +15,7 @@ const router = Router();
 let COMPANY_INFO_USERNAME: string;
 let COMPANY_INFO_PASSWORD: string;
 let currentUser: User | null;
+let companyId: any;
 
 router.post('/company', async (req: Request, res: Response) => {
   logger.info('Entered webhook routes!');
@@ -93,39 +95,77 @@ router.post('/company', async (req: Request, res: Response) => {
   }
 });
 
-router.get('/info', async (req: Request, res: Response) => {
+// router.get('/info', async (req: Request, res: Response) => {
+//   try {
+//         const dossierNumber = req.query.dossierNumber ? Number(req.query.dossierNumber) : undefined;
+//         const portalId = parseInt(req.query.portalId as string, 10);
+
+//         currentUser = await usersController.getUser(portalId);
+
+//         COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
+//         COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
+
+//         if (dossierNumber && COMPANY_INFO_USERNAME && COMPANY_INFO_PASSWORD) {
+//           // eslint-disable-next-line
+//           const result = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
+//           const formattedResult = await formatCompanyData(result);
+
+//           if (formattedResult) {
+//             res
+//                 .status(StatusCodes.OK)
+//                 .json(formattedResult);
+//           } else {
+//             res
+//                 .status(StatusCodes.NOT_FOUND)
+//                 .json({ error: `Unable to get information with dossier number ${dossierNumber}` });
+//           }
+//         } else {
+//           res
+//               .status(StatusCodes.INTERNAL_SERVER_ERROR)
+//               .json({ error: 'Dossier number has not been provided' });
+//         }
+//   } catch {
+//     res
+//         .status(StatusCodes.INTERNAL_SERVER_ERROR)
+//         .json({ error: 'An error occurred retrieving info' });
+//   }
+// });
+
+router.put('/update', async (req: Request, res: Response) => {
   try {
-        const dossierNumber = req.query.dossierNumber ? Number(req.query.dossierNumber) : undefined;
-        const portalId = parseInt(req.query.portalId as string, 10);
+    const portalId = parseInt(req.body.portalId as string, 10);
 
-        currentUser = await usersController.getUser(portalId);
+      if (portalId) {
+        const hubToken: HubToken | null = await authController.retrieveHubToken(portalId);
 
-        COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
-        COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
-
-        if (dossierNumber && COMPANY_INFO_USERNAME && COMPANY_INFO_PASSWORD) {
+        if (hubToken && req.body.companyId && req.body.companyData) {
+          const companyId: string = typeof req.body.companyId === 'string' ? req.body.companyId : '';
           // eslint-disable-next-line
-          const result = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
-          const formattedResult = await formatCompanyData(result);
+          const companyData: Object = typeof req.body.companyData === 'object' ? req.body.companyData : {};
 
-          if (formattedResult) {
-            res
-                .status(StatusCodes.OK)
-                .json(formattedResult);
+          if (companyId && companyId !== '' && companyData && Object.keys(companyData).length > 0) {
+            const result = await companiesController.updateCompany(hubToken, companyId, companyData);
+
+            if (result) {
+              res
+                  .status(StatusCodes.OK)
+                  .json(result);
+            } else {
+              res
+                  .status(StatusCodes.NOT_FOUND)
+                  .json({ error: `Unable to update a company with id ${companyId}` });
+            }
           } else {
             res
-                .status(StatusCodes.NOT_FOUND)
-                .json({ error: `Unable to get information with dossier number ${dossierNumber}` });
+                .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                .json({ error: 'No company or data provided' });
           }
-        } else {
-          res
-              .status(StatusCodes.INTERNAL_SERVER_ERROR)
-              .json({ error: 'Dossier number has not been provided' });
         }
+      }
   } catch {
     res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: 'An error occurred retrieving info' });
+        .json({ error: 'An error occurred updating a company' });
   }
 });
 
@@ -135,6 +175,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
     // const verified = await basicVerification(req);
 
     // if (verified) {
+    companyId = req.query.objectId;
     const portalId = req.query.portalId;
     let dossierNumber = req.query.dossier_number;
     let dossierDataType = 'NUMERIC';
@@ -349,32 +390,64 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
         container.appendChild(div);
       });
 
-      async function selectOption(dossierNumber) {
-        try {
-          const params = 'dossierNumber=' + encodeURIComponent(dossierNumber) + '&portalId=' + encodeURIComponent(portalId);
+      // async function selectOption(dossierNumber) {
+      //   try {
+      //     const params = 'dossierNumber=' + encodeURIComponent(dossierNumber) + '&portalId=' + encodeURIComponent(portalId);
           
-          const response = await fetch('/webhooks/info?' + params, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-          });
+      //     const response = await fetch('/webhooks/info?' + params, {
+      //       method: 'GET',
+      //       headers: {
+      //         'Content-Type': 'application/json'
+      //       },
+      //     });
 
-          const result = await response.json();
-          console.log(result);
-          if (response.ok) {
-            console.log('Result ok!!!!');
-            console.log('Result ok!!!!');
-            console.log('Result ok!!!!');
-            console.log('Result ok!!!!');
-            console.log('Result ok!!!!');
-          } else {
-            console.error(result.error);
+      //     const result = await response.json();
+      //     console.log(result);
+      //     if (response.ok) {
+      //       console.log('Result ok!!!!');
+      //       console.log('Result ok!!!!');
+      //       console.log('Result ok!!!!');
+      //       console.log('Result ok!!!!');
+      //       console.log('Result ok!!!!');
+      //     } else {
+      //       console.error(result.error);
+      //     }
+      //   } catch (error) {
+      //     console.error('Error fetching company info:', error);
+      //   }
+      // }
+
+      async function selectOption(dossierNumber) {
+          try {
+            const params = 'dossierNumber=' + encodeURIComponent(dossierNumber) + '&portalId=' + encodeURIComponent(portalId);
+            
+            const response = await fetch('/webhooks/update', {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: {
+                dossierNumber: dossierNumber,
+                portalId: portalId,
+                companyId:, companyId
+              }
+            });
+  
+            const result = await response.json();
+            console.log(result);
+            if (response.ok) {
+              console.log('Result ok!!!!');
+              console.log('Result ok!!!!');
+              console.log('Result ok!!!!');
+              console.log('Result ok!!!!');
+              console.log('Result ok!!!!');
+            } else {
+              console.error(result.error);
+            }
+          } catch (error) {
+            console.error('Error fetching company info:', error);
           }
-        } catch (error) {
-          console.error('Error fetching company info:', error);
         }
-      }
     </script>
   </body>
   </html>
