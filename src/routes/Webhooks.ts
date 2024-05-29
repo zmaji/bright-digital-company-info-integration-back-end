@@ -364,7 +364,7 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
               },
               body: JSON.stringify({
                 portalId: portalId,
-                companyId: companyId
+                companyId: companyId,
                 companyData: {
                   dossierNumber: dossierNumber
                 }
