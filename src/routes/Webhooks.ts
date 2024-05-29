@@ -97,28 +97,36 @@ router.post('/company', async (req: Request, res: Response) => {
 router.get('/info', async (req: Request, res: Response) => {
   try {
         const dossierNumber = req.query.dossierNumber ? Number(req.query.dossierNumber) : undefined;
-        const companyInfoUserName = req.query.companyInfoUserName as string;
-        const companyInfoPassword = req.query.companyInfoPassword as string;
+        const portalId = parseInt(req.query.portalId as string, 10);
 
-        if (dossierNumber && companyInfoUserName && companyInfoPassword) {
-          // eslint-disable-next-line
-          const result = await companiesController.getCompanyInfo(dossierNumber, companyInfoUserName, companyInfoPassword);
-          const formattedResult = await formatCompanyData(result);
+        console.log('portalId')
+        console.log('portalId')
+        console.log('portalId')
+        console.log('portalId')
+        console.log('portalId')
+        console.log(portalId)
+        // const companyInfoUserName = req.query.companyInfoUserName as string;
+        // const companyInfoPassword = req.query.companyInfoPassword as string;
 
-          if (formattedResult) {
-            res
-                .status(StatusCodes.OK)
-                .json(formattedResult);
-          } else {
-            res
-                .status(StatusCodes.NOT_FOUND)
-                .json({ error: `Unable to get information with dossier number ${dossierNumber}` });
-          }
-        } else {
-          res
-              .status(StatusCodes.INTERNAL_SERVER_ERROR)
-              .json({ error: 'Dossier number has not been provided' });
-        }
+        // if (dossierNumber) {
+        //   // eslint-disable-next-line
+        //   const result = await companiesController.getCompanyInfo(dossierNumber, companyInfoUserName, companyInfoPassword);
+        //   const formattedResult = await formatCompanyData(result);
+
+        //   if (formattedResult) {
+        //     res
+        //         .status(StatusCodes.OK)
+        //         .json(formattedResult);
+        //   } else {
+        //     res
+        //         .status(StatusCodes.NOT_FOUND)
+        //         .json({ error: `Unable to get information with dossier number ${dossierNumber}` });
+        //   }
+        // } else {
+        //   res
+        //       .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        //       .json({ error: 'Dossier number has not been provided' });
+        // }
   } catch {
     res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -314,8 +322,7 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
 
     <script>
       const result = ${JSON.stringify(result.item)};
-      const COMPANY_INFO_USERNAME = ${JSON.stringify(COMPANY_INFO_USERNAME)};
-      const COMPANY_INFO_PASSWORD = ${JSON.stringify(COMPANY_INFO_PASSWORD)};
+      const portalId = ${JSON.stringify(portalId)};
 
       function capitalizeFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
@@ -354,7 +361,7 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
 
       async function selectOption(dossierNumber) {
         try {
-          const params = 'dossierNumber=' + encodeURIComponent(dossierNumber) + '&companyInfoUserName=' + encodeURIComponent(COMPANY_INFO_USERNAME) + '&companyInfoPassword=' + encodeURIComponent(COMPANY_INFO_PASSWORD);
+          const params = 'dossierNumber=' + encodeURIComponent(dossierNumber) + '&portalId=' + encodeURIComponent(portalId);
           
           const response = await fetch('/webhooks/info?' + params, {
             method: 'GET',
