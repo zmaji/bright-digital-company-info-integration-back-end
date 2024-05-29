@@ -209,7 +209,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
       buttonUri = `https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/update`
       primaryAction = {
         type: 'ACTION_HOOK',
-        httpMethod: 'POST',
+        httpMethod: 'PUT',
         uri: buttonUri,
         label: buttonLabel,
         associatedObjectProperties: [
