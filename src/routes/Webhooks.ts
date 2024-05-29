@@ -194,6 +194,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
     let statusType: string;
     let buttonLabel: string;
     let buttonUri: string;
+    let primaryAction: any;
 
     if (dossierNumber !== '' && dossierNumber !== undefined && dossierNumber !== null) {
       status = 'Synced';
@@ -201,6 +202,15 @@ router.get('/datarequest', async (req: Request, res: Response) => {
       buttonLabel = 'Update company';
       // @ts-ignore
       buttonUri = `https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/update?portalId=${encodeURIComponent(portalId)}&dossierNumber=${encodeURIComponent(dossierNumber)}`
+      primaryAction = {
+        type: 'ACTION_HOOK',
+        httpMethod: 'POST',
+        uri: buttonUri,
+        label: buttonLabel,
+        associatedObjectProperties: [
+          'some_crm_property'
+        ]
+      };
     } else {
       status = 'Not synced';
       statusType = 'DANGER';
@@ -209,6 +219,13 @@ router.get('/datarequest', async (req: Request, res: Response) => {
       dossierDataType = 'STRING';
       // @ts-ignore
       buttonUri = `https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/iframe-contents?portalId=${encodeURIComponent(portalId)}&tradeName=${encodeURIComponent(tradeName)}`
+      primaryAction = {
+        type: 'IFRAME',
+        width: 890,
+        height: 748,
+        uri: buttonUri,
+        label: buttonLabel,
+      };
     }
 
     const cardInformation = {
