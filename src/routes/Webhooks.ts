@@ -107,7 +107,6 @@ router.get('/datarequest', async (req: Request, res: Response) => {
     let status: string;
     let statusType: string;
     let buttonLabel: string;
-    let confirmationMessage: string;
 
     if (dossierNumber !== '' && dossierNumber !== undefined && dossierNumber !== null) {
       // DEFAULT: Grey
@@ -118,12 +117,10 @@ router.get('/datarequest', async (req: Request, res: Response) => {
       status = 'Synced';
       statusType = 'SUCCESS';
       buttonLabel = 'Update company';
-      confirmationMessage = `Are you sure you want to update ${tradeName}?`;
     } else {
       status = 'Not synced';
       statusType = 'DANGER';
       buttonLabel = 'Sync with Company.info';
-      confirmationMessage = `Are you sure you want to sync ${tradeName}?`;
       dossierNumber = 'Unknown';
       dossierDataType = 'STRING';
     }
@@ -134,11 +131,6 @@ router.get('/datarequest', async (req: Request, res: Response) => {
           'objectId': objectId,
           'title': `Current company: ${tradeName}`,
           'properties': [
-            // {
-            //   'label': 'Trade name',
-            //   'dataType': 'STRING',
-            //   'value': tradeName,
-            // },
             {
               'label': 'Dossier number',
               'dataType': dossierDataType,
@@ -153,30 +145,15 @@ router.get('/datarequest', async (req: Request, res: Response) => {
           ],
         },
       ],
-      // 'primaryAction': {
-      //   "type": "CONFIRMATION_ACTION_HOOK",
-      //   "httpMethod": "POST",
-      //   "uri": "https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/iframe-contents",
-      //   "label": buttonLabel,
-      //   "associatedObjectProperties": [
-      //     "some_crm_property"
-      //   ],
-      //   "confirmationMessage": confirmationMessage,
-      //   "confirmButtonText": "Yes",
-      //   "cancelButtonText": "No"
-      // },
       'primaryAction':
-      // [
           {
             type: 'IFRAME',
             width: 890,
             height: 748,
             // @ts-ignore
-            // uri: `https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/iframe-contents`,
             uri: `https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/iframe-contents?portalId=${encodeURIComponent(portalId)}&tradeName=${encodeURIComponent(tradeName)}`,
             label: buttonLabel,
           },
-      // ]
     };
 
     res.send(cardInformation);
@@ -294,6 +271,8 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
   <body>
     <h1>Search results for trade name ${tradeName}</h1>
     <div id="options-container"></div>
+
+    <div>These search results display all companies matching your search criteria. Select a result to sync or update.</div>
 
     <script>
       const result = ${JSON.stringify(result.item)};
