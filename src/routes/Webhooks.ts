@@ -102,13 +102,12 @@ router.put('/update', async (req: Request, res: Response) => {
       if (portalId) {
         const hubToken: HubToken | null = await authController.retrieveHubToken(portalId);
 
-        console.log('hubToken')
-        console.log(hubToken)
-
         if (hubToken && req.body.companyId && req.body.companyData) {
           const companyId: string = typeof req.body.companyId === 'string' ? req.body.companyId : '';
           // eslint-disable-next-line
           const companyData: Object = typeof req.body.companyData === 'object' ? req.body.companyData : {};
+
+          console.log('hi');
 
           if (companyId && companyId !== '' && companyData && Object.keys(companyData).length > 0) {
             const result = await companiesController.updateCompany(hubToken, companyId, companyData);
