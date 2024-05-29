@@ -155,13 +155,13 @@ router.put('/update', async (req: Request, res: Response) => {
       
             if (hubToken && companyId && company) {
               if (companyId && companyId !== '') {
-                const result = await companiesController.updateCompany(hubToken, companyId, company);
-                const formattedResult = await formatCompanyData(result);
+                const formattedCompany = await formatCompanyData(company);
+                const result = await companiesController.updateCompany(hubToken, companyId, formattedCompany);
 
-                if (formattedResult) {
+                if (result) {
                   res
                       .status(StatusCodes.OK)
-                      .json(formattedResult);
+                      .json(result);
                 } else {
                   res
                       .status(StatusCodes.NOT_FOUND)
