@@ -318,7 +318,6 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
 
       function selectOption(dossierNumber) {
         if (dossierNumber) {
-          const result = await companiesController.getCompanyInfo(dossierNumber, currentUser.companyInfoUserName, currentUser.companyInfoPassword);
           console.log(result)
         }
       }
