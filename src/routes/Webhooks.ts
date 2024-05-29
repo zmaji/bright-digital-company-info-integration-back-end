@@ -145,6 +145,9 @@ router.put('/update', async (req: Request, res: Response) => {
 
       const company = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
 
+      console.log('company')
+      console.log(company)
+
         if (company) {
           const hubToken: HubToken | null = await authController.retrieveHubToken(portalId);
           const companyId = req.query.companyId as string;
