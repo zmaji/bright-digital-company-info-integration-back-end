@@ -181,6 +181,8 @@ const updateCompany = async (hubToken: HubToken, companyId: string, companyData:
 
   delete companyData.legal_name;
 
+  console.log(hubToken.access_token)
+
   try {
     const response: AxiosResponse = await axios({
       method: 'patch',
