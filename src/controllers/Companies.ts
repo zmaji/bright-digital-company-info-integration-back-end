@@ -188,8 +188,8 @@ const updateCompany = async (hubToken: HubToken, companyId: string, companyData:
 
   console.log('hubToken')
   console.log(hubToken)
-  console.log('hubToken')
-  console.log(hubToken)
+  console.log('companyId')
+  console.log(companyId)
   console.log('companyData')
   console.log(companyData)
 
