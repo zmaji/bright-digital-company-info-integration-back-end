@@ -103,14 +103,11 @@ router.put('/update', async (req: Request, res: Response) => {
         const hubToken: HubToken | null = await authController.retrieveHubToken(portalId);
         const companyId = req.body.companyId as string;
         const companyData = req.body.companyData;
+        companyData.dossier_number = parseInt(companyData.dossier_number, 10);
 
-        if (companyData.dossier_number && typeof companyData.dossier_number === 'string') {
-          companyData.dossier_number = parseInt(companyData.dossier_number, 10);
-
-          console.log('companyData.dossier_number')
-          console.log(companyData.dossier_number)
-        }
-
+        console.log('companyData.dossier_number')
+        console.log(companyData.dossier_number)
+  
         if (hubToken && companyId && companyData) {
           if (companyId && companyId !== '' && Object.keys(companyData).length > 0) {
             const result = await companiesController.updateCompany(hubToken, companyId, companyData);
