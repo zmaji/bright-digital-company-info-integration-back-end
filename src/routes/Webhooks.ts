@@ -425,11 +425,11 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
               headers: {
                 'Content-Type': 'application/json'
               },
-              body: {
+              body: JSON.stringify({
                 dossierNumber: dossierNumber,
                 portalId: portalId,
                 companyId: companyId
-              }
+              })
             });
   
             const result = await response.json();
