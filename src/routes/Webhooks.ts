@@ -257,7 +257,7 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Option</title>
     <style>
-      body { font-family: Arial, sans-serif; padding: 20px; }
+      body { font-family: Campton, sans-serif; padding: 20px; }
       .u-flex { display: flex; flex-wrap: wrap; }
       .c-search-row__line {
         width: 100%;
@@ -293,7 +293,6 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
   </head>
   <body>
     <h1>Search results for trade name ${tradeName}</h1>
-    
     <div id="options-container"></div>
 
     <script>
@@ -307,14 +306,13 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
         div.innerHTML = 
         \`
           <div class="c-search-row__line"></div>
-
           <div class="c-search-row__content-container u-flex">
             <div class="c-search-row__name-container u-flex">
-              <div class="c-search-row__name">{item.name}</div>
+              <div class="c-search-row__name">\${item.name}</div>
             </div>
 
             <div class="c-search-row__address-container u-flex">
-              <div class="c-search-row__address">{item.correspondence_street}&nbsp;|</div>
+              <div class="c-search-row__address">\${item.correspondence_street}&nbsp;|</div>
               <div class="c-search-row__location">&nbsp;\${item.correspondence_city}</div>
             </div>
 
