@@ -3,12 +3,11 @@ import { StatusCodes } from 'http-status-codes';
 import { verifySignature } from '../helpers/hubspot/verifySignature';
 import companiesController from '../controllers/Companies';
 import logger from '../utils/Logger';
-import authController, { retrieveHubToken } from '../controllers/Auth';
+import { retrieveHubToken } from '../controllers/Auth';
 import { formatCompanyData } from '../helpers/hubspot/formatCompanyData';
 import { User } from '../typings/User';
 import usersController from '../controllers/Users';
 // import { basicVerification } from '../helpers/hubspot/basicVerification';
-import crypto from 'crypto';
 
 const router = Router();
 
@@ -146,11 +145,6 @@ router.get('/datarequest', async (req: Request, res: Response) => {
     let buttonLabel: string;
 
     if (dossierNumber !== '' && dossierNumber !== undefined && dossierNumber !== null) {
-      // DEFAULT: Grey
-      // SUCCESS: Green
-      // WARNING: Yellow
-      // DANGER: Red
-      // INFO: Blue
       status = 'Synced';
       statusType = 'SUCCESS';
       buttonLabel = 'Update company';
@@ -369,7 +363,11 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
           const result = await response.json();
           console.log(result);
           if (response.ok) {
-            // You can process and display the result as needed
+            console.log('Result ok!!!!');
+            console.log('Result ok!!!!');
+            console.log('Result ok!!!!');
+            console.log('Result ok!!!!');
+            console.log('Result ok!!!!');
           } else {
             console.error(result.error);
           }
