@@ -99,34 +99,30 @@ router.get('/info', async (req: Request, res: Response) => {
         const dossierNumber = req.query.dossierNumber ? Number(req.query.dossierNumber) : undefined;
         const portalId = parseInt(req.query.portalId as string, 10);
 
-        console.log('portalId')
-        console.log('portalId')
-        console.log('portalId')
-        console.log('portalId')
-        console.log('portalId')
-        console.log(portalId)
-        // const companyInfoUserName = req.query.companyInfoUserName as string;
-        // const companyInfoPassword = req.query.companyInfoPassword as string;
+        currentUser = await usersController.getUser(portalId);
 
-        // if (dossierNumber) {
-        //   // eslint-disable-next-line
-        //   const result = await companiesController.getCompanyInfo(dossierNumber, companyInfoUserName, companyInfoPassword);
-        //   const formattedResult = await formatCompanyData(result);
+        COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
+        COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
 
-        //   if (formattedResult) {
-        //     res
-        //         .status(StatusCodes.OK)
-        //         .json(formattedResult);
-        //   } else {
-        //     res
-        //         .status(StatusCodes.NOT_FOUND)
-        //         .json({ error: `Unable to get information with dossier number ${dossierNumber}` });
-        //   }
-        // } else {
-        //   res
-        //       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        //       .json({ error: 'Dossier number has not been provided' });
-        // }
+        if (dossierNumber && COMPANY_INFO_USERNAME && COMPANY_INFO_PASSWORD) {
+          // eslint-disable-next-line
+          const result = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
+          const formattedResult = await formatCompanyData(result);
+
+          if (formattedResult) {
+            res
+                .status(StatusCodes.OK)
+                .json(formattedResult);
+          } else {
+            res
+                .status(StatusCodes.NOT_FOUND)
+                .json({ error: `Unable to get information with dossier number ${dossierNumber}` });
+          }
+        } else {
+          res
+              .status(StatusCodes.INTERNAL_SERVER_ERROR)
+              .json({ error: 'Dossier number has not been provided' });
+        }
   } catch {
     res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
