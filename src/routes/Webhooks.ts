@@ -117,12 +117,12 @@ router.get('/datarequest', async (req: Request, res: Response) => {
       status = 'Synced';
       statusType = 'SUCCESS';
       buttonLabel = 'Update company';
-      confirmationMessage = `Are you sure you want to update ${tradeName}?`
+      confirmationMessage = `Are you sure you want to update ${tradeName}?`;
     } else {
       status = 'Not synced';
       statusType = 'DANGER';
       buttonLabel = 'Sync with Company.info';
-      confirmationMessage = `Are you sure you want to sync ${tradeName}?`
+      confirmationMessage = `Are you sure you want to sync ${tradeName}?`;
       dossierNumber = 'Unknown';
       dossierDataType = 'STRING';
     }
@@ -164,7 +164,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
       //   "confirmButtonText": "Yes",
       //   "cancelButtonText": "No"
       // },
-      primaryAction:
+      'primaryAction':
       // [
           {
             type: 'IFRAME',
@@ -198,136 +198,136 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
     const currentUser: User | null = await usersController.getUser(portalId);
     // const result = await companiesController.getCompanies(tradeName, currentUser.companyInfoUserName, currentUser.companyInfoPassword);
     const result = {
-      "item": [
+      'item': [
         {
-          "dossier_number": "62801406",
-          "establishment_number": "000031778321",
-          "name": "Bright Digital B.V. TEST 1",
-          "match_type": "trade_name",
-          "establishment_city": "APELDOORN",
-          "establishment_street": "Vosselmanstraat",
-          "correspondence_city": "APELDOORN",
-          "correspondence_street": "Vosselmanstraat",
-          "indication_economically_active": true
+          'dossier_number': '62801406',
+          'establishment_number': '000031778321',
+          'name': 'Bright Digital B.V. TEST 1',
+          'match_type': 'trade_name',
+          'establishment_city': 'APELDOORN',
+          'establishment_street': 'Vosselmanstraat',
+          'correspondence_city': 'APELDOORN',
+          'correspondence_street': 'Vosselmanstraat',
+          'indication_economically_active': true,
         },
         {
-          "dossier_number": "62801406",
-          "establishment_number": "000031778321",
-          "name": "Bright Digital B.V. TEST 2",
-          "match_type": "trade_name",
-          "establishment_city": "APELDOORN",
-          "establishment_street": "Vosselmanstraat",
-          "correspondence_city": "APELDOORN",
-          "correspondence_street": "Vosselmanstraat",
-          "indication_economically_active": true
+          'dossier_number': '62801406',
+          'establishment_number': '000031778321',
+          'name': 'Bright Digital B.V. TEST 2',
+          'match_type': 'trade_name',
+          'establishment_city': 'APELDOORN',
+          'establishment_street': 'Vosselmanstraat',
+          'correspondence_city': 'APELDOORN',
+          'correspondence_street': 'Vosselmanstraat',
+          'indication_economically_active': true,
         },
         {
-          "dossier_number": "62801406",
-          "establishment_number": "000031778321",
-          "name": "Bright Digital B.V. TEST 3",
-          "match_type": "trade_name",
-          "establishment_city": "APELDOORN",
-          "establishment_street": "Vosselmanstraat",
-          "correspondence_city": "APELDOORN",
-          "correspondence_street": "Vosselmanstraat",
-          "indication_economically_active": true
+          'dossier_number': '62801406',
+          'establishment_number': '000031778321',
+          'name': 'Bright Digital B.V. TEST 3',
+          'match_type': 'trade_name',
+          'establishment_city': 'APELDOORN',
+          'establishment_street': 'Vosselmanstraat',
+          'correspondence_city': 'APELDOORN',
+          'correspondence_street': 'Vosselmanstraat',
+          'indication_economically_active': true,
         },
         {
-          "dossier_number": "62801406",
-          "establishment_number": "000031778321",
-          "name": "Bright Digital B.V. TEST 4",
-          "match_type": "trade_name",
-          "establishment_city": "APELDOORN",
-          "establishment_street": "Vosselmanstraat",
-          "correspondence_city": "APELDOORN",
-          "correspondence_street": "Vosselmanstraat",
-          "indication_economically_active": true
+          'dossier_number': '62801406',
+          'establishment_number': '000031778321',
+          'name': 'Bright Digital B.V. TEST 4',
+          'match_type': 'trade_name',
+          'establishment_city': 'APELDOORN',
+          'establishment_street': 'Vosselmanstraat',
+          'correspondence_city': 'APELDOORN',
+          'correspondence_street': 'Vosselmanstraat',
+          'indication_economically_active': true,
         },
-      ]
+      ],
     };
 
     res.send(`
-      <!DOCTYPE html>
-      <html lang="en">  
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Select Option</title>
-        <style>
-          body { font-family: Arial, sans-serif; padding: 20px; }
-          .u-flex { display: flex; }
-          .c-search-row__line {
-            width: 100%;
-            height: 1px;
-            background-color: lightblue;
-            margin-top: 24px;
-            margin-bottom: 24px;
-          }
-          .c-search-row__content-container {
-            width: 100%;
-            align-items: center;
-          }
-          .c-search-row__name-container {
-            width: 25%;
-          }
-          .c-search-row__name {
-            font-size: 16px;
-            font-weight: 600;
-            margin-right: 48px;
-          }
-          .c-search-row__address {
-            font-size: 16px;
-            font-weight: 300;
-          }
-          .c-search-row__location {
-            font-size: 16px;
-            font-weight: 300;
-          }
-          .c-search-row__button-container {
-            margin-left: auto;
-          }
-        </style>
-      </head>
-      <body>
-        <h1>Search results for trade name ${tradeName}</h1>
-        <div id="options-container"></div>
+  <!DOCTYPE html>
+  <html lang="en">  
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Option</title>
+    <style>
+      body { font-family: Arial, sans-serif; padding: 20px; }
+      .u-flex { display: flex; flex-wrap: wrap; }
+      .c-search-row__line {
+        width: 100%;
+        height: 1px;
+        background-color: lightblue;
+        margin-top: 24px;
+        margin-bottom: 24px;
+      }
+      .c-search-row__content-container {
+        width: 100%;
+        align-items: center;
+      }
+      .c-search-row__name-container {
+        width: 25%;
+      }
+      .c-search-row__name {
+        font-size: 16px;
+        font-weight: 600;
+        margin-right: 48px;
+      }
+      .c-search-row__address {
+        font-size: 16px;
+        font-weight: 300;
+      }
+      .c-search-row__location {
+        font-size: 16px;
+        font-weight: 300;
+      }
+      .c-search-row__button-container {
+        margin-left: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Search results for trade name ${tradeName}</h1>
+    <div id="options-container"></div>
 
-        <script>
-          const result = ${JSON.stringify(result.item)};
-          
-          const container = document.getElementById('options-container');
-          
-          result.forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'c-search-row u-flex';
-            div.innerHTML = \`
-              <div class="c-search-row__content-container u-flex">
-                <div class="c-search-row__name-container u-flex">
-                  <div class="c-search-row__name">\${item.name}</div>
-                </div>
-                <div class="c-search-row__address-container u-flex">
-                  <div class="c-search-row__address">\${item.correspondence_city} |</div>
-                  <div class="c-search-row__location">\${item.correspondence_city}</div>
-                </div>
-                <div class="c-search-row__button-container">
-                  <button onclick="selectOption('\${item.dossier_number}')">Select</button>
-                </div>
-              </div>
-            \`;
-            container.appendChild(div);
-          });
+    <script>
+      const result = ${JSON.stringify(result.item)};
+      
+      const container = document.getElementById('options-container');
+      
+      result.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'c-search-row u-flex';
+        div.innerHTML = \`
+          <div class="c-search-row__line"></div>
+          <div class="c-search-row__content-container u-flex">
+            <div class="c-search-row__name-container u-flex">
+              <div class="c-search-row__name">\${item.name}</div>
+            </div>
+            <div class="c-search-row__address-container u-flex">
+              <div class="c-search-row__address">\${item.correspondence_city} |</div>
+              <div class="c-search-row__location">\${item.correspondence_city}</div>
+            </div>
+            <div class="c-search-row__button-container">
+              <button onclick="selectOption('\${item.dossier_number}')">Select</button>
+            </div>
+          </div>
+        \`;
+        container.appendChild(div);
+      });
 
-          function selectOption(dossierNumber) {
-            console.log('Selected option:', dossierNumber);
-          }
-        </script>
-      </body>
-      </html>
-    `);
+      function selectOption(dossierNumber) {
+        console.log('Selected option:', dossierNumber);
+      }
+    </script>
+  </body>
+  </html>
+`);
   } else {
     res.status(400).send('Invalid portalId');
   }
 });
-
 
 export default router;
