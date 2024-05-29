@@ -154,7 +154,6 @@ router.put('/update', async (req: Request, res: Response) => {
           const companyId = req.query.companyId as string;
       
             if (hubToken && companyId && company) {
-              console.log('YES');
               if (companyId && companyId !== '') {
                 const result = await companiesController.updateCompany(hubToken, companyId, company);
 

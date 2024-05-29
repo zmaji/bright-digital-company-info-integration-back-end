@@ -179,6 +179,13 @@ const createCompany = async (hubToken: HubToken, companyData: CompanyDetail): Pr
 const updateCompany = async (hubToken: HubToken, companyId: string, companyData: any): Promise<CompanyDetail | null> => {
   logger.info(`Trying to update company`);
 
+  console.log('hubToken.access_token');
+  console.log(hubToken.access_token);
+  console.log('companyId');
+  console.log(companyId);
+  console.log('companyData');
+  console.log(companyData);
+
   delete companyData.legal_name;
 
   try {
