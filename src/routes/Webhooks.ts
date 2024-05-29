@@ -137,6 +137,7 @@ router.put('/update', async (req: Request, res: Response) => {
     const dossierNumber = req.query.dossierNumber ? Number(req.query.dossierNumber) : undefined;
     const portalId = parseInt(req.query.portalId as string, 10);
 
+    console.log('req.body');
     console.log(req.body);
 
     if (portalId) {
@@ -208,7 +209,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
       statusType = 'SUCCESS';
       buttonLabel = 'Update company';
       // @ts-ignore
-      buttonUri = `https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/update?portalId=${encodeURIComponent(portalId)}&dossierNumber=${encodeURIComponent(dossierNumber)}&companyId=${encodedURIComponent(companyId)}`
+      buttonUri = `https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/update?portalId=${encodeURIComponent(portalId)}&dossierNumber=${encodeURIComponent(dossierNumber)}`
       primaryAction = {
         type: 'ACTION_HOOK',
         httpMethod: 'PUT',
