@@ -143,7 +143,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
     // const verified = await basicVerification(req);
 
     // if (verified) {
-    companyId = req.query.objectId;
+    companyId = req.query.associatedObjectId;
     const portalId = req.query.portalId;
     let dossierNumber = req.query.dossier_number;
     let dossierDataType = 'NUMERIC';
