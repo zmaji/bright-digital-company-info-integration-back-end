@@ -318,15 +318,6 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
       const portalId = ${JSON.stringify(portalId)};
       const companyId = ${JSON.stringify(companyId)};
 
-      window.addEventListener('message', function(event) {
-        if (event.data === 'closeIframe') {
-          const iframe = document.querySelector('iframe');
-          if (iframe) {
-            iframe.parentNode.removeChild(iframe);
-          }
-        }
-      });
-
       function capitalizeFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
       }
@@ -380,7 +371,7 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
   
             const result = await response.json();
             if (response.ok) {
-              window.parent.postMessage('closeIframe', '*');
+              window.parent.postMessage(JSON.stringify({"action": "DONE"}), "*");
             } else {
               console.error(result.error);
             }
