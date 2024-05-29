@@ -419,8 +419,6 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
 
       async function selectOption(dossierNumber) {
           try {
-            const params = 'dossierNumber=' + encodeURIComponent(dossierNumber) + '&portalId=' + encodeURIComponent(portalId);
-            
             const response = await fetch('/webhooks/update', {
               method: 'PUT',
               headers: {
@@ -429,7 +427,7 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
               body: {
                 dossierNumber: dossierNumber,
                 portalId: portalId,
-                companyId:, companyId
+                companyId: companyId
               }
             });
   
