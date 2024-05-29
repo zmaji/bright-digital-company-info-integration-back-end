@@ -213,7 +213,7 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
     const result = {
       'item': [
         {
-          'dossier_number': '62801406',
+          'dossier_number': 62801406,
           'establishment_number': '000031778321',
           'name': 'Bright Digital B.V. TEST 1',
           'match_type': 'trade_name',
@@ -224,7 +224,7 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
           'indication_economically_active': true,
         },
         {
-          'dossier_number': '62801406',
+          'dossier_number': 62801406,
           'establishment_number': '000031778321',
           'name': 'Bright Digital B.V. TEST 2',
           'match_type': 'trade_name',
@@ -235,7 +235,7 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
           'indication_economically_active': true,
         },
         {
-          'dossier_number': '62801406',
+          'dossier_number': 62801406,
           'establishment_number': '000031778321',
           'name': 'Bright Digital B.V. TEST 3',
           'match_type': 'trade_name',
@@ -246,7 +246,7 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
           'indication_economically_active': true,
         },
         {
-          'dossier_number': '62801406',
+          'dossier_number': 62801406,
           'establishment_number': '000031778321',
           'name': 'Bright Digital B.V. TEST 4',
           'match_type': 'trade_name',
