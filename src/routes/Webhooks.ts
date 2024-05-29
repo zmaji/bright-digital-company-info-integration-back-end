@@ -209,55 +209,56 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
     COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
     COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
 
-    // const result = await companiesController.getCompanies(tradeName, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
-    const result = {
-      'item': [
-        {
-          'dossier_number': 62801406,
-          'establishment_number': '000031778321',
-          'name': 'Bright Digital B.V. TEST 1',
-          'match_type': 'trade_name',
-          'establishment_city': 'APELDOORN',
-          'establishment_street': 'Vosselmanstraat',
-          'correspondence_city': 'APELDOORN',
-          'correspondence_street': 'Vosselmanstraat',
-          'indication_economically_active': true,
-        },
-        {
-          'dossier_number': 62801406,
-          'establishment_number': '000031778321',
-          'name': 'Bright Digital B.V. TEST 2',
-          'match_type': 'trade_name',
-          'establishment_city': 'APELDOORN',
-          'establishment_street': 'Vosselmanstraat',
-          'correspondence_city': 'APELDOORN',
-          'correspondence_street': 'Vosselmanstraat',
-          'indication_economically_active': true,
-        },
-        {
-          'dossier_number': 62801406,
-          'establishment_number': '000031778321',
-          'name': 'Bright Digital B.V. TEST 3',
-          'match_type': 'trade_name',
-          'establishment_city': 'APELDOORN',
-          'establishment_street': 'Vosselmanstraat',
-          'correspondence_city': 'APELDOORN',
-          'correspondence_street': 'Vosselmanstraat',
-          'indication_economically_active': true,
-        },
-        {
-          'dossier_number': 62801406,
-          'establishment_number': '000031778321',
-          'name': 'Bright Digital B.V. TEST 4',
-          'match_type': 'trade_name',
-          'establishment_city': 'APELDOORN',
-          'establishment_street': 'Vosselmanstraat',
-          'correspondence_city': 'APELDOORN',
-          'correspondence_street': 'Vosselmanstraat',
-          'indication_economically_active': true,
-        },
-      ],
-    };
+    const result = await companiesController.getCompanies(tradeName, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
+    console.log(result);
+    // const result = {
+    //   'item': [
+    //     {
+    //       'dossier_number': 62801406,
+    //       'establishment_number': '000031778321',
+    //       'name': 'Bright Digital B.V. TEST 1',
+    //       'match_type': 'trade_name',
+    //       'establishment_city': 'APELDOORN',
+    //       'establishment_street': 'Vosselmanstraat',
+    //       'correspondence_city': 'APELDOORN',
+    //       'correspondence_street': 'Vosselmanstraat',
+    //       'indication_economically_active': true,
+    //     },
+    //     {
+    //       'dossier_number': 62801406,
+    //       'establishment_number': '000031778321',
+    //       'name': 'Bright Digital B.V. TEST 2',
+    //       'match_type': 'trade_name',
+    //       'establishment_city': 'APELDOORN',
+    //       'establishment_street': 'Vosselmanstraat',
+    //       'correspondence_city': 'APELDOORN',
+    //       'correspondence_street': 'Vosselmanstraat',
+    //       'indication_economically_active': true,
+    //     },
+    //     {
+    //       'dossier_number': 62801406,
+    //       'establishment_number': '000031778321',
+    //       'name': 'Bright Digital B.V. TEST 3',
+    //       'match_type': 'trade_name',
+    //       'establishment_city': 'APELDOORN',
+    //       'establishment_street': 'Vosselmanstraat',
+    //       'correspondence_city': 'APELDOORN',
+    //       'correspondence_street': 'Vosselmanstraat',
+    //       'indication_economically_active': true,
+    //     },
+    //     {
+    //       'dossier_number': 62801406,
+    //       'establishment_number': '000031778321',
+    //       'name': 'Bright Digital B.V. TEST 4',
+    //       'match_type': 'trade_name',
+    //       'establishment_city': 'APELDOORN',
+    //       'establishment_street': 'Vosselmanstraat',
+    //       'correspondence_city': 'APELDOORN',
+    //       'correspondence_street': 'Vosselmanstraat',
+    //       'indication_economically_active': true,
+    //     },
+    //   ],
+    // };
 
     res.send(`
   <!DOCTYPE html>
@@ -314,6 +315,7 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
     <div id="options-container"></div>
 
     <script>
+      const result = ${JSON.stringify(result.item)};
       const portalId = ${JSON.stringify(portalId)};
       const companyId = ${JSON.stringify(companyId)};
 
