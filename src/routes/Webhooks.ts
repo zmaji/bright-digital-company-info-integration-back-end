@@ -208,7 +208,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
       statusType = 'SUCCESS';
       buttonLabel = 'Update company';
       // @ts-ignore
-      buttonUri = `https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/update`
+      buttonUri = `https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/update?portalId=${encodeURIComponent(portalId)}&dossierNumber=${encodeURIComponent(dossierNumber)}`
       primaryAction = {
         type: 'ACTION_HOOK',
         httpMethod: 'PUT',
