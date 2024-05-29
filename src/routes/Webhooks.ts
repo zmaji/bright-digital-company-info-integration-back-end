@@ -95,42 +95,6 @@ router.post('/company', async (req: Request, res: Response) => {
   }
 });
 
-// router.get('/info', async (req: Request, res: Response) => {
-//   try {
-//         const dossierNumber = req.query.dossierNumber ? Number(req.query.dossierNumber) : undefined;
-//         const portalId = parseInt(req.query.portalId as string, 10);
-
-//         currentUser = await usersController.getUser(portalId);
-
-//         COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
-//         COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
-
-//         if (dossierNumber && COMPANY_INFO_USERNAME && COMPANY_INFO_PASSWORD) {
-//           // eslint-disable-next-line
-//           const result = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
-//           const formattedResult = await formatCompanyData(result);
-
-//           if (formattedResult) {
-//             res
-//                 .status(StatusCodes.OK)
-//                 .json(formattedResult);
-//           } else {
-//             res
-//                 .status(StatusCodes.NOT_FOUND)
-//                 .json({ error: `Unable to get information with dossier number ${dossierNumber}` });
-//           }
-//         } else {
-//           res
-//               .status(StatusCodes.INTERNAL_SERVER_ERROR)
-//               .json({ error: 'Dossier number has not been provided' });
-//         }
-//   } catch {
-//     res
-//         .status(StatusCodes.INTERNAL_SERVER_ERROR)
-//         .json({ error: 'An error occurred retrieving info' });
-//   }
-// });
-
 router.put('/update', async (req: Request, res: Response) => {
   try {
     const portalId = parseInt(req.body.portalId as string, 10);
@@ -391,33 +355,6 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
         container.appendChild(div);
       });
 
-      // async function selectOption(dossierNumber) {
-      //   try {
-      //     const params = 'dossierNumber=' + encodeURIComponent(dossierNumber) + '&portalId=' + encodeURIComponent(portalId);
-          
-      //     const response = await fetch('/webhooks/info?' + params, {
-      //       method: 'GET',
-      //       headers: {
-      //         'Content-Type': 'application/json'
-      //       },
-      //     });
-
-      //     const result = await response.json();
-      //     console.log(result);
-      //     if (response.ok) {
-      //       console.log('Result ok!!!!');
-      //       console.log('Result ok!!!!');
-      //       console.log('Result ok!!!!');
-      //       console.log('Result ok!!!!');
-      //       console.log('Result ok!!!!');
-      //     } else {
-      //       console.error(result.error);
-      //     }
-      //   } catch (error) {
-      //     console.error('Error fetching company info:', error);
-      //   }
-      // }
-
       async function selectOption(dossierNumber) {
           try {
             const response = await fetch('/webhooks/update', {
@@ -426,9 +363,11 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
                 'Content-Type': 'application/json'
               },
               body: JSON.stringify({
-                dossierNumber: dossierNumber,
                 portalId: portalId,
                 companyId: companyId
+                companyData: {
+                  dossierNumber: dossierNumber
+                }
               })
             });
   
