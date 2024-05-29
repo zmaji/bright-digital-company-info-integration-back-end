@@ -283,6 +283,10 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
     <script>
       const result = ${JSON.stringify(result.item)};
 
+      function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+      }
+
       const modifiedResults = result.map(item => ({
         ...item,
         correspondence_city: capitalizeFirstLetter(item.correspondence_city)
