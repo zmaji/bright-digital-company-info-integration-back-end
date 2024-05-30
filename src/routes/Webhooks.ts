@@ -184,111 +184,112 @@ router.put('/update', async (req: Request, res: Response) => {
 router.get('/datarequest', async (req: Request, res: Response) => {
   logger.info('Entered datarequest webhook route!');
   try {
+    // @ts-ignore
     const verified = await basicVerification(req);
 
     if (verified) {
-    companyId = req.query.associatedObjectId as string;
+      companyId = req.query.associatedObjectId as string;
 
-    const portalId = req.query.portalId as string;
-    const tradeName = req.query.name as string;
-    const objectId = req.query.associatedObjectId;
+      const portalId = req.query.portalId as string;
+      const tradeName = req.query.name as string;
+      const objectId = req.query.associatedObjectId;
 
-    let dossierNumber = req.query.dossier_number as string;
-    let status: string;
-    let statusType: string;
-    let buttonLabel: string;
-    let buttonUri: string;
-    let primaryAction: object;
-    let secondaryActions: object[];
-    let dossierDataType = 'NUMERIC';
+      let dossierNumber = req.query.dossier_number as string;
+      let status: string;
+      let statusType: string;
+      let buttonLabel: string;
+      let buttonUri: string;
+      let primaryAction: object;
+      let secondaryActions: object[];
+      let dossierDataType = 'NUMERIC';
 
-    const createButtonUri = (baseUri: string, params: Record<string, string>) => {
-      const queryParams = new URLSearchParams(params).toString();
+      const createButtonUri = (baseUri: string, params: Record<string, string>) => {
+        const queryParams = new URLSearchParams(params).toString();
 
-      return `${baseUri}?${queryParams}`;
-    };
-
-    if (dossierNumber) {
-      status = 'Synced';
-      statusType = 'SUCCESS';
-      buttonLabel = 'Update company';
-      buttonUri = createButtonUri('https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/update', {
-        portalId,
-        dossierNumber,
-        companyId,
-      });
-      primaryAction = {
-        type: 'ACTION_HOOK',
-        httpMethod: 'PUT',
-        uri: buttonUri,
-        label: buttonLabel,
+        return `${baseUri}?${queryParams}`;
       };
-      secondaryActions = [
-        {
+
+      if (dossierNumber) {
+        status = 'Synced';
+        statusType = 'SUCCESS';
+        buttonLabel = 'Update company';
+        buttonUri = createButtonUri('https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/update', {
+          portalId,
+          dossierNumber,
+          companyId,
+        });
+        primaryAction = {
+          type: 'ACTION_HOOK',
+          httpMethod: 'PUT',
+          uri: buttonUri,
+          label: buttonLabel,
+        };
+        secondaryActions = [
+          {
+            type: 'IFRAME',
+            width: 890,
+            height: 748,
+            uri: createButtonUri('https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/resync', {
+              portalId,
+              companyId,
+            }),
+            label: 'Resync company',
+          },
+        ];
+      } else {
+        status = 'Not synced';
+        statusType = 'DANGER';
+        buttonLabel = 'Sync with Company.info';
+        dossierNumber = 'Unknown';
+        dossierDataType = 'STRING';
+        buttonUri = createButtonUri('https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/search', {
+          portalId,
+          tradeName,
+        });
+        primaryAction = {
           type: 'IFRAME',
           width: 890,
           height: 748,
-          uri: createButtonUri('https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/resync', {
-            portalId,
-            companyId,
-          }),
-          label: 'Resync company',
-        },
-      ];
-    } else {
-      status = 'Not synced';
-      statusType = 'DANGER';
-      buttonLabel = 'Sync with Company.info';
-      dossierNumber = 'Unknown';
-      dossierDataType = 'STRING';
-      buttonUri = createButtonUri('https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/search', {
-        portalId,
-        tradeName,
-      });
-      primaryAction = {
-        type: 'IFRAME',
-        width: 890,
-        height: 748,
-        uri: buttonUri,
-        label: buttonLabel,
+          uri: buttonUri,
+          label: buttonLabel,
+        };
+      }
+
+      const cardInformation = {
+        'results': [
+          {
+            'objectId': objectId,
+            'title': `Current company: ${tradeName}`,
+            'properties': [
+              {
+                'label': 'Dossier number',
+                'dataType': dossierDataType,
+                'value': dossierNumber,
+              },
+              {
+                'label': 'Company.info status',
+                'dataType': 'STATUS',
+                'value': status,
+                'optionType': statusType,
+              },
+            ],
+          },
+        ],
+        primaryAction,
       };
-    }
 
-    const cardInformation = {
-      'results': [
-        {
-          'objectId': objectId,
-          'title': `Current company: ${tradeName}`,
-          'properties': [
-            {
-              'label': 'Dossier number',
-              'dataType': dossierDataType,
-              'value': dossierNumber,
-            },
-            {
-              'label': 'Company.info status',
-              'dataType': 'STATUS',
-              'value': status,
-              'optionType': statusType,
-            },
-          ],
-        },
-      ],
-      primaryAction,
-    };
+      if (status === 'Synced') {
+        // @ts-expect-error secondaryActions is not part of Type cardInformation
+        cardInformation.secondaryActions = secondaryActions;
+      }
 
-    if (status === 'Synced') {
-      // @ts-expect-error secondaryActions is not part of Type cardInformation
-      cardInformation.secondaryActions = secondaryActions;
+      res.send(cardInformation);
+      }
+    } catch (error) {
+      res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .json({ error: 'An error occurred processing the webhook' });
     }
-
-    res.send(cardInformation);
-    }
-  } catch (error) {
-    res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: 'An error occurred processing the webhook' });
-  }
 });
 
 router.get('/search', async (req: Request, res: Response) => {
