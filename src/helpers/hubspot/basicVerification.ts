@@ -4,7 +4,7 @@ const CLIENT_SECRET = process.env.HUBSPOT_CLIENT_SECRET;
 
 export const basicVerification = async (req: Request) => {
   const httpMethod = 'GET';
-  // @ts-ignore
+  // @ts-expect-error get and originalUrl not available on Request
   const httpURI = `https://${req.get('host')}${req.originalUrl}`;
 
   const signature = req.headers['x-hubspot-signature'];

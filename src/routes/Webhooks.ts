@@ -184,7 +184,7 @@ router.put('/update', async (req: Request, res: Response) => {
 router.get('/datarequest', async (req: Request, res: Response) => {
   logger.info('Entered datarequest webhook route!');
   try {
-    // @ts-ignore
+    // @ts-expect-error unknown Ts request error
     const verified = await basicVerification(req);
 
     if (verified) {
@@ -284,12 +284,12 @@ router.get('/datarequest', async (req: Request, res: Response) => {
       }
 
       res.send(cardInformation);
-      }
-    } catch (error) {
-      res
-          .status(StatusCodes.INTERNAL_SERVER_ERROR)
-          .json({ error: 'An error occurred processing the webhook' });
     }
+  } catch (error) {
+    res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: 'An error occurred processing the webhook' });
+  }
 });
 
 router.get('/search', async (req: Request, res: Response) => {

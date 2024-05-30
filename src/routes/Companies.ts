@@ -25,6 +25,7 @@ router.get('/webhook', async (req: Request, res: Response) => {
       soap.createClient(url, async (err, client) => {
         if (err) {
           res.send({ body: err, statusCode: 400 });
+
           return;
         }
 
@@ -53,7 +54,6 @@ router.get('/webhook', async (req: Request, res: Response) => {
     res.status(400).send({ message: 'Invalid portalId' });
   }
 });
-
 
 router.get('', isLoggedIn, async (req: Request, res: Response) => {
   try {
