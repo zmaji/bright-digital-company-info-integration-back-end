@@ -230,7 +230,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
             portalId,
             companyId,
           }),
-          label: buttonLabel,
+          label: 'Resync company',
         }
       ]
     } else {
