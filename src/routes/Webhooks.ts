@@ -145,6 +145,11 @@ router.put('/update', async (req: Request, res: Response) => {
     console.log(portalId);
     console.log('companyId');
     console.log(companyId);
+    
+    console.log('req.query.dossierNumber');
+    console.log(req.query.dossierNumber);
+    console.log('req.body.dossierNumber');
+    console.log(req.body.dossierNumber);
 
     if (dossierNumber && portalId && companyId) {
       currentUser = await usersController.getUser(portalId);
