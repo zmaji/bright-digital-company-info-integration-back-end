@@ -132,6 +132,8 @@ router.put('/sync', async (req: Request, res: Response) => {
 });
 
 router.put('/update', async (req: Request, res: Response) => {
+  console.log('Updating a HubSpot company!')
+
   try {
     const dossierNumber = req.query.dossierNumber ? Number(req.query.dossierNumber) : (req.body.dossierNumber ? Number(req.body.dossierNumber) : undefined);
     const portalId = req.query.portalId ? parseInt(req.query.portalId as string, 10) : (req.body.portalId ? parseInt(req.body.portalId, 10) : undefined);
@@ -439,13 +441,7 @@ router.get('/resync', async (req: Request, res: Response) => {
   const portalId = parseInt(req.query.portalId as string, 10);
   const companyId = req.query.companyId as string;
 
-  if (portalId) {
-    const currentUser = await usersController.getUser(portalId);
-
-    COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
-    COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
-
-    if (COMPANY_INFO_USERNAME && COMPANY_INFO_PASSWORD) {
+    if (portalId && companyId) {
       res.send(`
         <!DOCTYPE html>
         <html lang="en">  
@@ -485,6 +481,9 @@ router.get('/resync', async (req: Request, res: Response) => {
 
             async function submitDossierNumber() {
               const dossierInput = document.getElementById('dossier-input').value;
+              console.log('dossierInput');
+              console.log(dossierInput);
+              
               if (dossierInput) {
                 try {
                   const response = await fetch('/webhooks/update', {
@@ -521,9 +520,6 @@ router.get('/resync', async (req: Request, res: Response) => {
     } else {
       res.status(404).send('No matching companies found');
     }
-  } else {
-    res.status(400).send('Invalid portalId');
-  }
 });
 
 export default router;
