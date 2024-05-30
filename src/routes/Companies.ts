@@ -12,38 +12,48 @@ import * as soap from 'soap';
 const router = Router();
 
 const url = 'https://ws1.webservices.nl/soap_doclit?wsdl';
-const args = { username: process.env.COMPANY_INFO_TEST_USERNAME, password: process.env.COMPANY_INFO_TEST_PASSWORD };
-
-// let COMPANY_INFO_TEST_USERNAME: string;
-// let COMPANY_INFO_TEST_PASSWORD: string;
 
 router.get('/webhook', async (req: Request, res: Response) => {
-  console.log('req.query');
-  console.log('req.query');
-  console.log('req.query');
-  console.log('req.query');
-  console.log(req.query);
+  const portalId = parseInt(req.body.portalId as string, 10);
 
-  soap.createClient(url, async (err, client) => {
-    const soapHeader = {
-      'HeaderLogin': args,
-    };
-    client.addSoapHeader(soapHeader);
-    client.dutchBusinessSearchParametersV2({
-      trade_name: req.query.name,
-    }, (err, result) => {
-      if (err) {
-        res.send({ body: err, statusCode: 400 });
-      } else {
-        if (result.out.results) {
-          res.send({ body: result.out.results, statusCode: 200 });
-        } else {
-          res.send({ body: { message: 'No results' }, statusCode: 200 });
+  if (portalId) {
+    const currentUser = await usersController.getUser(portalId);
+
+    if (currentUser) {
+      const args = { username: currentUser.companyInfoUserName, password: currentUser.companyInfoPassword };
+
+      soap.createClient(url, async (err, client) => {
+        if (err) {
+          res.send({ body: err, statusCode: 400 });
+          return;
         }
-      }
-    });
-  });
+
+        const soapHeader = {
+          'HeaderLogin': args,
+        };
+        client.addSoapHeader(soapHeader);
+        client.dutchBusinessSearchParametersV2({
+          trade_name: req.query.name,
+        }, (err, result) => {
+          if (err) {
+            res.send({ body: err, statusCode: 400 });
+          } else {
+            if (result.out.results) {
+              res.send({ body: result.out.results, statusCode: 200 });
+            } else {
+              res.send({ body: { message: 'No results' }, statusCode: 200 });
+            }
+          }
+        });
+      });
+    } else {
+      res.status(404).send({ message: 'User not found' });
+    }
+  } else {
+    res.status(400).send({ message: 'Invalid portalId' });
+  }
 });
+
 
 router.get('', isLoggedIn, async (req: Request, res: Response) => {
   try {

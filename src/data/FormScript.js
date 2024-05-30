@@ -13,16 +13,7 @@ const companySearch = () => {
     if (event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormReady') {
       const input = document.querySelector('input[name="company"]');
       const hiddenCheck = document.querySelector('input[name="0-2/dossier_number"]');
-      
-      console.log('event');
-      console.log(event);
-
-      console.log('event.source.hsVars.portal_id')
-      console.log('event.source.hsVars.portal_id')
-      console.log('event.source.hsVars.portal_id')
-      console.log('event.source.hsVars.portal_id')
-      console.log('event.source.hsVars.portal_id')
-      console.log(event.source.hsVars.portal_id)
+      const portalId = event.source.hsVars.portal_id;
 
       if (!input || !hiddenCheck) return;
 
@@ -57,7 +48,7 @@ const companySearch = () => {
         input.parentElement.appendChild(loader);
 
         window
-            .fetch(`https://company-info-bright-c6c99ec34e11.herokuapp.com/companies/webhook?name=${encodeURIComponent(target)}`, {
+            .fetch(`https://company-info-bright-c6c99ec34e11.herokuapp.com/companies/webhook?name=${encodeURIComponent(target)}&portalId=${encodeURIComponent(portalId)}`, {
               method: 'GET',
               headers: {
                 'Content-Type': 'text/plain',
