@@ -17,6 +17,12 @@ const companySearch = () => {
       console.log('event');
       console.log(event);
 
+      console.log('event.source.hsVars.portal_id')
+      console.log('event.source.hsVars.portal_id')
+      console.log('event.source.hsVars.portal_id')
+      console.log('event.source.hsVars.portal_id')
+      console.log(event.source.hsVars.portal_id)
+
       if (!input || !hiddenCheck) return;
 
       let typeDelay;
