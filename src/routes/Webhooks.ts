@@ -139,6 +139,13 @@ router.put('/update', async (req: Request, res: Response) => {
     const portalId = req.query.portalId ? parseInt(req.query.portalId as string, 10) : (req.body.portalId ? parseInt(req.body.portalId, 10) : undefined);
     const companyId = req.query.companyId as string || req.body.companyId as string;
 
+    console.log('dossierNumber');
+    console.log(dossierNumber);
+    console.log('portalId');
+    console.log(portalId);
+    console.log('companyId');
+    console.log(companyId);
+
     if (dossierNumber && portalId && companyId) {
       currentUser = await usersController.getUser(portalId);
 
@@ -483,7 +490,7 @@ router.get('/resync', async (req: Request, res: Response) => {
               const dossierInput = document.getElementById('dossier-input').value;
               console.log('dossierInput');
               console.log(dossierInput);
-              
+
               if (dossierInput) {
                 try {
                   const response = await fetch('/webhooks/update', {
