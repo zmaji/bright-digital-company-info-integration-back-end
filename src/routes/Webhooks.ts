@@ -8,7 +8,7 @@ import { formatCompanyData } from '../helpers/hubspot/formatCompanyData';
 import { User } from '../typings/User';
 import usersController from '../controllers/Users';
 import { HubToken } from '../typings/HubToken';
-// import { basicVerification } from '../helpers/hubspot/basicVerification';
+import { basicVerification } from '../helpers/hubspot/basicVerification';
 
 const router = Router();
 
@@ -184,9 +184,9 @@ router.put('/update', async (req: Request, res: Response) => {
 router.get('/datarequest', async (req: Request, res: Response) => {
   logger.info('Entered datarequest webhook route!');
   try {
-    // const verified = await basicVerification(req);
+    const verified = await basicVerification(req);
 
-    // if (verified) {
+    if (verified) {
     companyId = req.query.associatedObjectId as string;
 
     const portalId = req.query.portalId as string;
@@ -283,7 +283,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
     }
 
     res.send(cardInformation);
-    // }
+    }
   } catch (error) {
     res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
