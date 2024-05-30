@@ -197,7 +197,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
     let buttonLabel: string;
     let buttonUri: string;
     let primaryAction: object;
-    let secondaryActions: [];
+    let secondaryActions: object[];
     let dossierDataType = 'NUMERIC';
 
     const createButtonUri = (baseUri: string, params: Record<string, string>) => {
@@ -221,6 +221,20 @@ router.get('/datarequest', async (req: Request, res: Response) => {
         uri: buttonUri,
         label: buttonLabel,
       };
+      secondaryActions = [
+        {
+          "type": "CONFIRMATION_ACTION_HOOK",
+          "httpMethod": "POST",
+          "uri": "https://example.com/action-hook",
+          "label": "Example action",
+          "associatedObjectProperties": [
+            "some_crm_property"
+          ],
+          "confirmationMessage": "Are you sure you want to run example action?",
+          "confirmButtonText": "Yes",
+          "cancelButtonText": "No"
+        }
+      ]
     } else {
       status = 'Not synced';
       statusType = 'DANGER';
@@ -261,21 +275,12 @@ router.get('/datarequest', async (req: Request, res: Response) => {
         },
       ],
       primaryAction,
-      secondaryActions: [
-        {
-          "type": "CONFIRMATION_ACTION_HOOK",
-          "httpMethod": "POST",
-          "uri": "https://example.com/action-hook",
-          "label": "Example action",
-          "associatedObjectProperties": [
-            "some_crm_property"
-          ],
-          "confirmationMessage": "Are you sure you want to run example action?",
-          "confirmButtonText": "Yes",
-          "cancelButtonText": "No"
-        }
-      ]
     };
+
+    if (status === 'Synced') {
+      // @ts-ignore
+      cardInformation.secondaryActions = secondaryActions;
+    }
 
     res.send(cardInformation);
     // }
