@@ -15,7 +15,7 @@ const router = Router();
 let COMPANY_INFO_USERNAME: string;
 let COMPANY_INFO_PASSWORD: string;
 let currentUser: User | null;
-let companyId: any;
+let companyId: string;
 
 router.post('/company', async (req: Request, res: Response) => {
   logger.info('Entered webhook routes!');
@@ -144,6 +144,7 @@ router.put('/update', async (req: Request, res: Response) => {
         COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
         COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
 
+        // eslint-disable-next-line
         const company = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
 
         if (company) {
@@ -186,7 +187,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
     // const verified = await basicVerification(req);
 
     // if (verified) {
-    companyId = req.query.associatedObjectId;
+    companyId = req.query.associatedObjectId as string;
 
     const portalId = req.query.portalId as string;
     const tradeName = req.query.name as string;
@@ -232,8 +233,8 @@ router.get('/datarequest', async (req: Request, res: Response) => {
             companyId,
           }),
           label: 'Resync company',
-        }
-      ]
+        },
+      ];
     } else {
       status = 'Not synced';
       statusType = 'DANGER';
@@ -277,7 +278,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
     };
 
     if (status === 'Synced') {
-      // @ts-ignore
+      // @ts-expect-error secondaryActions is not part of Type cardInformation
       cardInformation.secondaryActions = secondaryActions;
     }
 
@@ -353,7 +354,10 @@ router.get('/search', async (req: Request, res: Response) => {
         <body>
           <h1>Search results for trade name ${tradeName}</h1>
 
-          <div className='v-search-results__text'>These search results display all companies matching your search criteria. Select a result to sync or update.</div>
+          
+          <div className='v-search-results__text'>
+            These search results display all companies matching your search criteria. Select a result to sync or update.
+          </div>
 
           <div id="options-container"></div>
 
@@ -440,8 +444,8 @@ router.get('/resync', async (req: Request, res: Response) => {
   const portalId = parseInt(req.query.portalId as string, 10);
   const companyId = req.query.companyId as string;
 
-    if (portalId && companyId) {
-      res.send(`
+  if (portalId && companyId) {
+    res.send(`
         <!DOCTYPE html>
         <html lang="en">  
         <head>
@@ -513,9 +517,9 @@ router.get('/resync', async (req: Request, res: Response) => {
         </body>
         </html>
       `);
-    } else {
-      res.status(404).send('No matching companies found');
-    }
+  } else {
+    res.status(404).send('No matching companies found');
+  }
 });
 
 export default router;
