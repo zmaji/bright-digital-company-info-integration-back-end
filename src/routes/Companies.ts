@@ -14,7 +14,7 @@ const router = Router();
 const url = 'https://ws1.webservices.nl/soap_doclit?wsdl';
 
 router.get('/webhook', async (req: Request, res: Response) => {
-  const portalId = parseInt(req.body.portalId as string, 10);
+  const portalId = parseInt(req.query.portalId as string, 10);
 
   if (portalId) {
     const currentUser = await usersController.getUser(portalId);
