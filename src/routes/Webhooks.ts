@@ -133,10 +133,11 @@ router.put('/sync', async (req: Request, res: Response) => {
 
 router.put('/update', async (req: Request, res: Response) => {
   try {
-    const dossierNumber = req.query.dossierNumber ? Number(req.query.dossierNumber) : undefined;
-    const portalId = parseInt(req.query.portalId as string, 10);
+    const dossierNumber = req.query.dossierNumber ? Number(req.query.dossierNumber) : (req.body.dossierNumber ? Number(req.body.dossierNumber) : undefined);
+    const portalId = req.query.portalId ? parseInt(req.query.portalId as string, 10) : (req.body.portalId ? parseInt(req.body.portalId, 10) : undefined);
+    const companyId = req.query.companyId as string || req.body.companyId as string;
 
-    if (portalId) {
+    if (dossierNumber && portalId && companyId) {
       currentUser = await usersController.getUser(portalId);
 
       if (currentUser) {
@@ -147,7 +148,6 @@ router.put('/update', async (req: Request, res: Response) => {
 
         if (company) {
           const hubToken: HubToken | null = await authController.retrieveHubToken(portalId);
-          const companyId = req.query.companyId as string;
 
           if (hubToken && companyId && company) {
             if (companyId && companyId !== '') {
@@ -445,18 +445,14 @@ router.get('/resync', async (req: Request, res: Response) => {
     COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
     COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
 
-    // const result = await companiesController.getCompanies(tradeName, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
-    
-    const result = 'result';
-
-    if (result) {
+    if (COMPANY_INFO_USERNAME && COMPANY_INFO_PASSWORD) {
       res.send(`
         <!DOCTYPE html>
         <html lang="en">  
         <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Enter Dossier Number</title>
+          <title>Enter dossier number</title>
           <style>
             body { font-family: Campton, sans-serif; padding: 20px; }
             .c-input-container {
@@ -491,7 +487,7 @@ router.get('/resync', async (req: Request, res: Response) => {
               const dossierInput = document.getElementById('dossier-input').value;
               if (dossierInput) {
                 try {
-                  const response = await fetch('/webhooks/sync', {
+                  const response = await fetch('/webhooks/update', {
                     method: 'PUT',
                     headers: {
                       'Content-Type': 'application/json'
@@ -500,7 +496,7 @@ router.get('/resync', async (req: Request, res: Response) => {
                       portalId: portalId,
                       companyId: companyId,
                       companyData: {
-                        dossier_number: dossierInput
+                        "dossier_number": dossierInput
                       }
                     })
                   });
