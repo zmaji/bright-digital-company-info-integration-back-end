@@ -261,14 +261,6 @@ router.get('/datarequest', async (req: Request, res: Response) => {
         },
       ],
       primaryAction,
-      secondaryActions: [
-        primaryAction = {
-          type: 'ACTION_HOOK',
-          httpMethod: 'PUT',
-          uri: 'TEST',
-          label: 'TEST',
-        }
-      ]
     };
 
     res.send(cardInformation);
