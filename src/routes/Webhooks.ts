@@ -132,26 +132,12 @@ router.put('/sync', async (req: Request, res: Response) => {
 });
 
 router.put('/update', async (req: Request, res: Response) => {
-  console.log('Updating a HubSpot company!')
-
+  logger.info('Trying to update a HubSpot company..');
   try {
-    const dossierNumber = req.query.dossierNumber ? Number(req.query.dossierNumber) : (req.body.dossierNumber ? Number(req.body.dossierNumber) : undefined);
-    const portalId = req.query.portalId ? parseInt(req.query.portalId as string, 10) : (req.body.portalId ? parseInt(req.body.portalId, 10) : undefined);
-    const companyId = req.query.companyId as string || req.body.companyId as string;
+    const dossierNumber = req.query.dossierNumber ? Number(req.query.dossierNumber) : undefined;
+    const portalId = parseInt(req.query.portalId as string, 10);
 
-    console.log('dossierNumber');
-    console.log(dossierNumber);
-    console.log('portalId');
-    console.log(portalId);
-    console.log('companyId');
-    console.log(companyId);
-    
-    console.log('req.query.dossierNumber');
-    console.log(req.query.dossierNumber);
-    console.log('req.body.dossierNumber');
-    console.log(req.body.dossierNumber);
-
-    if (dossierNumber && portalId && companyId) {
+    if (portalId) {
       currentUser = await usersController.getUser(portalId);
 
       if (currentUser) {
@@ -162,6 +148,7 @@ router.put('/update', async (req: Request, res: Response) => {
 
         if (company) {
           const hubToken: HubToken | null = await authController.retrieveHubToken(portalId);
+          const companyId = req.query.companyId as string;
 
           if (hubToken && companyId && company) {
             if (companyId && companyId !== '') {
@@ -493,12 +480,9 @@ router.get('/resync', async (req: Request, res: Response) => {
 
             async function submitDossierNumber() {
               const dossierInput = document.getElementById('dossier-input').value;
-              console.log('dossierInput');
-              console.log(dossierInput);
-
               if (dossierInput) {
                 try {
-                  const response = await fetch('/webhooks/update', {
+                  const response = await fetch('/webhooks/sync', {
                     method: 'PUT',
                     headers: {
                       'Content-Type': 'application/json'
