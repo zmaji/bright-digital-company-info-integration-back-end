@@ -99,31 +99,31 @@ router.put('/sync', async (req: Request, res: Response) => {
   try {
     const portalId = parseInt(req.body.portalId as string, 10);
 
-      if (portalId) {
-        const hubToken: HubToken | null = await authController.retrieveHubToken(portalId);
-        const companyId = req.body.companyId as string;
-        const companyData = req.body.companyData;
-  
-        if (hubToken && companyId && companyData) {
-          if (companyId && companyId !== '' && Object.keys(companyData).length > 0) {
-            const result = await companiesController.updateCompany(hubToken, companyId, companyData);
+    if (portalId) {
+      const hubToken: HubToken | null = await authController.retrieveHubToken(portalId);
+      const companyId = req.body.companyId as string;
+      const companyData = req.body.companyData;
 
-            if (result) {
-              res
-                  .status(StatusCodes.OK)
-                  .json(result);
-            } else {
-              res
-                  .status(StatusCodes.NOT_FOUND)
-                  .json({ error: `Unable to update a company with id ${companyId}` });
-            }
+      if (hubToken && companyId && companyData) {
+        if (companyId && companyId !== '' && Object.keys(companyData).length > 0) {
+          const result = await companiesController.updateCompany(hubToken, companyId, companyData);
+
+          if (result) {
+            res
+                .status(StatusCodes.OK)
+                .json(result);
           } else {
             res
-                .status(StatusCodes.INTERNAL_SERVER_ERROR)
-                .json({ error: 'No company or data provided' });
+                .status(StatusCodes.NOT_FOUND)
+                .json({ error: `Unable to update a company with id ${companyId}` });
           }
+        } else {
+          res
+              .status(StatusCodes.INTERNAL_SERVER_ERROR)
+              .json({ error: 'No company or data provided' });
         }
       }
+    }
   } catch {
     res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -133,49 +133,45 @@ router.put('/sync', async (req: Request, res: Response) => {
 
 router.put('/update', async (req: Request, res: Response) => {
   try {
-    console.log('Received update webhook..');
     const dossierNumber = req.query.dossierNumber ? Number(req.query.dossierNumber) : undefined;
     const portalId = parseInt(req.query.portalId as string, 10);
 
     if (portalId) {
-      console.log('We have a portal ID');
       currentUser = await usersController.getUser(portalId);
 
       if (currentUser) {
-      console.log('We have a current user');
-      COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
-      COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
+        COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
+        COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
 
-      const company = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
+        const company = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
 
         if (company) {
-          console.log('We have a company');
           const hubToken: HubToken | null = await authController.retrieveHubToken(portalId);
           const companyId = req.query.companyId as string;
-      
-            if (hubToken && companyId && company) {
-              if (companyId && companyId !== '') {
-                const formattedCompany = await formatCompanyData(company);
-                const result = await companiesController.updateCompany(hubToken, companyId, formattedCompany);
 
-                if (result) {
-                  res
-                      .status(StatusCodes.OK)
-                      .json(result);
-                } else {
-                  res
-                      .status(StatusCodes.NOT_FOUND)
-                      .json({ error: `Unable to update a company with id ${companyId}` });
-                }
+          if (hubToken && companyId && company) {
+            if (companyId && companyId !== '') {
+              const formattedCompany = await formatCompanyData(company);
+              const result = await companiesController.updateCompany(hubToken, companyId, formattedCompany);
+
+              if (result) {
+                res
+                    .status(StatusCodes.OK)
+                    .json(result);
               } else {
                 res
-                    .status(StatusCodes.INTERNAL_SERVER_ERROR)
-                    .json({ error: 'No company or data provided' });
+                    .status(StatusCodes.NOT_FOUND)
+                    .json({ error: `Unable to update a company with id ${companyId}` });
               }
+            } else {
+              res
+                  .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                  .json({ error: 'No company or data provided' });
             }
+          }
         }
       }
-   }
+    }
   } catch {
     res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -190,33 +186,40 @@ router.get('/datarequest', async (req: Request, res: Response) => {
 
     // if (verified) {
     companyId = req.query.associatedObjectId;
-    const portalId = req.query.portalId;
-    let dossierNumber = req.query.dossier_number;
-    let dossierDataType = 'NUMERIC';
-    const tradeName = req.query.name;
+
+    const portalId = req.query.portalId as string;
+    const tradeName = req.query.name as string;
     const objectId = req.query.associatedObjectId;
+
+    let dossierNumber = req.query.dossier_number as string;
     let status: string;
     let statusType: string;
     let buttonLabel: string;
     let buttonUri: string;
-    let primaryAction: any;
+    let primaryAction: object;
+    let secondaryActions: [];
+    let dossierDataType = 'NUMERIC';
 
-    if (dossierNumber !== '' && dossierNumber !== undefined && dossierNumber !== null) {
+    const createButtonUri = (baseUri: string, params: Record<string, string>) => {
+      const queryParams = new URLSearchParams(params).toString();
+
+      return `${baseUri}?${queryParams}`;
+    };
+
+    if (dossierNumber) {
       status = 'Synced';
       statusType = 'SUCCESS';
       buttonLabel = 'Update company';
-      // @ts-ignore
-      buttonUri = `https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/update?portalId=${encodeURIComponent(portalId)}&dossierNumber=${encodeURIComponent(dossierNumber)}&companyId=${encodeURIComponent(companyId)}`;
+      buttonUri = createButtonUri('https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/update', {
+        portalId,
+        dossierNumber,
+        companyId,
+      });
       primaryAction = {
         type: 'ACTION_HOOK',
         httpMethod: 'PUT',
         uri: buttonUri,
         label: buttonLabel,
-        // associatedObjectProperties: [
-        //   portalId,
-        //   dossierNumber,
-        //   companyId,
-        // ]
       };
     } else {
       status = 'Not synced';
@@ -224,8 +227,10 @@ router.get('/datarequest', async (req: Request, res: Response) => {
       buttonLabel = 'Sync with Company.info';
       dossierNumber = 'Unknown';
       dossierDataType = 'STRING';
-      // @ts-ignore
-      buttonUri = `https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/iframe-contents?portalId=${encodeURIComponent(portalId)}&tradeName=${encodeURIComponent(tradeName)}`
+      buttonUri = createButtonUri('https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/search', {
+        portalId,
+        tradeName,
+      });
       primaryAction = {
         type: 'IFRAME',
         width: 890,
@@ -255,7 +260,15 @@ router.get('/datarequest', async (req: Request, res: Response) => {
           ],
         },
       ],
-      primaryAction
+      primaryAction,
+      secondaryActions: [
+        primaryAction = {
+          type: 'ACTION_HOOK',
+          httpMethod: 'PUT',
+          uri: 'TEST',
+          label: 'TEST',
+        }
+      ]
     };
 
     res.send(cardInformation);
@@ -267,7 +280,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
   }
 });
 
-router.get('/iframe-contents', async (req: Request, res: Response) => {
+router.get('/search', async (req: Request, res: Response) => {
   const portalId = parseInt(req.query.portalId as string, 10);
   const tradeName = req.query.tradeName as string;
 
@@ -279,7 +292,7 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
 
     const result = await companiesController.getCompanies(tradeName, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
 
-    if (result) { 
+    if (result) {
       res.send(`
         <!DOCTYPE html>
         <html lang="en">  
@@ -335,6 +348,7 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
           <div id="options-container"></div>
 
           <script>
+            // This variable is being converted from Ts to Js. Ignore this error (only in Editor).
             const result = ${JSON.stringify(result.item)};
             const portalId = ${JSON.stringify(portalId)};
             const companyId = ${JSON.stringify(companyId)};
@@ -405,7 +419,6 @@ router.get('/iframe-contents', async (req: Request, res: Response) => {
         </html>
       `);
     } else {
-      // If result.item doesn't exist or has length 0
       res.status(404).send('No matching companies found');
     }
   } else {
