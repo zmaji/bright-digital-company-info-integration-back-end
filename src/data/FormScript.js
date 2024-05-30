@@ -13,6 +13,9 @@ const companySearch = () => {
     if (event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormReady') {
       const input = document.querySelector('input[name="company"]');
       const hiddenCheck = document.querySelector('input[name="0-2/dossier_number"]');
+      
+      console.log('event');
+      console.log(event);
 
       if (!input || !hiddenCheck) return;
 
