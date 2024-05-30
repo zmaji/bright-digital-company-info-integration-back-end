@@ -2,9 +2,10 @@ import crypto from 'crypto';
 
 const CLIENT_SECRET = process.env.HUBSPOT_CLIENT_SECRET;
 
-export const basicVerification = (req) => {
+export const basicVerification = async (req: Request) => {
   const httpMethod = 'GET';
-  const httpURI = `https://quoratio-crm-card.herokuapp.com/hubspot${req.url}`;
+  // @ts-ignore
+  const httpURI = `https://${req.get('host')}${req.originalUrl}`;
 
   const signature = req.headers['x-hubspot-signature'];
   const sourceString = CLIENT_SECRET + httpMethod + httpURI;
