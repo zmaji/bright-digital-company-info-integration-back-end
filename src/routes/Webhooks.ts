@@ -223,16 +223,14 @@ router.get('/datarequest', async (req: Request, res: Response) => {
       };
       secondaryActions = [
         {
-          "type": "CONFIRMATION_ACTION_HOOK",
-          "httpMethod": "POST",
-          "uri": "https://example.com/action-hook",
-          "label": "Example action",
-          "associatedObjectProperties": [
-            "some_crm_property"
-          ],
-          "confirmationMessage": "Are you sure you want to run example action?",
-          "confirmButtonText": "Yes",
-          "cancelButtonText": "No"
+          type: 'IFRAME',
+          width: 890,
+          height: 748,
+          uri: createButtonUri('https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/resync', {
+            portalId,
+            companyId,
+          }),
+          label: buttonLabel,
         }
       ]
     } else {
@@ -425,6 +423,101 @@ router.get('/search', async (req: Request, res: Response) => {
                   console.error('Error fetching company info:', error);
                 }
               }
+          </script>
+        </body>
+        </html>
+      `);
+    } else {
+      res.status(404).send('No matching companies found');
+    }
+  } else {
+    res.status(400).send('Invalid portalId');
+  }
+});
+
+router.get('/resync', async (req: Request, res: Response) => {
+  const portalId = parseInt(req.query.portalId as string, 10);
+  const companyId = req.query.companyId as string;
+
+  if (portalId) {
+    const currentUser = await usersController.getUser(portalId);
+
+    COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
+    COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
+
+    // const result = await companiesController.getCompanies(tradeName, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
+    
+    const result = 'result';
+
+    if (result) {
+      res.send(`
+        <!DOCTYPE html>
+        <html lang="en">  
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Enter Dossier Number</title>
+          <style>
+            body { font-family: Campton, sans-serif; padding: 20px; }
+            .c-input-container {
+              display: flex;
+              align-items: center;
+              margin-bottom: 20px;
+            }
+            .c-input-container input {
+              font-size: 16px;
+              padding: 8px;
+              margin-right: 10px;
+              flex: 1;
+            }
+            .c-input-container button {
+              font-size: 16px;
+              padding: 8px 16px;
+            }
+          </style>
+        </head>
+        <body>
+          <h1>Enter Dossier Number</h1>
+          <div class="c-input-container">
+            <input type="text" id="dossier-input" placeholder="Enter dossier number" />
+            <button onclick="submitDossierNumber()">Submit</button>
+          </div>
+
+          <script>
+            const portalId = ${JSON.stringify(portalId)};
+            const companyId = ${JSON.stringify(companyId)};
+
+            async function submitDossierNumber() {
+              const dossierInput = document.getElementById('dossier-input').value;
+              if (dossierInput) {
+                try {
+                  const response = await fetch('/webhooks/sync', {
+                    method: 'PUT',
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                      portalId: portalId,
+                      companyId: companyId,
+                      companyData: {
+                        dossier_number: dossierInput
+                      }
+                    })
+                  });
+
+                  const result = await response.json();
+                  if (response.ok) {
+                    window.parent.postMessage(JSON.stringify({action: "DONE"}), "*");
+                  } else {
+                    console.error(result.error);
+                  }
+                } catch (error) {
+                  console.error('Error fetching company info:', error);
+                }
+              } else {
+                alert('Please enter a dossier number');
+              }
+            }
           </script>
         </body>
         </html>
