@@ -303,9 +303,10 @@ router.get('/search', async (req: Request, res: Response) => {
     COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
 
     const result = await companiesController.getCompanies(tradeName, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
-    logger.info('Found companies');
     //@ts-ignore
-    logger.info(result.item);
+    const companies = result.item
+
+    console.log('yooo');
 
     if (result) {
       res.send(`
@@ -377,7 +378,7 @@ router.get('/search', async (req: Request, res: Response) => {
           <div id="options-container"></div>
 
           <script>
-            const result = ${JSON.stringify(result.item)};
+            const result = ${JSON.stringify(companies)};
             const portalId = ${JSON.stringify(portalId)};
             const companyId = ${JSON.stringify(companyId)};
 
@@ -385,7 +386,7 @@ router.get('/search', async (req: Request, res: Response) => {
               return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
             }
 
-            const modifiedResults = result.map(item => ({
+            const modifiedResults = companies.map(item => ({
               ...item,
               correspondence_city: capitalizeFirstLetter(item.correspondence_city)
             }));
