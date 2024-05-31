@@ -376,7 +376,8 @@ router.get('/search', async (req: Request, res: Response) => {
             </form>
             
             <div class='v-search-results__text'>
-              These search results display all companies matching your search criteria. Select a result to sync or update.
+              These search results display all companies matching your search criteria. 
+              Select a result to sync or update.
             </div>
 
             <div id="options-container"></div>
@@ -489,9 +490,9 @@ router.get('/search', async (req: Request, res: Response) => {
           </html>
         `);
       }
-    } catch (error) { 
+    } catch (error) {
       console.log('Error fetching company info:', error);
-      
+
       res.send(`
         <!DOCTYPE html>
         <html lang="en">  
@@ -536,8 +537,6 @@ router.get('/search', async (req: Request, res: Response) => {
     res.status(400).send('Invalid portalId');
   }
 });
-
-
 
 router.get('/resync', async (req: Request, res: Response) => {
   const portalId = parseInt(req.query.portalId as string, 10);
