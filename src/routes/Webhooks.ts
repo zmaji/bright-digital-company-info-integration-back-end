@@ -340,7 +340,18 @@ router.get('/search', async (req: Request, res: Response) => {
               font-size: 16px;
               font-weight: 300;
             }
+            .c-search-row__number-container {
+              margin-left: 20px;
+            }
             .c-search-row__location {
+              font-size: 16px;
+              font-weight: 300;
+            }
+            .c-search-row__kvk {
+              font-size: 16px;
+              font-weight: 300;
+            }
+            .c-search-row__establishment {
               font-size: 16px;
               font-weight: 300;
             }
@@ -395,6 +406,11 @@ router.get('/search', async (req: Request, res: Response) => {
                     <div class="c-search-row__address">\${item.correspondence_street}&nbsp;|</div>
                     <div class="c-search-row__location">&nbsp;\${item.correspondence_city}</div>
                   </div>
+
+                  <div class="c-search-row__number-container u-flex">
+                  <div class="c-search-row__kvk">\${item.dossier_number}&nbsp;|</div>
+                  <div class="c-search-row__establishment">&nbsp;\${item.establishment_number}</div>
+                </div>
 
                   <div class="c-search-row__button-container">
                     <button onclick="selectOption('\${item.dossier_number}')">Select</button>
