@@ -368,7 +368,7 @@ router.get('/search', async (req: Request, res: Response) => {
         <body>
           <h1>Search results for trade name ${tradeName}</h1>
 
-          <form id="search-form" method="get" action="/search">
+          <form id="search-form" method="get" action="/webhooks/search">
             <input type="hidden" name="portalId" value="${portalId}">
             <input type="text" name="tradeName" value="${tradeName}" placeholder="Enter trade name">
             <button type="submit">Search</button>
