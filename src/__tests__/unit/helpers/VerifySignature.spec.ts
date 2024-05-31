@@ -24,9 +24,10 @@ describe('verifySignature function', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    process.env.HUBSPOT_CLIENT_SECRET = 'test_secret';
   });
 
-  it('should return false for invalid signature', () => {
+  it('should return false for invalid signature', async () => {
     const invalidMockRequest = {
       ...mockRequest,
       headers: {
@@ -35,11 +36,11 @@ describe('verifySignature function', () => {
       },
     };
 
-    const result = verifySignature(invalidMockRequest as Request);
+    const result = await verifySignature(invalidMockRequest as Request);
     expect(result).toBe(false);
   });
 
-  it('should return false if timestamp is too old', () => {
+  it('should return false if timestamp is too old', async () => {
     const expiredTimestampMockRequest = {
       ...mockRequest,
       headers: {
@@ -48,25 +49,25 @@ describe('verifySignature function', () => {
       },
     };
 
-    const result = verifySignature(expiredTimestampMockRequest as Request);
+    const result = await verifySignature(expiredTimestampMockRequest as Request);
     expect(result).toBe(false);
     expect(logger.error).toHaveBeenCalledWith('Timestamp of incoming HubSpot webhook is too old, rejecting request');
   });
 
-  it('should return false if client secret or signature is missing', () => {
+  it('should return false if client secret or signature is missing', async () => {
     const missingSecretAndSignatureMockRequest = {
       ...mockRequest,
       headers: {},
     };
 
-    const result = verifySignature(missingSecretAndSignatureMockRequest as Request);
+    const result = await verifySignature(missingSecretAndSignatureMockRequest as Request);
     expect(result).toBe(false);
   });
 
-  it('should return false if environment variable is missing', () => {
+  it('should return false if environment variable is missing', async () => {
     delete process.env.HUBSPOT_CLIENT_SECRET;
 
-    const result = verifySignature(mockRequest as Request);
+    const result = await verifySignature(mockRequest as Request);
     expect(result).toBe(false);
   });
 });
