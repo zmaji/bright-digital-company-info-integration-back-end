@@ -297,76 +297,219 @@ router.get('/search', async (req: Request, res: Response) => {
   const tradeName = req.query.tradeName as string;
 
   if (portalId) {
-    currentUser = await usersController.getUser(portalId);
+    try { // Start of try block
+      const currentUser = await usersController.getUser(portalId);
 
-    COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
-    COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
+      const COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
+      const COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
 
-    const result = await companiesController.getCompanies(tradeName, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
-    // @ts-expect-error item is not part of result (ts error)
-    const companies = result.item;
+      const result = await companiesController.getCompanies(tradeName, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
+      // @ts-expect-error item is not part of result (ts error)
+      const companies = result.item;
 
-    if (companies) {
+      if (companies && companies.length > 0) {
+        res.send(`
+          <!DOCTYPE html>
+          <html lang="en">  
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Select Option</title>
+            <style>
+              body { font-family: Campton, sans-serif; padding: 20px; }
+              .u-flex { display: flex; flex-wrap: wrap; }
+              .c-search-row__line {
+                width: 100%;
+                height: 1px;
+                background-color: lightblue;
+                margin-top: 24px;
+                margin-bottom: 24px;
+              }
+              .c-search-row__content-container {
+                width: 100%;
+                align-items: center;
+              }
+              .c-search-row__name-container {
+                width: 25%;
+              }
+              .c-search-row__name {
+                font-size: 16px;
+                font-weight: 600;
+                margin-right: 48px;
+              }
+              .c-search-row__address {
+                font-size: 16px;
+                font-weight: 300;
+              }
+              .c-search-row__number-container {
+                margin-left: 20px;
+              }
+              .c-search-row__location {
+                font-size: 16px;
+                font-weight: 300;
+              }
+              .c-search-row__kvk {
+                font-size: 16px;
+                font-weight: 300;
+              }
+              .c-search-row__establishment {
+                font-size: 16px;
+                font-weight: 300;
+              }
+              .c-search-row__button-container {
+                margin-left: auto;
+              }
+              .v-search-results__text {
+                font-size: 16px;
+                font-weight: 300;
+                margin-bottom: 20px;
+              }
+            </style>
+          </head>
+          <body>
+            <h1>Search results for trade name ${tradeName}</h1>
+
+            <form id="search-form" method="get" action="/webhooks/search">
+              <input type="hidden" name="portalId" value="${portalId}">
+              <input type="text" name="tradeName" value="${tradeName}" placeholder="Enter trade name">
+              <button type="submit">Search</button>
+            </form>
+            
+            <div class='v-search-results__text'>
+              These search results display all companies matching your search criteria. Select a result to sync or update.
+            </div>
+
+            <div id="options-container"></div>
+
+            <script>
+              const result = ${JSON.stringify(companies)};
+              const portalId = ${JSON.stringify(portalId)};
+              const companyId = ${JSON.stringify(companyId)};
+
+              function capitalizeFirstLetter(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+              }
+
+              const modifiedResults = result.map(item => ({
+                ...item,
+                correspondence_city: capitalizeFirstLetter(item.correspondence_city)
+              }));
+              
+              const container = document.getElementById('options-container');
+              
+              modifiedResults.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'c-search-row u-flex';
+                div.innerHTML = 
+                \`
+                  <div class="c-search-row__line"></div>
+                  <div class="c-search-row__content-container u-flex">
+                    <div class="c-search-row__name-container u-flex">
+                      <div class="c-search-row__name">\${item.name}</div>
+                    </div>
+
+                    <div class="c-search-row__address-container u-flex">
+                      <div class="c-search-row__address">\${item.correspondence_street}&nbsp;|</div>
+                      <div class="c-search-row__location">&nbsp;\${item.correspondence_city}</div>
+                    </div>
+
+                    <div class="c-search-row__number-container u-flex">
+                    <div class="c-search-row__kvk">\${item.dossier_number}&nbsp;|</div>
+                    <div class="c-search-row__establishment">&nbsp;\${item.establishment_number}</div>
+                  </div>
+
+                    <div class="c-search-row__button-container">
+                      <button onclick="selectOption('\${item.dossier_number}')">Select</button>
+                    </div>
+                  </div>
+                \`;
+                container.appendChild(div);
+              });
+
+              async function selectOption(dossierNumber) {
+                  try {
+                    const response = await fetch('/webhooks/sync', {
+                      method: 'PUT',
+                      headers: {
+                        'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({
+                        portalId: portalId,
+                        companyId: companyId,
+                        companyData: {
+                          "dossier_number": dossierNumber
+                        }
+                      })
+                    });
+          
+                    const result = await response.json();
+                    if (response.ok) {
+                      window.parent.postMessage(JSON.stringify({"action": "DONE"}), "*");
+                    } else {
+                      console.error(result.error);
+                    }
+                  } catch (error) {
+                    console.error('Error fetching company info:', error);
+                  }
+                }
+            </script>
+          </body>
+          </html>
+        `);
+      } else {
+        res.send(`
+          <!DOCTYPE html>
+          <html lang="en">  
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>No Results Found</title>
+            <style>
+              body { font-family: Campton, sans-serif; padding: 20px; }
+              .v-search-results__text {
+                font-size: 16px;
+                font-weight: 300;
+                margin-bottom: 20px;
+              }
+            </style>
+          </head>
+          <body>
+            <h1>No results found for trade name ${tradeName}</h1>
+
+            <form id="search-form" method="get" action="/webhooks/search">
+              <input type="hidden" name="portalId" value="${portalId}">
+              <input type="text" name="tradeName" value="${tradeName}" placeholder="Enter trade name">
+              <button type="submit">Search</button>
+            </form>
+            
+            <div class='v-search-results__text'>
+              No companies matched your search criteria. Please try again with a different trade name.
+            </div>
+          </body>
+          </html>
+        `);
+      }
+    } catch (error) { // Start of catch block
+      console.error('Error fetching company info:', error);
       res.send(`
         <!DOCTYPE html>
         <html lang="en">  
         <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Select Option</title>
+          <title>Error</title>
           <style>
             body { font-family: Campton, sans-serif; padding: 20px; }
-            .u-flex { display: flex; flex-wrap: wrap; }
-            .c-search-row__line {
-              width: 100%;
-              height: 1px;
-              background-color: lightblue;
-              margin-top: 24px;
-              margin-bottom: 24px;
-            }
-            .c-search-row__content-container {
-              width: 100%;
-              align-items: center;
-            }
-            .c-search-row__name-container {
-              width: 25%;
-            }
-            .c-search-row__name {
-              font-size: 16px;
-              font-weight: 600;
-              margin-right: 48px;
-            }
-            .c-search-row__address {
-              font-size: 16px;
-              font-weight: 300;
-            }
-            .c-search-row__number-container {
-              margin-left: 20px;
-            }
-            .c-search-row__location {
-              font-size: 16px;
-              font-weight: 300;
-            }
-            .c-search-row__kvk {
-              font-size: 16px;
-              font-weight: 300;
-            }
-            .c-search-row__establishment {
-              font-size: 16px;
-              font-weight: 300;
-            }
-            .c-search-row__button-container {
-              margin-left: auto;
-            }
             .v-search-results__text {
               font-size: 16px;
               font-weight: 300;
               margin-bottom: 20px;
+              color: red;
             }
           </style>
         </head>
         <body>
-          <h1>Search results for trade name ${tradeName}</h1>
+          <h1>An error occurred</h1>
 
           <form id="search-form" method="get" action="/webhooks/search">
             <input type="hidden" name="portalId" value="${portalId}">
@@ -375,93 +518,17 @@ router.get('/search', async (req: Request, res: Response) => {
           </form>
           
           <div class='v-search-results__text'>
-            These search results display all companies matching your search criteria. Select a result to sync or update.
+            There was an error processing your request. Please try again later.
           </div>
-
-          <div id="options-container"></div>
-
-          <script>
-            const result = ${JSON.stringify(companies)};
-            const portalId = ${JSON.stringify(portalId)};
-            const companyId = ${JSON.stringify(companyId)};
-
-            function capitalizeFirstLetter(string) {
-              return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-            }
-
-            const modifiedResults = result.map(item => ({
-              ...item,
-              correspondence_city: capitalizeFirstLetter(item.correspondence_city)
-            }));
-            
-            const container = document.getElementById('options-container');
-            
-            modifiedResults.forEach(item => {
-              const div = document.createElement('div');
-              div.className = 'c-search-row u-flex';
-              div.innerHTML = 
-              \`
-                <div class="c-search-row__line"></div>
-                <div class="c-search-row__content-container u-flex">
-                  <div class="c-search-row__name-container u-flex">
-                    <div class="c-search-row__name">\${item.name}</div>
-                  </div>
-
-                  <div class="c-search-row__address-container u-flex">
-                    <div class="c-search-row__address">\${item.correspondence_street}&nbsp;|</div>
-                    <div class="c-search-row__location">&nbsp;\${item.correspondence_city}</div>
-                  </div>
-
-                  <div class="c-search-row__number-container u-flex">
-                  <div class="c-search-row__kvk">\${item.dossier_number}&nbsp;|</div>
-                  <div class="c-search-row__establishment">&nbsp;\${item.establishment_number}</div>
-                </div>
-
-                  <div class="c-search-row__button-container">
-                    <button onclick="selectOption('\${item.dossier_number}')">Select</button>
-                  </div>
-                </div>
-              \`;
-              container.appendChild(div);
-            });
-
-            async function selectOption(dossierNumber) {
-                try {
-                  const response = await fetch('/webhooks/sync', {
-                    method: 'PUT',
-                    headers: {
-                      'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                      portalId: portalId,
-                      companyId: companyId,
-                      companyData: {
-                        "dossier_number": dossierNumber
-                      }
-                    })
-                  });
-        
-                  const result = await response.json();
-                  if (response.ok) {
-                    window.parent.postMessage(JSON.stringify({"action": "DONE"}), "*");
-                  } else {
-                    console.error(result.error);
-                  }
-                } catch (error) {
-                  console.error('Error fetching company info:', error);
-                }
-              }
-          </script>
         </body>
         </html>
       `);
-    } else {
-      res.status(404).send('No matching companies found');
-    }
+    } // End of catch block
   } else {
     res.status(400).send('Invalid portalId');
   }
 });
+
 
 router.get('/resync', async (req: Request, res: Response) => {
   const portalId = parseInt(req.query.portalId as string, 10);
