@@ -512,9 +512,22 @@ router.get('/search', async (req: Request, res: Response) => {
         <body>
           <h1>An error occurred</h1>
           
-          <div class='v-search-results__text'>
+          <div class='v-search-results__text' id='error-message'>
             There was an error processing your request. Please try again later.
           </div>
+
+          <script>
+            const errorMessage = ${JSON.stringify(error.message)};
+            const errorDiv = document.getElementById('error-message');
+            
+            if (errorMessage.includes('not have enough credits')) {
+              errorDiv.innerText = 'Insufficient credits to perform this search. Please check your account balance.';
+            } else {
+              errorDiv.innerText = 'There was an error processing your request. Please try again later.';
+            }
+
+            console.error('Error details:', errorMessage);
+          </script>
         </body>
         </html>
       `);
@@ -523,6 +536,7 @@ router.get('/search', async (req: Request, res: Response) => {
     res.status(400).send('Invalid portalId');
   }
 });
+
 
 
 router.get('/resync', async (req: Request, res: Response) => {
