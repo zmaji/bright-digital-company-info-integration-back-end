@@ -306,7 +306,7 @@ router.get('/search', async (req: Request, res: Response) => {
     // @ts-expect-error item is not part of result (ts error)
     const companies = result.item;
 
-    if (companies && companies.length > 0) {
+    if (companies) {
       res.send(`
         <!DOCTYPE html>
         <html lang="en">  
