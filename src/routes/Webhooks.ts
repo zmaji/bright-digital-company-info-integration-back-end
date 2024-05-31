@@ -308,7 +308,7 @@ router.get('/search', async (req: Request, res: Response) => {
     console.log('companies')
     console.log(companies)
 
-    if (result) {
+    if (companies) {
       res.send(`
         <!DOCTYPE html>
         <html lang="en">  
@@ -386,7 +386,7 @@ router.get('/search', async (req: Request, res: Response) => {
               return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
             }
 
-            const modifiedResults = companies.map(item => ({
+            const modifiedResults = result.map(item => ({
               ...item,
               correspondence_city: capitalizeFirstLetter(item.correspondence_city)
             }));
