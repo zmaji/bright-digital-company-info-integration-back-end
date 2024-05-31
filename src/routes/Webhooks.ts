@@ -303,10 +303,8 @@ router.get('/search', async (req: Request, res: Response) => {
     COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
 
     const result = await companiesController.getCompanies(tradeName, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
-    //@ts-ignore
-    const companies = result.item
-    console.log('companies')
-    console.log(companies)
+    // @ts-expect-error item is not part of result (ts error)
+    const companies = result.item;
 
     if (companies) {
       res.send(`
