@@ -304,7 +304,8 @@ router.get('/search', async (req: Request, res: Response) => {
 
     const result = await companiesController.getCompanies(tradeName, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
     logger.info('Found companies');
-    logger.info(result);
+    //@ts-ignore
+    logger.info(result.item);
 
     if (result) {
       res.send(`
