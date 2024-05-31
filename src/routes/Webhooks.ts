@@ -489,8 +489,9 @@ router.get('/search', async (req: Request, res: Response) => {
           </html>
         `);
       }
-    } catch (error) { // Start of catch block
-      console.error('Error fetching company info:', error);
+    } catch (error) { 
+      console.log('Error fetching company info:', error);
+      
       res.send(`
         <!DOCTYPE html>
         <html lang="en">  
@@ -510,12 +511,6 @@ router.get('/search', async (req: Request, res: Response) => {
         </head>
         <body>
           <h1>An error occurred</h1>
-
-          <form id="search-form" method="get" action="/webhooks/search">
-            <input type="hidden" name="portalId" value="${portalId}">
-            <input type="text" name="tradeName" value="${tradeName}" placeholder="Enter trade name">
-            <button type="submit">Search</button>
-          </form>
           
           <div class='v-search-results__text'>
             There was an error processing your request. Please try again later.
