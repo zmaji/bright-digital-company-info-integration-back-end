@@ -303,6 +303,8 @@ router.get('/search', async (req: Request, res: Response) => {
     COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
 
     const result = await companiesController.getCompanies(tradeName, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
+    console.log('Found companies');
+    console.log(result);
 
     if (result) {
       res.send(`
