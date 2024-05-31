@@ -363,8 +363,7 @@ router.get('/search', async (req: Request, res: Response) => {
           <div id="options-container"></div>
 
           <script>
-            // This variable is being converted from Ts to Js. Ignore this error (only in Editor).
-            const result = ${JSON.stringify(result.item)};
+            const result = ${JSON.stringify(result)};
             const portalId = ${JSON.stringify(portalId)};
             const companyId = ${JSON.stringify(companyId)};
 
