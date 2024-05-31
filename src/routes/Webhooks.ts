@@ -305,8 +305,8 @@ router.get('/search', async (req: Request, res: Response) => {
     const result = await companiesController.getCompanies(tradeName, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
     //@ts-ignore
     const companies = result.item
-
-    console.log('yooo');
+    console.log('companies')
+    console.log(companies)
 
     if (result) {
       res.send(`
