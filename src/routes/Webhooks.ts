@@ -368,8 +368,13 @@ router.get('/search', async (req: Request, res: Response) => {
         <body>
           <h1>Search results for trade name ${tradeName}</h1>
 
+          <form id="search-form" method="get" action="/search">
+            <input type="hidden" name="portalId" value="${portalId}">
+            <input type="text" name="tradeName" value="${tradeName}" placeholder="Enter trade name">
+            <button type="submit">Search</button>
+          </form>
           
-          <div className='v-search-results__text'>
+          <div class='v-search-results__text'>
             These search results display all companies matching your search criteria. Select a result to sync or update.
           </div>
 
