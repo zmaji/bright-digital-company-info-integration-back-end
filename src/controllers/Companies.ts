@@ -56,6 +56,7 @@ const getCompanyInfo = async (dossierNumber: number, companyInfoUsername: string
 
     const searchParameters = {
       dossier_number: dossierNumber,
+      // estalishment_number: establishmentNumber,
     };
 
     // eslint-disable-next-line
