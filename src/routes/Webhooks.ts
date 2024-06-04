@@ -231,6 +231,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
             height: 748,
             uri: createButtonUri('https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/search', {
               portalId,
+              dossierNumber,
               companyId,
             }),
             label: 'Resync company',
