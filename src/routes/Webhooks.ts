@@ -375,6 +375,21 @@ router.get('/search', async (req: Request, res: Response) => {
                 font-size: 16px;
                 padding: 8px 12px;
               }
+              .c-input-container {
+                display: flex;
+                align-items: center;
+                margin-bottom: 20px;
+              }
+              .c-input-container input {
+                font-size: 16px;
+                padding: 8px;
+                margin-right: 10px;
+                flex: 1;
+              }
+              .c-input-container button {
+                font-size: 16px;
+                padding: 8px 16px;
+              }
             </style>
           </head>
           <body>
@@ -493,6 +508,12 @@ router.get('/search', async (req: Request, res: Response) => {
               <input type="text" name="tradeName" value="${tradeName}" placeholder="Enter trade name">
               <button type="submit">Search</button>
             </form>
+
+            <div class="c-input-container">
+              <input type="hidden" name="portalId" value="${portalId}">
+              <input type="text" name="tradeName" value="${tradeName}" placeholder="Enter trade name">
+              <button type="submit">Search</button>
+            </div>
             
             <div class='v-search-results__text'>
               No companies matched your search criteria. Please try again with a different trade name.
