@@ -371,10 +371,6 @@ router.get('/search', async (req: Request, res: Response) => {
                 margin-right: 10px;
                 flex: 1;
               }
-              .v-search-results__search button {
-                font-size: 16px;
-                padding: 8px 12px;
-              }
               .c-input-container {
                 display: flex;
                 align-items: center;
@@ -405,12 +401,6 @@ router.get('/search', async (req: Request, res: Response) => {
               <input type="text" name="tradeName" value="${tradeName}" placeholder="Enter trade name">
               <button type="submit">Search</button>
             </form>
-
-            <div class="c-input-container">
-              <input type="hidden" name="portalId" value="${portalId}">
-              <input type="text" name="tradeName" value="${tradeName}" placeholder="Enter trade name">
-              <button type="submit">Search</button>
-            </div>
 
             <div id="options-container"></div>
 
@@ -509,17 +499,11 @@ router.get('/search', async (req: Request, res: Response) => {
           <body>
             <h1>No results found for trade name ${tradeName}</h1>
 
-            <form id="search-form" method="get" action="/webhooks/search">
+            <form class='c-input-container' id="search-form" method="get" action="/webhooks/search">
               <input type="hidden" name="portalId" value="${portalId}">
               <input type="text" name="tradeName" value="${tradeName}" placeholder="Enter trade name">
               <button type="submit">Search</button>
             </form>
-
-            <div class="c-input-container">
-              <input type="hidden" name="portalId" value="${portalId}">
-              <input type="text" name="tradeName" value="${tradeName}" placeholder="Enter trade name">
-              <button type="submit">Search</button>
-            </div>
             
             <div class='v-search-results__text'>
               No companies matched your search criteria. Please try again with a different trade name.
