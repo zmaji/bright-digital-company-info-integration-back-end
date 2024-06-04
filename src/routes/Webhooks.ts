@@ -297,7 +297,7 @@ router.get('/search', async (req: Request, res: Response) => {
   const tradeName = req.query.tradeName as string;
 
   if (portalId) {
-    try { // Start of try block
+    try {
       const currentUser = await usersController.getUser(portalId);
 
       const COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
@@ -328,6 +328,9 @@ router.get('/search', async (req: Request, res: Response) => {
               .c-search-row__content-container {
                 width: 100%;
                 align-items: center;
+              }
+              .v-search-results__search {
+                margin-bottom: 20px;
               }
               .c-search-row__name-container {
                 width: 25%;
@@ -369,7 +372,7 @@ router.get('/search', async (req: Request, res: Response) => {
           <body>
             <h1>Search results for trade name ${tradeName}</h1>
 
-            <form id="search-form" method="get" action="/webhooks/search">
+            <form class='v-search-results__search' id="search-form" method="get" action="/webhooks/search">
               <input type="hidden" name="portalId" value="${portalId}">
               <input type="text" name="tradeName" value="${tradeName}" placeholder="Enter trade name">
               <button type="submit">Search</button>
@@ -532,7 +535,7 @@ router.get('/search', async (req: Request, res: Response) => {
         </body>
         </html>
       `);
-    } // End of catch block
+    }
   } else {
     res.status(400).send('Invalid portalId');
   }
