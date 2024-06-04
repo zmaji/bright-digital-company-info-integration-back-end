@@ -400,7 +400,7 @@ router.get('/search', async (req: Request, res: Response) => {
               Select a result to sync or update.
             </div>
 
-            <form class='v-search-results__search' id="search-form" method="get" action="/webhooks/search">
+            <form class='c-input-container' id="search-form" method="get" action="/webhooks/search">
               <input type="hidden" name="portalId" value="${portalId}">
               <input type="text" name="tradeName" value="${tradeName}" placeholder="Enter trade name">
               <button type="submit">Search</button>
