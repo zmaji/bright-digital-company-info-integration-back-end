@@ -299,7 +299,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
               },
               {
                 'label': 'Company.info status',
-                'dataType': 'STRING',
+                'dataType': 'STATUS',
                 'value': status,
                 'optionType': statusType,
               },
@@ -312,7 +312,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
       if (lastSync) {
         cardInformation.results[0].properties.push({
           label: 'Last sync',
-          dataType: 'DATE',
+          dataType: 'STRING',
           value: lastSync,
         });
       }
