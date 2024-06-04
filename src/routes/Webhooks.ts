@@ -195,6 +195,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
       const objectId = req.query.associatedObjectId;
 
       let dossierNumber = req.query.dossier_number as string;
+      let establishmentNumber = req.query.establishment_number as string;
       let status: string;
       let statusType: string;
       let buttonLabel: string;
@@ -209,7 +210,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
         return `${baseUri}?${queryParams}`;
       };
 
-      if (dossierNumber) {
+      if (dossierNumber && establishmentNumber) {
         status = 'Synced';
         statusType = 'SUCCESS';
         buttonLabel = 'Update company';
@@ -241,6 +242,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
         statusType = 'DANGER';
         buttonLabel = 'Sync with Company.info';
         dossierNumber = 'Unknown';
+        establishmentNumber = 'Unknown';
         dossierDataType = 'STRING';
         buttonUri = createButtonUri('https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/search', {
           portalId,
@@ -265,6 +267,11 @@ router.get('/datarequest', async (req: Request, res: Response) => {
                 'label': 'Dossier number',
                 'dataType': dossierDataType,
                 'value': dossierNumber,
+              },
+              {
+                'label': 'Establishment number',
+                'dataType': dossierDataType,
+                'value': establishmentNumber,
               },
               {
                 'label': 'Company.info status',
