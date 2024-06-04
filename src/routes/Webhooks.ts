@@ -329,9 +329,6 @@ router.get('/search', async (req: Request, res: Response) => {
                 width: 100%;
                 align-items: center;
               }
-              .v-search-results__search {
-                margin-bottom: 20px;
-              }
               .c-search-row__name-container {
                 width: 25%;
               }
@@ -366,6 +363,17 @@ router.get('/search', async (req: Request, res: Response) => {
                 font-size: 16px;
                 font-weight: 300;
                 margin-bottom: 20px;
+              }
+              .v-search-results__search input {
+                margin-bottom: 20px;
+                font-size: 16px
+                padding: 8px;
+                margin-right: 10px;
+                flex: 1;
+              }
+              .v-search-results__search button {
+                font-size: 16px;
+                padding: 8px 16px;
               }
             </style>
           </head>
