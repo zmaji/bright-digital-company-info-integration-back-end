@@ -219,6 +219,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
 
       let dossierNumber = req.query.dossier_number as string;
       let establishmentNumber = req.query.establishment_number as string;
+      let lastSync = req.query.last_sync as string;
       let status: string;
       let statusType: string;
       let buttonLabel: string;
@@ -307,6 +308,14 @@ router.get('/datarequest', async (req: Request, res: Response) => {
         ],
         primaryAction,
       };
+
+      if (lastSync) {
+        cardInformation.results[0].properties.push({
+          label: 'Last sync',
+          dataType: 'DATE',
+          value: lastSync,
+        });
+      }
 
       if (status === 'Synced') {
         // @ts-expect-error secondaryActions is not part of Type cardInformation
