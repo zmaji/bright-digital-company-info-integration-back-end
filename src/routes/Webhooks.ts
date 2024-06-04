@@ -229,7 +229,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
             type: 'IFRAME',
             width: 890,
             height: 748,
-            uri: createButtonUri('https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/resync', {
+            uri: createButtonUri('https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/search', {
               portalId,
               companyId,
             }),
