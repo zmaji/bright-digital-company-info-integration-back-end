@@ -181,6 +181,8 @@ const updateCompany = async (hubToken: HubToken, companyId: string, companyData:
   logger.info(`Trying to update company`);
 
   delete companyData.legal_name;
+  console.log('companyData to UPDATE!')
+  console.log(companyData)
 
   try {
     const response: AxiosResponse = await axios({
