@@ -19,8 +19,9 @@ let companyId: string;
 
 const formatDate = (date) => {
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0'); 
+  const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
+
   return `${year}-${month}-${day}`;
 };
 
@@ -29,6 +30,7 @@ const formatDateFromTimestamp = (timestamp: string) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
   const day = String(date.getDate()).padStart(2, '0');
+
   return `${day}-${month}-${year}`;
 };
 
@@ -62,7 +64,7 @@ router.post('/company', async (req: Request, res: Response) => {
               const syncDate = new Date();
               const formattedDate = formatDate(syncDate);
 
-              companyData = { ...companyData, last_sync: formattedDate}
+              companyData = { ...companyData, last_sync: formattedDate };
 
               if (companyData) {
                 logger.success(`Successfully retrieved data for company with dossier number ${event.propertyName}`);
@@ -129,7 +131,7 @@ router.put('/sync', async (req: Request, res: Response) => {
           const syncDate = new Date();
           const formattedDate = formatDate(syncDate);
 
-          companyData = { ...companyData, last_sync: formattedDate}
+          companyData = { ...companyData, last_sync: formattedDate };
 
           const result = await companiesController.updateCompany(hubToken, companyId, companyData);
 
@@ -175,7 +177,7 @@ router.put('/update', async (req: Request, res: Response) => {
         const syncDate = new Date();
         const formattedDate = formatDate(syncDate);
 
-        companyData = { ...companyData, last_sync: formattedDate}
+        companyData = { ...companyData, last_sync: formattedDate };
 
         if (companyData) {
           const hubToken: HubToken | null = await authController.retrieveHubToken(portalId);
@@ -226,7 +228,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
 
       let dossierNumber = req.query.dossier_number as string;
       let establishmentNumber = req.query.establishment_number as string;
-      let lastSync = req.query.last_sync as string;
+      const lastSync = req.query.last_sync as string;
       let status: string;
       let statusType: string;
       let buttonLabel: string;
