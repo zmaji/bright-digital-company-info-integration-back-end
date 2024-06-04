@@ -406,6 +406,12 @@ router.get('/search', async (req: Request, res: Response) => {
               <button type="submit">Search</button>
             </form>
 
+            <div class="c-input-container">
+              <input type="hidden" name="portalId" value="${portalId}">
+              <input type="text" name="tradeName" value="${tradeName}" placeholder="Enter trade name">
+              <button type="submit">Search</button>
+            </div>
+
             <div id="options-container"></div>
 
             <script>
