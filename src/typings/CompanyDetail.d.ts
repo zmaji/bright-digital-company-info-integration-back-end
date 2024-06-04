@@ -116,4 +116,5 @@ export interface CompanyDetail {
             currency?: string;
         };
     };
+    last_sync?: string;
 }

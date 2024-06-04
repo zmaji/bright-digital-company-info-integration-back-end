@@ -17,6 +17,14 @@ let COMPANY_INFO_PASSWORD: string;
 let currentUser: User | null;
 let companyId: string;
 
+const formatDate = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); 
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+
 router.post('/company', async (req: Request, res: Response) => {
   logger.info('Entered webhook routes!');
   try {
@@ -42,7 +50,12 @@ router.post('/company', async (req: Request, res: Response) => {
 
             if (COMPANY_INFO_USERNAME && COMPANY_INFO_PASSWORD) {
               // eslint-disable-next-line
-              const companyData = await companiesController.getCompanyInfo(event.propertyValue, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
+              let companyData = await companiesController.getCompanyInfo(event.propertyValue, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
+
+              const syncDate = new Date();
+              const formattedDate = formatDate(syncDate);
+
+              companyData = { ...companyData, last_sync: formattedDate}
 
               if (companyData) {
                 logger.success(`Successfully retrieved data for company with dossier number ${event.propertyName}`);
@@ -102,10 +115,15 @@ router.put('/sync', async (req: Request, res: Response) => {
     if (portalId) {
       const hubToken: HubToken | null = await authController.retrieveHubToken(portalId);
       const companyId = req.body.companyId as string;
-      const companyData = req.body.companyData;
+      let companyData = req.body.companyData;
 
       if (hubToken && companyId && companyData) {
         if (companyId && companyId !== '' && Object.keys(companyData).length > 0) {
+          const syncDate = new Date();
+          const formattedDate = formatDate(syncDate);
+
+          companyData = { ...companyData, last_sync: formattedDate}
+
           const result = await companiesController.updateCompany(hubToken, companyId, companyData);
 
           if (result) {
@@ -145,15 +163,20 @@ router.put('/update', async (req: Request, res: Response) => {
         COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
 
         // eslint-disable-next-line
-        const company = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
+        let companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
 
-        if (company) {
+        const syncDate = new Date();
+        const formattedDate = formatDate(syncDate);
+
+        companyData = { ...companyData, last_sync: formattedDate}
+
+        if (companyData) {
           const hubToken: HubToken | null = await authController.retrieveHubToken(portalId);
           const companyId = req.query.companyId as string;
 
-          if (hubToken && companyId && company) {
+          if (hubToken && companyId && companyData) {
             if (companyId && companyId !== '') {
-              const formattedCompany = await formatCompanyData(company);
+              const formattedCompany = await formatCompanyData(companyData);
               const result = await companiesController.updateCompany(hubToken, companyId, formattedCompany);
 
               if (result) {
