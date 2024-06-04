@@ -364,13 +364,6 @@ router.get('/search', async (req: Request, res: Response) => {
                 font-weight: 300;
                 margin-bottom: 20px;
               }
-              .v-search-results__search input {
-                margin-bottom: 20px;
-                font-size: 16px
-                padding: 8px 12px;
-                margin-right: 10px;
-                flex: 1;
-              }
               .c-input-container {
                 display: flex;
                 align-items: center;
@@ -557,88 +550,6 @@ router.get('/search', async (req: Request, res: Response) => {
     }
   } else {
     res.status(400).send('Invalid portalId');
-  }
-});
-
-router.get('/resync', async (req: Request, res: Response) => {
-  const portalId = parseInt(req.query.portalId as string, 10);
-  const companyId = req.query.companyId as string;
-
-  if (portalId && companyId) {
-    res.send(`
-        <!DOCTYPE html>
-        <html lang="en">  
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Enter dossier number</title>
-          <style>
-            body { font-family: Campton, sans-serif; padding: 20px; }
-            .c-input-container {
-              display: flex;
-              align-items: center;
-              margin-bottom: 20px;
-            }
-            .c-input-container input {
-              font-size: 16px;
-              padding: 8px;
-              margin-right: 10px;
-              flex: 1;
-            }
-            .c-input-container button {
-              font-size: 16px;
-              padding: 8px 16px;
-            }
-          </style>
-        </head>
-        <body>
-          <h1>Enter Dossier Number</h1>
-          <div class="c-input-container">
-            <input type="text" id="dossier-input" placeholder="Enter dossier number" />
-            <button onclick="submitDossierNumber()">Submit</button>
-          </div>
-
-          <script>
-            const portalId = ${JSON.stringify(portalId)};
-            const companyId = ${JSON.stringify(companyId)};
-
-            async function submitDossierNumber() {
-              const dossierInput = document.getElementById('dossier-input').value;
-              if (dossierInput) {
-                try {
-                  const response = await fetch('/webhooks/sync', {
-                    method: 'PUT',
-                    headers: {
-                      'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                      portalId: portalId,
-                      companyId: companyId,
-                      companyData: {
-                        "dossier_number": dossierInput
-                      }
-                    })
-                  });
-
-                  const result = await response.json();
-                  if (response.ok) {
-                    window.parent.postMessage(JSON.stringify({action: "DONE"}), "*");
-                  } else {
-                    console.error(result.error);
-                  }
-                } catch (error) {
-                  console.error('Error fetching company info:', error);
-                }
-              } else {
-                alert('Please enter a dossier number');
-              }
-            }
-          </script>
-        </body>
-        </html>
-      `);
-  } else {
-    res.status(404).send('No matching companies found');
   }
 });
 
