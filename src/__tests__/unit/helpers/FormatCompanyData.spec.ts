@@ -108,6 +108,7 @@ describe('formatCompanyData Function Tests', () => {
           currency: 'USD',
         },
       },
+      last_sync: "",
     };
 
     const formattedData = await formatCompanyData(companyData);
@@ -172,6 +173,7 @@ describe('formatCompanyData Function Tests', () => {
       assets: '2000000',
       revenue_currency: 'USD',
       profit_currency: 'USD',
+      last_sync: "",
     });
   });
 });
