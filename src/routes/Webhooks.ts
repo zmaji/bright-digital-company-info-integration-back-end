@@ -299,7 +299,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
               },
               {
                 'label': 'Company.info status',
-                'dataType': 'STATUS',
+                'dataType': 'STRING',
                 'value': status,
                 'optionType': statusType,
               },
