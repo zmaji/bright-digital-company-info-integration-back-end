@@ -73,6 +73,8 @@ export const formatCompanyData = async (companyData) => {
     revenue_currency: companyData.annual_financial_statement_summary && companyData.annual_financial_statement_summary.turnover && companyData.annual_financial_statement_summary.turnover.currency ? companyData.annual_financial_statement_summary.turnover.currency : '',
     profit_currency: companyData.annual_financial_statement_summary && companyData.annual_financial_statement_summary.profit && companyData.annual_financial_statement_summary.profit.currency ? companyData.annual_financial_statement_summary.profit.currency : '',
     // assets_currency: companyData.annual_financial_statement_summary && companyData.annual_financial_statement_summary.assets && companyData.annual_financial_statement_summary.assets.currency ? companyData.annual_financial_statement_summary.assets.currency : ''
+
+    last_sync: companyData.last_sync ? companyData.last_sync : '',
   }
 
   return data;
