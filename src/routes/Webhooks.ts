@@ -367,13 +367,13 @@ router.get('/search', async (req: Request, res: Response) => {
               .v-search-results__search input {
                 margin-bottom: 20px;
                 font-size: 16px
-                padding: 8px;
+                padding: 8px 12px;
                 margin-right: 10px;
                 flex: 1;
               }
               .v-search-results__search button {
                 font-size: 16px;
-                padding: 8px 16px;
+                padding: 8px 12px;
               }
             </style>
           </head>
