@@ -97,9 +97,12 @@ router.post('/company', async (req: Request, res: Response) => {
                       companyData = { ...companyData, last_sync: formattedDate };
 
                       if (companyData) {
-                        logger.success(`Successfully retrieved data for company with dossier number ${event.propertyName}`);
+                        logger.success(`Successfully retrieved data for company with dossier number ${event.propertyValue}`);
 
                         const properties = await formatCompanyData(companyData);
+
+                        console.log('properties')
+                        console.log(properties)
 
                         if (properties) {
                           const result = await companiesController.updateCompany(hubToken, event.objectId, properties);
