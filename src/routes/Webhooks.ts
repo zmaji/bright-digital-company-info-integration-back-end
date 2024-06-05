@@ -148,7 +148,7 @@ router.put('/sync', async (req: Request, res: Response) => {
             console.log('hallo2')
             console.log('hallo2')
             if (companyId && companyId !== '' && Object.keys(companyData).length > 0) {
-              let company = companiesController.getCompanyInfo(companyData.dossier_number, currentUser.companyInfoUserName, currentUser.companyInfoPassword, companyData.establishment_number)
+              let company = await companiesController.getCompanyInfo(companyData.dossier_number, currentUser.companyInfoUserName, currentUser.companyInfoPassword, companyData.establishment_number)
 
               console.log('company')
               console.log('company')
@@ -159,7 +159,6 @@ router.put('/sync', async (req: Request, res: Response) => {
 
               const syncDate = new Date();
               const formattedDate = formatDate(syncDate);
-              // @ts-expect-error last_sync not on CompanyDetail
               company = { ...company, last_sync: formattedDate };
 
               const formattedResult = await formatCompanyData(company);
