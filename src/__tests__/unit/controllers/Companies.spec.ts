@@ -14,7 +14,7 @@ jest.mock('../../../helpers/hubspot/formatCompanyData');
 
 describe('companiesController Tests', () => {
   const tradeName = 'ExampleTrade';
-  const dossierNumber = 123456;
+  const dossierNumber = '123456';
   const companyId = '1001';
 
   const hubToken: HubToken = {
