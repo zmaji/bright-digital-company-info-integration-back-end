@@ -47,88 +47,74 @@ router.post('/company', async (req: Request, res: Response) => {
         for (const event of events) {
           if (event.propertyName === 'dossier_number') {
             logger.info(
-                `Property kvk_nummer has changed to ${event.propertyValue}` + `
-                for company ${event.objectId}, retrieving company details..`,
+              `Property kvk_nummer has changed to ${event.propertyValue} for company ${event.objectId}, retrieving company details..`
             );
 
             if (event.portalId) {
               const currentUser: User | null = await usersController.getUser(event.portalId);
 
-              COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
-              COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
+              if (currentUser) {
+                COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
+                COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
 
-              if (COMPANY_INFO_USERNAME && COMPANY_INFO_PASSWORD) {
-                const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
+                if (COMPANY_INFO_USERNAME && COMPANY_INFO_PASSWORD) {
+                  const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
-                if (hubToken) {
-                // eslint-disable-next-line
-                  const hubSpotCompany = await companiesController.getHubSpotCompany(hubToken.access_token, event.objectId);
-                  const establishmentNumber = hubSpotCompany.establishment_number ? hubSpotCompany.establishment_number as string : undefined;
+                  if (hubToken) {
+                    const hubSpotCompany = await companiesController.getHubSpotCompany(hubToken.access_token, event.objectId);
+                    const establishmentNumber = hubSpotCompany.establishment_number ? hubSpotCompany.establishment_number as string : undefined;
 
-                  if (hubSpotCompany) {
-                    let companyData: CompanyDetail;
+                    if (hubSpotCompany) {
+                      let companyData: CompanyDetail;
 
-                    if (establishmentNumber) {
-                      companyData = await companiesController.getCompanyInfo(event.propertyValue, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD, establishmentNumber);
-                    } else {
-                      companyData = await companiesController.getCompanyInfo(event.propertyValue, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
-                    }
+                      if (establishmentNumber) {
+                        companyData = await companiesController.getCompanyInfo(event.propertyValue, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD, establishmentNumber);
+                      } else {
+                        companyData = await companiesController.getCompanyInfo(event.propertyValue, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
+                      }
 
-                    const syncDate = new Date();
-                    const formattedDate = formatDate(syncDate);
+                      const syncDate = new Date();
+                      const formattedDate = formatDate(syncDate);
 
-                    companyData = { ...companyData, last_sync: formattedDate };
+                      companyData = { ...companyData, last_sync: formattedDate };
 
                       if (companyData) {
                         logger.success(`Successfully retrieved data for company with dossier number ${event.propertyName}`);
 
-                          const properties = await formatCompanyData(companyData);
+                        const properties = await formatCompanyData(companyData);
 
-                          if (properties) {
-                            const result = await companiesController.updateCompany(hubToken, event.objectId, properties);
+                        if (properties) {
+                          const result = await companiesController.updateCompany(hubToken, event.objectId, properties);
 
-                            if (result) {
-                              res
-                                  .status(StatusCodes.OK)
-                                  .json(result);
-                            } else {
-                              res
-                                  .status(StatusCodes.INTERNAL_SERVER_ERROR)
-                                  .json({ error: 'No company has been updated' });
-                            }
+                          if (result) {
+                            res.status(StatusCodes.OK).json(result);
                           } else {
-                            res
-                                .status(StatusCodes.UNAUTHORIZED)
-                                .json({ error: 'No HubToken found' });
+                            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'No company has been updated' });
                           }
+                        } else {
+                          res.status(StatusCodes.UNAUTHORIZED).json({ error: 'No HubToken found' });
                         }
                       }
                     }
+                  }
                 }
               }
             }
           } else {
-            res
-                .status(StatusCodes.INTERNAL_SERVER_ERROR)
-                .json({ error: 'No company data found' });
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'No company data found' });
           }
         }
       } else {
-        res
-            .status(StatusCodes.INTERNAL_SERVER_ERROR)
-            .json({ error: 'No events found' });
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'No events found' });
       }
     } else {
-      res
-          .status(StatusCodes.INTERNAL_SERVER_ERROR)
-          .json({ error: 'Signature has not been verified' });
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Signature has not been verified' });
     }
   } catch (error) {
-    res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: 'An error occurred processing the webhook' });
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'An error occurred processing the webhook' });
   }
 });
+
 
 router.put('/sync', async (req: Request, res: Response) => {
   try {
@@ -590,7 +576,7 @@ router.get('/search', async (req: Request, res: Response) => {
         `);
       }
     } catch (error) {
-      console.log('Error fetching company info:', error);
+      logger.error('Error fetching company info:', error);
 
       res.send(`
         <!DOCTYPE html>
