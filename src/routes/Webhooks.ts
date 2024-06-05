@@ -137,6 +137,13 @@ router.put('/sync', async (req: Request, res: Response) => {
             if (companyId && companyId !== '' && Object.keys(companyData).length > 0) {
               let company = companiesController.getCompanyInfo(companyData.dossier_number, currentUser.companyInfoUserName, currentUser.companyInfoPassword, companyData.establishment_number)
 
+              console.log('company')
+              console.log('company')
+              console.log('company')
+              console.log('company')
+              console.log('company')
+              console.log(company)
+
               const syncDate = new Date();
               const formattedDate = formatDate(syncDate);
               // @ts-expect-error last_sync not on CompanyDetail
