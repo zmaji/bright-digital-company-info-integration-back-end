@@ -9,6 +9,7 @@ import { User } from '../typings/User';
 import usersController from '../controllers/Users';
 import { HubToken } from '../typings/HubToken';
 import { basicVerification } from '../helpers/hubspot/basicVerification';
+import { CompanyDetail } from '../typings/CompanyDetail';
 
 const router = Router();
 
@@ -55,42 +56,57 @@ router.post('/company', async (req: Request, res: Response) => {
 
               COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
               COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
-            }
 
-            if (COMPANY_INFO_USERNAME && COMPANY_INFO_PASSWORD) {
-              // eslint-disable-next-line
-              let companyData = await companiesController.getCompanyInfo(event.propertyValue, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
-
-              const syncDate = new Date();
-              const formattedDate = formatDate(syncDate);
-
-              companyData = { ...companyData, last_sync: formattedDate };
-
-              if (companyData) {
-                logger.success(`Successfully retrieved data for company with dossier number ${event.propertyName}`);
-
-                const hubToken = await retrieveHubToken(event.portalId);
+              if (COMPANY_INFO_USERNAME && COMPANY_INFO_PASSWORD) {
+                const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
                 if (hubToken) {
-                  const properties = await formatCompanyData(companyData);
+                // eslint-disable-next-line
+                  const hubSpotCompany = await companiesController.getHubSpotCompany(hubToken.access_token, event.objectId);
+                  const establishmentNumber = hubSpotCompany.establishment_number ? hubSpotCompany.establishment_number as string : undefined;
 
-                  if (properties) {
-                    const result = await companiesController.updateCompany(hubToken, event.objectId, properties);
+                  if (hubSpotCompany) {
+                    let companyData: CompanyDetail;
 
-                    if (result) {
-                      res
-                          .status(StatusCodes.OK)
-                          .json(result);
+                    if (establishmentNumber) {
+                      companyData = await companiesController.getCompanyInfo(event.propertyValue, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD, establishmentNumber);
                     } else {
-                      res
-                          .status(StatusCodes.INTERNAL_SERVER_ERROR)
-                          .json({ error: 'No company has been updated' });
+                      companyData = await companiesController.getCompanyInfo(event.propertyValue, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
                     }
-                  } else {
-                    res
-                        .status(StatusCodes.UNAUTHORIZED)
-                        .json({ error: 'No HubToken found' });
-                  }
+
+                    const syncDate = new Date();
+                    const formattedDate = formatDate(syncDate);
+
+                    companyData = { ...companyData, last_sync: formattedDate };
+
+                      if (companyData) {
+                        logger.success(`Successfully retrieved data for company with dossier number ${event.propertyName}`);
+
+                        const hubToken = await retrieveHubToken(event.portalId);
+
+                        if (hubToken) {
+                          const properties = await formatCompanyData(companyData);
+
+                          if (properties) {
+                            const result = await companiesController.updateCompany(hubToken, event.objectId, properties);
+
+                            if (result) {
+                              res
+                                  .status(StatusCodes.OK)
+                                  .json(result);
+                            } else {
+                              res
+                                  .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                                  .json({ error: 'No company has been updated' });
+                            }
+                          } else {
+                            res
+                                .status(StatusCodes.UNAUTHORIZED)
+                                .json({ error: 'No HubToken found' });
+                          }
+                        }
+                      }
+                    }
                 }
               }
             }
