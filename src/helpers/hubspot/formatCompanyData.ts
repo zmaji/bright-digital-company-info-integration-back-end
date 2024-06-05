@@ -7,8 +7,8 @@ function formatDateToUTC(year, month, day) {
 // @ts-ignore
 export const formatCompanyData = async (companyData) => {
   const data = {
-    dossier_number: companyData.dossier_number ? Number(companyData.dossier_number) : '',
-    establishment_number: companyData.establishment_number ? Number(companyData.establishment_number) : '',
+    dossier_number: companyData.dossier_number ? companyData.dossier_number : '',
+    establishment_number: companyData.establishment_number ? companyData.establishment_number : '',
     number_of_establishments: companyData.structure && companyData.structure.number_of_subsidiaries ? Number(companyData.structure.number_of_subsidiaries) : '',
     main_establishment_number: companyData.structure && companyData.structure.ultimate_parent ? Number(companyData.structure.ultimate_parent) : '',
     main_establishment_number_direct: companyData.structure && companyData.structure.parent ? Number(companyData.structure.parent) : '',
