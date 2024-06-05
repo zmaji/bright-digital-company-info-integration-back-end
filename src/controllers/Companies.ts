@@ -136,6 +136,44 @@ const getHubSpotCompanies = async (accessToken: string) => {
   }
 };
 
+const getHubSpotCompany = async (accessToken: string, companyId: string) => {
+  logger.info(`Getting a HubSpot company..`);
+
+  try {
+    const response: AxiosResponse = await axios.get(
+        `https://api.hubapi.com/crm/v3/objects/companies/${companyId}`, {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+    const result = response.data;
+
+    if (result) {
+      logger.success(`Successfully retrieved a HubSpot company with id ${companyId}`);
+
+      return result;
+    } else {
+      logger.info('No company retrieved');
+
+      return null;
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+
+      if (axiosError.response && axiosError.response.status === 404) {
+        logger.warn('No existing companies found');
+
+        return null;
+      }
+    }
+    logger.error('Something went wrong retrieving a company', error);
+    throw error;
+  }
+};
+
 const createCompany = async (hubToken: HubToken, companyData: CompanyDetail): Promise<CompanyDetail | null> => {
   logger.info(`Trying to create a company with dossier number ${companyData.dossier_number}`);
 
@@ -226,6 +264,7 @@ const companiesController = {
   updateCompany,
   createCompany,
   getHubSpotCompanies,
+  getHubSpotCompany
 };
 
 export default companiesController;

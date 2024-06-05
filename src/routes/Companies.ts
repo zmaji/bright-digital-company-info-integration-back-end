@@ -142,7 +142,7 @@ router.get('/hubspot', isLoggedIn, async (req: Request, res: Response) => {
         const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
         if (hubToken) {
-          const result = await companiesController.getCompany(hubToken.access_token);
+          const result = await companiesController.getHubSpotCompanies(hubToken.access_token);
 
           if (result) {
             res
