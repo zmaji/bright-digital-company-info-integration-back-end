@@ -103,10 +103,11 @@ router.get('/info', isLoggedIn, async (req: Request, res: Response) => {
 
       if (currentUser && currentUser.companyInfoUserName && currentUser.companyInfoPassword) {
         const dossierNumber = req.query.dossierNumber ? Number(req.query.dossierNumber) : undefined;
+        const establishmentNumber = req.query.establishmentNumber ? Number(req.query.establishmentNumber) : undefined;
 
         if (dossierNumber) {
           // eslint-disable-next-line
-          const result = await companiesController.getCompanyInfo(dossierNumber, currentUser.companyInfoUserName, currentUser.companyInfoPassword);
+          const result = await companiesController.getCompanyInfo(dossierNumber, currentUser.companyInfoUserName, currentUser.companyInfoPassword, establishmentNumber);
           const formattedResult = await formatCompanyData(result);
 
           if (formattedResult) {
