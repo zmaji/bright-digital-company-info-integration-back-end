@@ -120,34 +120,49 @@ router.post('/company', async (req: Request, res: Response) => {
 router.put('/sync', async (req: Request, res: Response) => {
   try {
     const portalId = parseInt(req.body.portalId as string, 10);
+    const companyId = req.body.companyId as string;
+    let companyData = req.body.companyData;
 
     if (portalId) {
       const hubToken: HubToken | null = await authController.retrieveHubToken(portalId);
-      const companyId = req.body.companyId as string;
-      let companyData = req.body.companyData;
 
-      if (hubToken && companyId && companyData) {
-        if (companyId && companyId !== '' && Object.keys(companyData).length > 0) {
-          const syncDate = new Date();
-          const formattedDate = formatDate(syncDate);
+      if (hubToken) {
+        const currentUser: User | null = await usersController.getUser(hubToken.portal_id);
+      
+        if (currentUser) {
+          COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
+          COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
 
-          companyData = { ...companyData, last_sync: formattedDate };
+          if (currentUser && companyId && companyData) {
+            if (companyId && companyId !== '' && Object.keys(companyData).length > 0) {
+              let company = companiesController.getCompanyInfo(companyData.dossier_number, currentUser.companyInfoUserName, currentUser.companyInfoPassword, companyData.establishment_number)
 
-          const result = await companiesController.updateCompany(hubToken, companyId, companyData);
+              const syncDate = new Date();
+              const formattedDate = formatDate(syncDate);
+              // @ts-expect-error last_sync not on CompanyDetail
+              company = { ...company, last_sync: formattedDate };
 
-          if (result) {
-            res
-                .status(StatusCodes.OK)
-                .json(result);
-          } else {
-            res
-                .status(StatusCodes.NOT_FOUND)
-                .json({ error: `Unable to update a company with id ${companyId}` });
+              const formattedResult = await formatCompanyData(company);
+
+              if (formattedResult) {
+                const result = await companiesController.updateCompany(hubToken, companyId, formattedResult);
+
+                if (result) {
+                  res
+                      .status(StatusCodes.OK)
+                      .json(result);
+                } else {
+                  res
+                      .status(StatusCodes.NOT_FOUND)
+                      .json({ error: `Unable to update a company with id ${companyId}` });
+                }
+              } else {
+                res
+                    .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                    .json({ error: 'No company or data provided' });
+              }
+            }
           }
-        } else {
-          res
-              .status(StatusCodes.INTERNAL_SERVER_ERROR)
-              .json({ error: 'No company or data provided' });
         }
       }
     }
@@ -489,7 +504,7 @@ router.get('/search', async (req: Request, res: Response) => {
                   </div>
 
                     <div class="c-search-row__button-container">
-                      <button onclick="selectOption('\${item.dossier_number}')">Select</button>
+                      <button onclick="selectOption('\${item.dossier_number}', '\${item.establishment_number}')">Select</button>
                     </div>
                   </div>
                 \`;
@@ -507,7 +522,8 @@ router.get('/search', async (req: Request, res: Response) => {
                         portalId: portalId,
                         companyId: companyId,
                         companyData: {
-                          "dossier_number": dossierNumber
+                          "dossier_number": dossierNumber,
+                          "establishment_number": establishmentNumber
                         }
                       })
                     });
