@@ -42,7 +42,7 @@ const getCompanies = async (tradeName: string, companyInfoUsername: string, comp
 };
 
 // eslint-disable-next-line
-const getCompanyInfo = async (dossierNumber: number, companyInfoUsername: string, companyInfoPassword: string, establishmentNumber?: number): Promise<CompanyDetail | null> => {
+const getCompanyInfo = async (dossierNumber: string, companyInfoUsername: string, companyInfoPassword: string, establishmentNumber?: string): Promise<CompanyDetail | null> => {
   logger.info('Trying to get company info');
   const headerArguments = { username: companyInfoUsername, password: companyInfoPassword };
 

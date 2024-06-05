@@ -108,8 +108,8 @@ router.get('/info', isLoggedIn, async (req: Request, res: Response) => {
       const currentUser: User | null = await usersController.getUser(emailAddress);
 
       if (currentUser && currentUser.companyInfoUserName && currentUser.companyInfoPassword) {
-        const dossierNumber = req.query.dossierNumber ? Number(req.query.dossierNumber) : undefined;
-        const establishmentNumber = req.query.establishmentNumber ? Number(req.query.establishmentNumber) : undefined;
+        const dossierNumber = req.query.dossierNumber ? req.query.dossierNumber as string : undefined;
+        const establishmentNumber = req.query.establishmentNumber ? req.query.establishmentNumber as string : undefined;
 
         console.log('establishmentNumber router')
         console.log('establishmentNumber router')
