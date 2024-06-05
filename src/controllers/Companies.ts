@@ -42,7 +42,7 @@ const getCompanies = async (tradeName: string, companyInfoUsername: string, comp
 };
 
 // eslint-disable-next-line
-const getCompanyInfo = async (dossierNumber: number, companyInfoUsername: string, companyInfoPassword: string): Promise<CompanyDetail | null> => {
+const getCompanyInfo = async (dossierNumber: number, companyInfoUsername: string, companyInfoPassword: string, establishmentNumber?: number): Promise<CompanyDetail | null> => {
   logger.info('Trying to get company info');
   const headerArguments = { username: companyInfoUsername, password: companyInfoPassword };
 
@@ -56,8 +56,12 @@ const getCompanyInfo = async (dossierNumber: number, companyInfoUsername: string
 
     const searchParameters = {
       dossier_number: dossierNumber,
-      // estalishment_number: establishmentNumber,
     };
+    
+    if (establishmentNumber) {
+      // @ts-expect-error establishment_number not part of SearchParameters
+      searchParameters.establishment_number = establishmentNumber;
+    }
 
     // eslint-disable-next-line
     const result: CompanyDetail = await new Promise((resolve: any, reject: any) => {
