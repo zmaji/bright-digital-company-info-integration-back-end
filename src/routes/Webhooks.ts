@@ -63,6 +63,10 @@ router.post('/company', async (req: Request, res: Response) => {
 
                   if (hubToken) {
                     const hubSpotCompany = await companiesController.getHubSpotCompany(hubToken.access_token, event.objectId);
+
+                    console.log('hubSpotCompany')
+                    console.log(hubSpotCompany)
+
                     const establishmentNumber = hubSpotCompany.establishment_number ? hubSpotCompany.establishment_number as string : undefined;
 
                     console.log('dossierNumber')
