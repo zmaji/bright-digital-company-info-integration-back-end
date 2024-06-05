@@ -50,6 +50,12 @@ router.post('/company', async (req: Request, res: Response) => {
               `Property kvk_nummer has changed to ${event.propertyValue} for company ${event.objectId}, retrieving company details..`
             );
 
+            console.log('event')
+            console.log('event')
+            console.log('event')
+            console.log('event')
+            console.log(event)
+
             if (event.portalId) {
               const currentUser: User | null = await usersController.getUser(event.portalId);
 
