@@ -67,7 +67,7 @@ router.post('/company', async (req: Request, res: Response) => {
                       console.log('hubSpotCompany');
                       console.log(hubSpotCompany);
 
-                      const establishmentNumber = hubSpotCompany.properties.establishment_number ? hubSpotCompany.properties.establishment_number : undefined;
+                      let establishmentNumber = hubSpotCompany.properties.establishment_number ? hubSpotCompany.properties.establishment_number : undefined;
 
                       console.log('dossierNumber');
                       console.log('dossierNumber');
@@ -76,6 +76,8 @@ router.post('/company', async (req: Request, res: Response) => {
                       console.log('establishmentNumber');
                       console.log('establishmentNumber');
                       console.log(establishmentNumber);
+
+                      establishmentNumber;
 
                       if (hubSpotCompany) {
                         let companyData: CompanyDetail;
