@@ -82,9 +82,6 @@ router.post('/company', async (req: Request, res: Response) => {
                       if (companyData) {
                         logger.success(`Successfully retrieved data for company with dossier number ${event.propertyName}`);
 
-                        const hubToken = await retrieveHubToken(event.portalId);
-
-                        if (hubToken) {
                           const properties = await formatCompanyData(companyData);
 
                           if (properties) {
