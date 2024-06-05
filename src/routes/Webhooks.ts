@@ -121,34 +121,28 @@ router.put('/sync', async (req: Request, res: Response) => {
   try {
     const portalId = parseInt(req.body.portalId as string, 10);
     const companyId = req.body.companyId as string;
-    let companyData = req.body.companyData;
+    const companyData = req.body.companyData;
 
     if (portalId) {
       const hubToken: HubToken | null = await authController.retrieveHubToken(portalId);
 
       if (hubToken) {
         const currentUser: User | null = await usersController.getUser(hubToken.portal_id);
-      
+
         if (currentUser) {
           COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
           COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
 
           if (currentUser && companyId && companyData) {
-
             if (companyId && companyId !== '' && Object.keys(companyData).length > 0) {
-              let company = await companiesController.getCompanyInfo(companyData.dossier_number, currentUser.companyInfoUserName, currentUser.companyInfoPassword, companyData.establishment_number)
+              // eslint-disable-next-line
+              let company = await companiesController.getCompanyInfo(companyData.dossier_number, currentUser.companyInfoUserName, currentUser.companyInfoPassword, companyData.establishment_number);
 
               const syncDate = new Date();
               const formattedDate = formatDate(syncDate);
               company = { ...company, last_sync: formattedDate };
 
               const formattedResult = await formatCompanyData(company);
-
-              console.log('formattedResult')
-              console.log('formattedResult')
-              console.log('formattedResult')
-              console.log('formattedResult')
-              console.log(formattedResult)
 
               if (formattedResult) {
                 const result = await companiesController.updateCompany(hubToken, companyId, formattedResult);
@@ -510,7 +504,8 @@ router.get('/search', async (req: Request, res: Response) => {
                   </div>
 
                     <div class="c-search-row__button-container">
-                      <button onclick="selectOption('\${item.dossier_number}', '\${item.establishment_number}')">Select</button>
+                      <button onclick="selectOption('\${item.dossier_number}', 
+                      '\${item.establishment_number}')">Select</button>
                     </div>
                   </div>
                 \`;

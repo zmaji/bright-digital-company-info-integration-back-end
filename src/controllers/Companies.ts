@@ -61,7 +61,7 @@ const getCompanyInfo = async (dossierNumber: string, companyInfoUsername: string
       // @ts-expect-error dossier_number not part of SearchParameters
       searchParameters.dossier_number = dossierNumber;
     }
-    
+
     if (establishmentNumber) {
       // @ts-expect-error establishment_number not part of SearchParameters
       searchParameters.establishment_number = establishmentNumber;
@@ -264,7 +264,7 @@ const companiesController = {
   updateCompany,
   createCompany,
   getHubSpotCompanies,
-  getHubSpotCompany
+  getHubSpotCompany,
 };
 
 export default companiesController;
