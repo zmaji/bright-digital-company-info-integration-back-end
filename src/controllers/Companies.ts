@@ -146,6 +146,10 @@ const getHubSpotCompany = async (accessToken: string, companyId: string) => {
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
           },
+          //@ts-ignore
+          properties: [
+            "establishment_number",
+          ]
         });
 
     const result = response.data;
