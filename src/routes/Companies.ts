@@ -96,6 +96,12 @@ router.get('', isLoggedIn, async (req: Request, res: Response) => {
 });
 
 router.get('/info', isLoggedIn, async (req: Request, res: Response) => {
+  console.log('req.query.establishmentNumber')
+  console.log('req.query.establishmentNumber')
+  console.log('req.query.establishmentNumber')
+  console.log('req.query.establishmentNumber')
+  console.log('req.query.establishmentNumber')
+  console.log(req.query.establishmentNumber)
   try {
     if (req.user && req.user.emailAddress) {
       const emailAddress: string = req.user.emailAddress;
