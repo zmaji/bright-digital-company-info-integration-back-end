@@ -161,7 +161,7 @@ router.put('/sync', async (req: Request, res: Response) => {
 router.put('/update', async (req: Request, res: Response) => {
   logger.info('Trying to update a HubSpot company..');
   try {
-    const dossierNumber = req.query.dossierNumber ? Number(req.query.dossierNumber) : undefined;
+    const dossierNumber = req.query.dossierNumber ? req.query.dossierNumber as string : undefined;
     const portalId = parseInt(req.query.portalId as string, 10);
 
     if (portalId) {

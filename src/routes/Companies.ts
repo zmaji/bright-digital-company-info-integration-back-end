@@ -96,12 +96,6 @@ router.get('', isLoggedIn, async (req: Request, res: Response) => {
 });
 
 router.get('/info', isLoggedIn, async (req: Request, res: Response) => {
-  console.log('req.query.establishmentNumber')
-  console.log('req.query.establishmentNumber')
-  console.log('req.query.establishmentNumber')
-  console.log('req.query.establishmentNumber')
-  console.log('req.query.establishmentNumber')
-  console.log(req.query.establishmentNumber)
   try {
     if (req.user && req.user.emailAddress) {
       const emailAddress: string = req.user.emailAddress;
@@ -110,11 +104,6 @@ router.get('/info', isLoggedIn, async (req: Request, res: Response) => {
       if (currentUser && currentUser.companyInfoUserName && currentUser.companyInfoPassword) {
         const dossierNumber = req.query.dossierNumber ? req.query.dossierNumber as string : undefined;
         const establishmentNumber = req.query.establishmentNumber ? req.query.establishmentNumber as string : undefined;
-
-        console.log('establishmentNumber router')
-        console.log('establishmentNumber router')
-        console.log('establishmentNumber router')
-        console.log(establishmentNumber)
 
         if (dossierNumber) {
           // eslint-disable-next-line

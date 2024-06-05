@@ -67,12 +67,6 @@ const getCompanyInfo = async (dossierNumber: string, companyInfoUsername: string
       searchParameters.establishment_number = establishmentNumber;
     }
 
-    console.log('searchParameters')
-    console.log('searchParameters')
-    console.log('searchParameters')
-    console.log('searchParameters')
-    console.log(searchParameters)
-
     // eslint-disable-next-line
     const result: CompanyDetail = await new Promise((resolve: any, reject: any) => {
       // eslint-disable-next-line
