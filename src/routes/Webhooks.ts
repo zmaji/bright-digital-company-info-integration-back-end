@@ -382,10 +382,10 @@ router.get('/search', async (req: Request, res: Response) => {
                 width: 25%;
               }
               .c-search-row__address-container {
-                width: 25%;
+                width: 33%;
               }
               .c-search-row__number-container {
-                width: 25%;
+                width: 33%;
                 margin-left: auto;
               }
               .c-search-row__name {
