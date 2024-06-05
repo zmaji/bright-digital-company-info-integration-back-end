@@ -92,6 +92,8 @@ router.post('/company', async (req: Request, res: Response) => {
                         companyData = { ...companyData, last_sync: formattedDate };
 
                         if (companyData) {
+                          console.log('companyData')
+                          console.log(companyData)
                           logger.success(`Successfully retrieved data for company with dossier number ${event.propertyValue}`);
 
                           const properties = await formatCompanyData(companyData);
