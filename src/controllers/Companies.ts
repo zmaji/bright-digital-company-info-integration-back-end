@@ -95,7 +95,7 @@ const getCompanyInfo = async (dossierNumber: number, companyInfoUsername: string
   }
 };
 
-const getCompany = async (accessToken: string) => {
+const getHubSpotCompanies = async (accessToken: string) => {
   logger.info(`Getting all companies..`);
 
   const limit = 10;
@@ -225,7 +225,7 @@ const companiesController = {
   getCompanyInfo,
   updateCompany,
   createCompany,
-  getCompany,
+  getHubSpotCompanies,
 };
 
 export default companiesController;
