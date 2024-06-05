@@ -99,6 +99,14 @@ router.post('/company', async (req: Request, res: Response) => {
                       if (companyData) {
                         logger.success(`Successfully retrieved data for company with dossier number ${event.propertyValue}`);
 
+                        console.log('companyData.establishment_number')
+                        console.log('companyData.establishment_number')
+                        console.log('companyData.establishment_number')
+                        console.log('companyData.establishment_number')
+                        console.log('companyData.establishment_number')
+                        console.log('companyData.establishment_number')
+                        console.log(companyData.establishment_number)
+
                         const properties = await formatCompanyData(companyData);
 
                         console.log('properties')
