@@ -386,7 +386,7 @@ router.get('/search', async (req: Request, res: Response) => {
               }
               .c-search-row__number-container {
                 width: 25%;
-                margin-left: 20px;
+                margin-left: auto;
               }
               .c-search-row__name {
                 font-size: 16px;
