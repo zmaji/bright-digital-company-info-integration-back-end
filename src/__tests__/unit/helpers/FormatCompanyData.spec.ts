@@ -114,8 +114,8 @@ describe('formatCompanyData Function Tests', () => {
     const formattedData = await formatCompanyData(companyData);
 
     expect(formattedData).toEqual({
-      dossier_number: 12345,
-      establishment_number: 67890,
+      dossier_number: '12345',
+      establishment_number: '67890',
       number_of_establishments: 5,
       main_establishment_number: 111,
       main_establishment_number_direct: 222,
