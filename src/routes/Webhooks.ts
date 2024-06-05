@@ -381,6 +381,13 @@ router.get('/search', async (req: Request, res: Response) => {
               .c-search-row__name-container {
                 width: 25%;
               }
+              .c-search-row__address-container {
+                width: 25%;
+              }
+              .c-search-row__number-container {
+                width: 25%;
+                margin-left: 20px;
+              }
               .c-search-row__name {
                 font-size: 16px;
                 font-weight: 600;
@@ -389,13 +396,6 @@ router.get('/search', async (req: Request, res: Response) => {
               .c-search-row__address {
                 font-size: 16px;
                 font-weight: 300;
-              }
-              .c-search-row__address-container {
-                width: 40%;
-              }
-              .c-search-row__number-container {
-                margin-left: 20px;
-                width: 40%
               }
               .c-search-row__location {
                 font-size: 16px;
