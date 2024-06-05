@@ -77,7 +77,7 @@ router.post('/company', async (req: Request, res: Response) => {
                       console.log('establishmentNumber');
                       console.log(establishmentNumber);
 
-                      establishmentNumber;
+                      establishmentNumber = undefined;
 
                       if (hubSpotCompany) {
                         let companyData: CompanyDetail;
