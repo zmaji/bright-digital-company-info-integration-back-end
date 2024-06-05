@@ -50,12 +50,6 @@ router.post('/company', async (req: Request, res: Response) => {
               `Property kvk_nummer has changed to ${event.propertyValue} for company ${event.objectId}, retrieving company details..`
             );
 
-            console.log('event')
-            console.log('event')
-            console.log('event')
-            console.log('event')
-            console.log(event)
-
             if (event.portalId) {
               const currentUser: User | null = await usersController.getUser(event.portalId);
 
@@ -73,18 +67,6 @@ router.post('/company', async (req: Request, res: Response) => {
                     if (hubSpotCompany) {
                       let companyData: CompanyDetail;
 
-                      console.log('event dossier')
-                      console.log('event dossier')
-                      console.log('event dossier')
-                      console.log('event dossier')
-                      console.log(event.propertyValue)
-
-                      console.log('event establish')
-                      console.log('event establish')
-                      console.log('event establish')
-                      console.log('event establish')
-                      console.log(establishmentNumber)
-
                       if (establishmentNumber !== '' || establishmentNumber !== null || establishmentNumber !== undefined) {
                         companyData = await companiesController.getCompanyInfo(event.propertyValue, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD, establishmentNumber);
                       } else {
@@ -99,18 +81,7 @@ router.post('/company', async (req: Request, res: Response) => {
                       if (companyData) {
                         logger.success(`Successfully retrieved data for company with dossier number ${event.propertyValue}`);
 
-                        console.log('companyData.establishment_number')
-                        console.log('companyData.establishment_number')
-                        console.log('companyData.establishment_number')
-                        console.log('companyData.establishment_number')
-                        console.log('companyData.establishment_number')
-                        console.log('companyData.establishment_number')
-                        console.log(companyData.establishment_number)
-
                         const properties = await formatCompanyData(companyData);
-
-                        console.log('properties')
-                        console.log(properties)
 
                         if (properties) {
                           const result = await companiesController.updateCompany(hubToken, event.objectId, properties);
