@@ -50,6 +50,7 @@ router.post('/company', async (req: Request, res: Response) => {
               `Property kvk_nummer has changed to ${event.propertyValue} for company ${event.objectId}, retrieving company details..`
             );
 
+
             if (event.portalId) {
               const currentUser: User | null = await usersController.getUser(event.portalId);
 
@@ -63,6 +64,14 @@ router.post('/company', async (req: Request, res: Response) => {
                   if (hubToken) {
                     const hubSpotCompany = await companiesController.getHubSpotCompany(hubToken.access_token, event.objectId);
                     const establishmentNumber = hubSpotCompany.establishment_number ? hubSpotCompany.establishment_number as string : undefined;
+
+                    console.log('dossierNumber')
+                    console.log('dossierNumber')
+                    console.log(event.propertyValue)
+
+                    console.log('establishmentNumber')
+                    console.log('establishmentNumber')
+                    console.log(establishmentNumber)
 
                     if (hubSpotCompany) {
                       let companyData: CompanyDetail;
