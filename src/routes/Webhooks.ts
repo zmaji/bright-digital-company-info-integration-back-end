@@ -390,8 +390,12 @@ router.get('/search', async (req: Request, res: Response) => {
                 font-size: 16px;
                 font-weight: 300;
               }
+              .c-search-row__address-container {
+                width: 40%;
+              }
               .c-search-row__number-container {
                 margin-left: 20px;
+                width: 40%
               }
               .c-search-row__location {
                 font-size: 16px;
@@ -468,6 +472,7 @@ router.get('/search', async (req: Request, res: Response) => {
                 div.innerHTML = 
                 \`
                   <div class="c-search-row__line"></div>
+
                   <div class="c-search-row__content-container u-flex">
                     <div class="c-search-row__name-container u-flex">
                       <div class="c-search-row__name">\${item.name}</div>
