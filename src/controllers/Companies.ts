@@ -72,6 +72,7 @@ const getCompanyInfo = async (dossierNumber: string, companyInfoUsername: string
       // eslint-disable-next-line
       client.dutchBusinessGetDossierV3(searchParameters, (err: any, result: any) => {
         if (err) {
+          logger.error('mooi klootn')
           reject(err);
         } else {
           resolve(result);
