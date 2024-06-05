@@ -133,35 +133,22 @@ router.put('/sync', async (req: Request, res: Response) => {
           COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
           COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
 
-          console.log('hallo1')
-          console.log('hallo1')
-          console.log('hallo1')
-          console.log('hallo1')
-          console.log('hallo1')
-          console.log('hallo1')
-
           if (currentUser && companyId && companyData) {
-            console.log('hallo2')
-            console.log('hallo2')
-            console.log('hallo2')
-            console.log('hallo2')
-            console.log('hallo2')
-            console.log('hallo2')
+
             if (companyId && companyId !== '' && Object.keys(companyData).length > 0) {
               let company = await companiesController.getCompanyInfo(companyData.dossier_number, currentUser.companyInfoUserName, currentUser.companyInfoPassword, companyData.establishment_number)
-
-              console.log('company')
-              console.log('company')
-              console.log('company')
-              console.log('company')
-              console.log('company')
-              console.log(company)
 
               const syncDate = new Date();
               const formattedDate = formatDate(syncDate);
               company = { ...company, last_sync: formattedDate };
 
               const formattedResult = await formatCompanyData(company);
+
+              console.log('formattedResult')
+              console.log('formattedResult')
+              console.log('formattedResult')
+              console.log('formattedResult')
+              console.log(formattedResult)
 
               if (formattedResult) {
                 const result = await companiesController.updateCompany(hubToken, companyId, formattedResult);
