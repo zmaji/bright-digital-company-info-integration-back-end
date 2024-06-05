@@ -146,7 +146,7 @@ const getHubSpotCompany = async (accessToken: string, companyId: string) => {
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
           },
-          // @ts-ignore
+          // @ts-expect-error properties not part of AxiosResponse
           properties: [
             'establishment_number',
           ],

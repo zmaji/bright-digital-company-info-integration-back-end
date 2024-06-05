@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import { verifySignature } from '../helpers/hubspot/verifySignature';
 import companiesController from '../controllers/Companies';
 import logger from '../utils/Logger';
-import authController, { retrieveHubToken } from '../controllers/Auth';
+import authController from '../controllers/Auth';
 import { formatCompanyData } from '../helpers/hubspot/formatCompanyData';
 import { User } from '../typings/User';
 import usersController from '../controllers/Users';
@@ -47,6 +47,7 @@ router.post('/company', async (req: Request, res: Response) => {
         for (const event of events) {
           if (event.propertyName === 'dossier_number') {
             logger.info(
+                // eslint-disable-next-line
                 `Property kvk_nummer has changed to ${event.propertyValue} for company ${event.objectId}, retrieving company details..`,
             );
 
@@ -59,14 +60,17 @@ router.post('/company', async (req: Request, res: Response) => {
                   COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
 
                   if (COMPANY_INFO_USERNAME && COMPANY_INFO_PASSWORD) {
+                    // eslint-disable-next-line
                     const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
                     if (hubToken) {
+                      // eslint-disable-next-line
                       const hubSpotCompany = await companiesController.getHubSpotCompany(hubToken.access_token, event.objectId);
 
                       console.log('hubSpotCompany');
                       console.log(hubSpotCompany);
 
+                      // eslint-disable-next-line
                       let establishmentNumber = hubSpotCompany.properties.establishment_number ? hubSpotCompany.properties.establishment_number : undefined;
 
                       console.log('dossierNumber');
@@ -81,29 +85,34 @@ router.post('/company', async (req: Request, res: Response) => {
 
                       if (hubSpotCompany) {
                         let companyData: CompanyDetail;
-
+                        // eslint-disable-next-line
                         if (establishmentNumber !== '' || establishmentNumber !== null || establishmentNumber !== undefined) {
+                          // eslint-disable-next-line
                           companyData = await companiesController.getCompanyInfo(event.propertyValue, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD, establishmentNumber);
                         } else {
+                          // eslint-disable-next-line
                           companyData = await companiesController.getCompanyInfo(event.propertyValue, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
                         }
 
                         if (companyData) {
                           const syncDate = new Date();
                           const formattedDate = formatDate(syncDate);
-  
+
                           companyData = { ...companyData, last_sync: formattedDate };
-                          
+
+                          // eslint-disable-next-line
                           logger.success(`Successfully retrieved data for company with dossier number ${event.propertyValue}`);
 
                           const properties = await formatCompanyData(companyData);
 
                           if (properties) {
+                            // eslint-disable-next-line
                             const result = await companiesController.updateCompany(hubToken, event.objectId, properties);
 
                             if (result) {
                               res.status(StatusCodes.OK).json(result);
                             } else {
+                              // eslint-disable-next-line
                               res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'No company has been updated' });
                             }
                           } else {
