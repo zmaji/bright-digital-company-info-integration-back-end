@@ -55,8 +55,12 @@ const getCompanyInfo = async (dossierNumber: number, companyInfoUsername: string
     client.addSoapHeader(soapHeader);
 
     const searchParameters = {
-      dossier_number: dossierNumber,
     };
+
+    if (dossierNumber) {
+      // @ts-expect-error dossier_number not part of SearchParameters
+      searchParameters.dossier_number = dossierNumber;
+    }
     
     if (establishmentNumber) {
       // @ts-expect-error establishment_number not part of SearchParameters
