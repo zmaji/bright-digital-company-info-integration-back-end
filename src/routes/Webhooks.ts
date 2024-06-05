@@ -511,7 +511,7 @@ router.get('/search', async (req: Request, res: Response) => {
                 container.appendChild(div);
               });
 
-              async function selectOption(dossierNumber) {
+              async function selectOption(dossierNumber, establishmentNumber) {
                   try {
                     const response = await fetch('/webhooks/sync', {
                       method: 'PUT',
