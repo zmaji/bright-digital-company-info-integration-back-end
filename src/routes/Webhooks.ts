@@ -67,6 +67,18 @@ router.post('/company', async (req: Request, res: Response) => {
                     if (hubSpotCompany) {
                       let companyData: CompanyDetail;
 
+                      console.log('event dossier')
+                      console.log('event dossier')
+                      console.log('event dossier')
+                      console.log('event dossier')
+                      console.log(event.propertyValue)
+
+                      console.log('event establish')
+                      console.log('event establish')
+                      console.log('event establish')
+                      console.log('event establish')
+                      console.log(establishmentNumber)
+
                       if (establishmentNumber !== '' || establishmentNumber !== null || establishmentNumber !== undefined) {
                         companyData = await companiesController.getCompanyInfo(event.propertyValue, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD, establishmentNumber);
                       } else {
