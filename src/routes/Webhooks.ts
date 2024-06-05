@@ -133,7 +133,20 @@ router.put('/sync', async (req: Request, res: Response) => {
           COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
           COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
 
+          console.log('hallo1')
+          console.log('hallo1')
+          console.log('hallo1')
+          console.log('hallo1')
+          console.log('hallo1')
+          console.log('hallo1')
+
           if (currentUser && companyId && companyData) {
+            console.log('hallo2')
+            console.log('hallo2')
+            console.log('hallo2')
+            console.log('hallo2')
+            console.log('hallo2')
+            console.log('hallo2')
             if (companyId && companyId !== '' && Object.keys(companyData).length > 0) {
               let company = companiesController.getCompanyInfo(companyData.dossier_number, currentUser.companyInfoUserName, currentUser.companyInfoPassword, companyData.establishment_number)
 
