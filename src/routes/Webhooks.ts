@@ -56,9 +56,9 @@ const isLessThan10SecondsAgo = (lastSyncString: string) => {
   const currentDate = new Date();
 
   console.log('lastSyncDate.getTime()')
-  console.log(lastSyncDate.getTime())
+  console.log(lastSyncDate)
   console.log('currentDate.getTime()')
-  console.log(currentDate.getTime())
+  console.log(currentDate)
 
   const timeDifferenceInSeconds = (currentDate.getTime() - lastSyncDate.getTime()) / 1000;
 
