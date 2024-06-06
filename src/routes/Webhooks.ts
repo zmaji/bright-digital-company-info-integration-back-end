@@ -54,13 +54,16 @@ const parseDate = (dateString: string) => {
 const isLessThan10SecondsAgo = (lastSyncString: string) => {
   const lastSyncDate = parseDate(lastSyncString);
   const currentDate = new Date();
-  
+
   console.log('lastSyncDate.getTime()')
   console.log(lastSyncDate.getTime())
   console.log('currentDate.getTime()')
   console.log(currentDate.getTime())
 
   const timeDifferenceInSeconds = (currentDate.getTime() - lastSyncDate.getTime()) / 1000;
+
+  console.log('timeDifferenceInSeconds');
+  console.log(timeDifferenceInSeconds);
 
   return timeDifferenceInSeconds < 10;
 };
