@@ -141,15 +141,12 @@ const getHubSpotCompany = async (accessToken: string, companyId: string) => {
 
   try {
     const response: AxiosResponse = await axios.get(
-        `https://api.hubapi.com/crm/v3/objects/companies/${companyId}`, {
+      // eslint-disable-next-line
+        `https://api.hubapi.com/crm/v3/objects/companies/${companyId}?properties=establishment_number,dossier_number`, {
           headers: {
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
           },
-          // @ts-expect-error properties not part of AxiosResponse
-          properties: [
-            'establishment_number',
-          ],
         });
 
     const result = response.data;
