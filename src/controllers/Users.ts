@@ -16,7 +16,7 @@ const getUser = async (identifier: string | number): Promise<User | null> => {
       });
 
       if (existingUser) {
-        logger.info(`User with email: ${identifier} found!`);
+        logger.success(`User with email: ${identifier} found!`);
 
         return existingUser;
       } else {

@@ -21,7 +21,7 @@ const getHubSpotProperties = async (accessToken: string, objectType: string): Pr
     const result: PropertyField[] | null = response.data;
 
     if (result) {
-      logger.info('Successfully retrieved properties');
+      logger.success('Successfully retrieved properties');
 
       return result;
     } else {
@@ -56,7 +56,7 @@ const createHubSpotProperties = async (accessToken: string, objectType: string, 
     const result: PropertyField[] = response.data.results;
 
     if (result) {
-      logger.info('Successfully created properties');
+      logger.success('Successfully created properties');
 
       return result;
     } else {
@@ -86,7 +86,7 @@ const deleteHubSpotProperty = async (accessToken: string, objectType: string, pr
     );
 
     if (response.status === 204) {
-      logger.info(`Successfully deleted a HubSpot property: ${propertyName}`);
+      logger.success(`Successfully deleted a HubSpot property: ${propertyName}`);
 
       return { success: true };
     } else {
