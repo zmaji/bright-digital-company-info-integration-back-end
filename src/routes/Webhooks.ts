@@ -44,15 +44,6 @@ const formatDate = (date: any) => {
   return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
 };
 
-const formatDateFromTimestamp = (timestamp: string) => {
-  const date = new Date(parseInt(timestamp));
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-  const day = String(date.getDate()).padStart(2, '0');
-
-  return `${day}-${month}-${year}`;
-};
-
 router.post('/company', async (req: Request, res: Response) => {
   logger.info('Entered webhook routes!');
   try {
@@ -357,7 +348,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
       };
 
       if (lastSync) {
-        const formattedLastSync = formatDateFromTimestamp(lastSync);
+        const formattedLastSync = formatDate(lastSync);
         cardInformation.results[0].properties.push({
           label: 'Last sync',
           dataType: 'STRING',
