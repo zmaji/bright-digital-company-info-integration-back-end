@@ -43,6 +43,24 @@ const formatDate = (date: Date) => {
   return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
 };
 
+const parseDate = (dateString: string) => {
+  const [datePart, timePart] = dateString.split(' ');
+  const [day, month, year] = datePart.split('-').map(Number);
+  const [hours, minutes, seconds] = timePart.split(':').map(Number);
+
+  return new Date(year, month - 1, day, hours, minutes, seconds);
+};
+
+const isLessThan10SecondsAgo = (lastSyncString: string) => {
+  const lastSyncDate = parseDate(lastSyncString);
+  const currentDate = new Date();
+
+  // @ts-expect-error date types
+  const timeDifferenceInSeconds = (currentDate - lastSyncDate) / 1000;
+
+  return timeDifferenceInSeconds < 10;
+};
+
 router.post('/company', async (req: Request, res: Response) => {
   logger.info('Entered webhook routes!');
   try {
@@ -72,10 +90,17 @@ router.post('/company', async (req: Request, res: Response) => {
                     if (hubToken) {
                       const hubSpotCompany = await companiesController.getHubSpotCompany(hubToken.access_token, event.objectId);
 
-                      const dossierNumber = event.propertyName === 'dossier_number' ? event.propertyValue : hubSpotCompany.properties.dossier_number;
-                      const establishmentNumber = event.propertyName === 'establishment_number' ? event.propertyValue : hubSpotCompany.properties.establishment_number;
-
                       if (hubSpotCompany) {
+                        const dossierNumber = event.propertyName === 'dossier_number' ? event.propertyValue : hubSpotCompany.properties.dossier_number;
+                        const establishmentNumber = event.propertyName === 'establishment_number' ? event.propertyValue : hubSpotCompany.properties.establishment_number;
+
+                        const lastSynced = hubSpotCompany.properties.last_sync;
+                        const wasRecentlySynced = isLessThan10SecondsAgo(lastSynced);
+
+                        if (wasRecentlySynced) {
+                          console.error('WAS RECENTLY SYNCED!!!!');
+                        }
+
                         let companyData: CompanyDetail;
 
                         if (establishmentNumber !== '' || establishmentNumber !== null || establishmentNumber !== undefined) {
@@ -323,6 +348,12 @@ router.get('/datarequest', async (req: Request, res: Response) => {
             'title': `Current company: ${tradeName}`,
             'properties': [
               {
+                'label': 'Company.info status',
+                'dataType': 'STATUS',
+                'value': status,
+                'optionType': statusType,
+              },
+              {
                 'label': 'Dossier number',
                 'dataType': 'STRING',
                 'value': dossierNumber,
@@ -331,12 +362,6 @@ router.get('/datarequest', async (req: Request, res: Response) => {
                 'label': 'Establishment number',
                 'dataType': 'STRING',
                 'value': establishmentNumber,
-              },
-              {
-                'label': 'Company.info status',
-                'dataType': 'STATUS',
-                'value': status,
-                'optionType': statusType,
               },
             ],
           },
