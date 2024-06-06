@@ -347,11 +347,10 @@ router.get('/datarequest', async (req: Request, res: Response) => {
       };
 
       if (lastSync) {
-        const formattedLastSync = formatDate(lastSync);
         cardInformation.results[0].properties.push({
           label: 'Last sync',
           dataType: 'STRING',
-          value: formattedLastSync,
+          value: lastSync,
         });
       }
 
