@@ -71,7 +71,7 @@ router.post('/company', async (req: Request, res: Response) => {
                       console.log(hubSpotCompany);
 
                       // eslint-disable-next-line
-                      let establishmentNumber = hubSpotCompany.properties.establishment_number ? hubSpotCompany.properties.establishment_number : undefined;
+                      let establishmentNumber = hubSpotCompany.properties.establishment_number ? hubSpotCompany.properties.establishment_number as string : undefined;
 
                       console.log('dossierNumber');
                       console.log(event.propertyValue);
