@@ -48,12 +48,18 @@ const parseDate = (dateString: string) => {
   const [day, month, year] = datePart.split('-').map(Number);
   const [hours, minutes, seconds] = timePart.split(':').map(Number);
 
-  return new Date(year, month - 1, day, hours, minutes, seconds);
+  return new Date(day, month - 1, year, hours, minutes, seconds);
 };
 
 const isLessThan10SecondsAgo = (lastSyncString: string) => {
   const lastSyncDate = parseDate(lastSyncString);
   const currentDate = new Date();
+
+  console.log('currentDate')
+  console.log(currentDate)
+  
+  console.log('lastSyncDate')
+  console.log(lastSyncDate)
 
   // @ts-expect-error date types
   const timeDifferenceInSeconds = (currentDate - lastSyncDate) / 1000;
@@ -96,6 +102,9 @@ router.post('/company', async (req: Request, res: Response) => {
 
                         const lastSynced = hubSpotCompany.properties.last_sync;
                         const wasRecentlySynced = isLessThan10SecondsAgo(lastSynced);
+
+                        console.log('wasRecentlySynced')
+                        console.log(wasRecentlySynced)
 
                         if (wasRecentlySynced) {
                           console.error('WAS RECENTLY SYNCED!!!!');
