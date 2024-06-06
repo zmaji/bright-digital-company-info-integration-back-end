@@ -12,10 +12,11 @@ const companySearch = () => {
   window.addEventListener('message', (event) => {
     if (event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormReady') {
       const input = document.querySelector('input[name="company"]');
-      const hiddenCheck = document.querySelector('input[name="0-2/dossier_number"]');
+      const hiddenCheckDossier = document.querySelector('input[name="0-2/dossier_number"]');
+      const hiddenCheckEstablishment = document.querySelector('input[name="0-2/establishment_number"]');
       const portalId = event.source.hsVars.portal_id
 
-      if (!input || !hiddenCheck) return;
+      if (!input || !hiddenCheckDossier || !hiddenCheckEstablishment) return;
 
       let typeDelay;
       const loader = document.createElement('div');
