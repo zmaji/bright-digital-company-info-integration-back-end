@@ -55,12 +55,6 @@ const isLessThan10SecondsAgo = (lastSyncString: string) => {
   const lastSyncDate = parseDate(lastSyncString);
   const currentDate = new Date();
 
-  console.log('currentDate');
-  console.log(currentDate);
-  
-  console.log('lastSyncDate');
-  console.log(lastSyncDate);
-
   const timeDifferenceInSeconds = (currentDate.getTime() - lastSyncDate.getTime()) / 1000;
 
   return timeDifferenceInSeconds < 10;
@@ -102,11 +96,9 @@ router.post('/company', async (req: Request, res: Response) => {
                         const lastSynced = hubSpotCompany.properties.last_sync;
                         const wasRecentlySynced = isLessThan10SecondsAgo(lastSynced);
 
-                        console.log('wasRecentlySynced')
-                        console.log(wasRecentlySynced)
-
                         if (wasRecentlySynced) {
-                          console.error('WAS RECENTLY SYNCED!!!!');
+                          console.error('Company was recently synced, webhook stopped');
+                          return;
                         }
 
                         let companyData: CompanyDetail;
