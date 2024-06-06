@@ -48,8 +48,7 @@ const parseDate = (dateString: string) => {
   const [day, month, year] = datePart.split('-').map(Number);
   const [hours, minutes, seconds] = timePart.split(':').map(Number);
 
-  // Use Date.UTC to create the Date object in UTC
-  return new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds));
+  return new Date(Date.UTC(year, month - 1, day, hours - 2, minutes, seconds));
 };
 
 const isLessThan10SecondsAgo = (lastSyncString: string) => {
