@@ -24,7 +24,8 @@ const companySearch = () => {
       loader.setAttribute('class', 'c-search-loader');
 
       input.parentElement.style.position = 'relative';
-      hiddenCheck.parentElement.parentElement.style.display = 'none';
+      hiddenCheckDossier.parentElement.parentElement.style.display = 'none';
+      hiddenCheckEstablishment.parentElement.parentElement.style.display = 'none';
 
       input.addEventListener('input', (e) => {
         if (!e.isTrusted) return; // If the event is not triggered by the user but by JS, do not proceed
@@ -60,8 +61,10 @@ const companySearch = () => {
               console.log(result);
               if (result.body.message) {
                 loader.remove();
-                hiddenCheck.value = 'Niet beschikbaar';
-                hiddenCheck.dispatchEvent(new Event('input', { bubbles: true }));
+                hiddenCheckDossier.value = 'Niet beschikbaar';
+                hiddenCheckEstablishment.value = 'Niet beschikbaar';
+                hiddenCheckEstablishment.dispatchEvent(new Event('input', { bubbles: true }));
+                hiddenCheckDossier.dispatchEvent(new Event('input', { bubbles: true }));
               } else if (result.body.item) {
                 generateSelect(result.body.item, input);
               }
@@ -69,8 +72,10 @@ const companySearch = () => {
             .catch((error) => {
               console.log(error);
               loader.remove();
-              hiddenCheck.value = 'Niet beschikbaar';
-              hiddenCheck.dispatchEvent(new Event('input', { bubbles: true }));
+              hiddenCheckDossier.value = 'Niet beschikbaar';
+              hiddenCheckEstablishment.value = 'Niet beschikbaar';
+              hiddenCheckEstablishment.dispatchEvent(new Event('input', { bubbles: true }));
+              hiddenCheckDossier.dispatchEvent(new Event('input', { bubbles: true }));
             });
       };
 
@@ -84,6 +89,7 @@ const companySearch = () => {
           const element = document.createElement('div');
           element.setAttribute('class', 'c-company-select__element');
           element.dataset.dossier = item.dossier_number;
+          element.dataset.establishment = item.establishment_number;
           element.dataset.name = item.name;
           element.innerHTML = item.name;
 
@@ -100,8 +106,10 @@ const companySearch = () => {
             input.value = e.currentTarget.dataset.name;
             input.dispatchEvent(new Event('input', { bubbles: true }));
 
-            hiddenCheck.value = e.currentTarget.dataset.dossier;
-            hiddenCheck.dispatchEvent(new Event('input', { bubbles: true }));
+            hiddenCheckDossier.value = e.currentTarget.dataset.dossier;
+            hiddenCheckEstablishment.value = e.currentTarget.dataset.establishment;
+            hiddenCheckEstablishment.dispatchEvent(new Event('input', { bubbles: true }));
+            hiddenCheckDossier.dispatchEvent(new Event('input', { bubbles: true }));
             input.parentElement.removeChild(wrapper);
           });
 
