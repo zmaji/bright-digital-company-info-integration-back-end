@@ -48,24 +48,26 @@ const parseDate = (dateString: string) => {
   const [day, month, year] = datePart.split('-').map(Number);
   const [hours, minutes, seconds] = timePart.split(':').map(Number);
 
-  return new Date(year, month - 1, day, hours, minutes, seconds);
+  // Use Date.UTC to create the Date object in UTC
+  return new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds));
 };
 
 const isLessThan10SecondsAgo = (lastSyncString: string) => {
   const lastSyncDate = parseDate(lastSyncString);
   const currentDate = new Date();
 
-  console.log('lastSyncDate.getTime()')
-  console.log(lastSyncDate)
-  console.log('currentDate.getTime()')
-  console.log(currentDate)
+  console.log('lastSyncDate.getTime()');
+  console.log(lastSyncDate.toISOString());
+  console.log('currentDate.getTime()');
+  console.log(currentDate.toISOString());
 
   const timeDifferenceInSeconds = (currentDate.getTime() - lastSyncDate.getTime()) / 1000;
 
   console.log('timeDifferenceInSeconds');
   console.log(timeDifferenceInSeconds);
 
-  return timeDifferenceInSeconds < 10;
+  // Check if the time difference is within the last 10 seconds and not negative
+  return timeDifferenceInSeconds >= 0 && timeDifferenceInSeconds < 10;
 };
 
 router.post('/company', async (req: Request, res: Response) => {
