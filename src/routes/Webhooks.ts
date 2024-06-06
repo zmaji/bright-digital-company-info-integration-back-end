@@ -45,10 +45,10 @@ router.post('/company', async (req: Request, res: Response) => {
 
       if (events) {
         for (const event of events) {
-          if (event.propertyName === 'dossier_number') {
+          if (event.propertyName === 'dossier_number' || event.propertyName === 'establishment_number') {
             logger.info(
-                // eslint-disable-next-line
-                `Property kvk_nummer has changed to ${event.propertyValue} for company ${event.objectId}, retrieving company details..`,
+              // eslint-disable-next-line
+              `Property ${event.propertyName} has changed to ${event.propertyValue} for company ${event.objectId}, retrieving company details..`,
             );
 
             if (event.propertyValue) {
@@ -71,10 +71,11 @@ router.post('/company', async (req: Request, res: Response) => {
                       console.log(hubSpotCompany);
 
                       // eslint-disable-next-line
-                      let establishmentNumber = hubSpotCompany.properties.establishment_number ? hubSpotCompany.properties.establishment_number as string : undefined;
+                      let dossierNumber = event.propertyName === 'dossier_number' ? event.propertyValue : hubSpotCompany.properties.dossier_number;
+                      let establishmentNumber = event.propertyName === 'establishment_number' ? event.propertyValue : hubSpotCompany.properties.establishment_number;
 
                       console.log('dossierNumber');
-                      console.log(event.propertyValue);
+                      console.log(dossierNumber);
 
                       console.log('establishmentNumber');
                       console.log(establishmentNumber);
@@ -88,12 +89,12 @@ router.post('/company', async (req: Request, res: Response) => {
                         if (establishmentNumber !== '' || establishmentNumber !== null || establishmentNumber !== undefined) {
                           logger.info(`Establishment number ${establishmentNumber} found, updating accordingly..`);
                           // eslint-disable-next-line
-                          companyData = await companiesController.getCompanyInfo(event.propertyValue, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD, establishmentNumber);
+                          companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD, establishmentNumber);
                         } else {
                           // eslint-disable-next-line
                           logger.info(`No establishment number found, updating with dossier number ${event.propertyValue}..`);
                           // eslint-disable-next-line
-                          companyData = await companiesController.getCompanyInfo(event.propertyValue, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
+                          companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
                         }
 
                         if (companyData) {
