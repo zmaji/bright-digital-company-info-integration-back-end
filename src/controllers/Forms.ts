@@ -16,11 +16,8 @@ const getForms = async (hubToken: HubToken) => {
       },
     });
 
-    logger.info('HTTP Status:', response.status);
-
     if (response && response.data) {
       logger.success('HubSpot forms have successfully been retrieved');
-      logger.info('Result:', response.data);
 
       return response.data;
     } else {
@@ -60,11 +57,8 @@ const createForm = async (hubToken: HubToken, formData: any) => {
       data: JSON.stringify(formData),
     });
 
-    logger.info('HTTP Status:', response.status);
-
     if (response && response.data) {
       logger.success('HubSpot form has successfully been created');
-      logger.info('Result:', response.data);
 
       return response.data;
     } else {

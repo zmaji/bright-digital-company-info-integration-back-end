@@ -153,7 +153,7 @@ export const retrieveHubToken = async (portalId: number): Promise<HubToken | nul
     });
 
     if (hubToken) {
-      logger.info(`Retrieved HubToken from user with portal id ${portalId}`);
+      logger.success(`Retrieved HubToken from user with portal id ${portalId}`);
 
       if (await isTokenExpired(hubToken)) {
         const newToken: HubToken | null = await refreshAccessToken(portalId, hubToken.refresh_token);

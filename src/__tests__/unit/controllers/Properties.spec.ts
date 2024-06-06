@@ -77,7 +77,7 @@ describe('Properties Controller Tests', () => {
       );
 
       expect(result).toEqual(sampleHubSpotProperties);
-      expect(logger.info).toHaveBeenCalledWith('Successfully retrieved properties');
+      expect(logger.success).toHaveBeenCalledWith('Successfully retrieved properties');
     });
 
     test('should create HubSpot properties successfully', async () => {
@@ -103,7 +103,7 @@ describe('Properties Controller Tests', () => {
       );
 
       expect(result).toEqual(sampleHubSpotProperties);
-      expect(logger.info).toHaveBeenCalledWith('Successfully created properties');
+      expect(logger.success).toHaveBeenCalledWith('Successfully created properties');
     });
 
     test('should delete a HubSpot property successfully', async () => {
@@ -129,7 +129,7 @@ describe('Properties Controller Tests', () => {
       );
 
       expect(result).toEqual({ success: true });
-      expect(logger.info).toHaveBeenCalledWith(
+      expect(logger.success).toHaveBeenCalledWith(
           `Successfully deleted a HubSpot property: ${propertyName}`,
       );
     });

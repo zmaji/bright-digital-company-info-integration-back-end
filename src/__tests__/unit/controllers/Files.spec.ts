@@ -36,27 +36,6 @@ describe('filesController Tests', () => {
   });
 
   describe('getFiles', () => {
-  //   test('should retrieve files successfully', async () => {
-  //     // @ts-ignore
-  //     axios.mockResolvedValue({ status: 200, data: mockFileData });
-
-    //     const result = await filesController.getFiles(hubToken);
-
-    //     expect(result).toEqual(mockFileData);
-    //     expect(axios).toHaveBeenCalledWith({
-    //       method: 'get',
-    //       url: 'https://api.hubapi.com/files/v3/files/search/',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //         'Authorization': `Bearer ${hubToken.access_token}`,
-    //       },
-    //     });
-    //     expect(logger.info).toHaveBeenCalledWith('Trying to retrieve HubSpot files');
-    //     expect(logger.info).toHaveBeenCalledWith('HTTP Status:', 200);
-    //     expect(logger.info).toHaveBeenCalledWith('HubSpot files have successfully been retrieved');
-    //     expect(logger.info).toHaveBeenCalledWith('Result:', mockFileData);
-    //   });
-
     test('should handle no files found', async () => {
       // @ts-ignore
       axios.mockResolvedValue({ status: 200, data: null });

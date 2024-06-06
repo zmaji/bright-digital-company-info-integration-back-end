@@ -27,28 +27,6 @@ describe('formsController Tests', () => {
     jest.clearAllMocks();
   });
 
-  // test('getForms should retrieve forms successfully', async () => {
-  //   const mockResponse = { results: [{ id: '1', name: 'Contact Form' }] };
-  //   // @ts-ignore
-  //   axios.mockResolvedValue({ data: mockResponse, status: 200 });
-
-  //   const result = await formsController.getForms(hubToken);
-
-  //   expect(axios).toHaveBeenCalledWith({
-  //     method: 'get',
-  //     url: 'https://api.hubapi.com/marketing/v3/forms/',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Authorization': `Bearer ${hubToken.access_token}`,
-  //     },
-  //   });
-
-  //   expect(logger.info).toHaveBeenCalledWith('HTTP Status:', 200);
-  //   expect(logger.info).toHaveBeenCalledWith('HubSpot forms have successfully been retrieved');
-  //   expect(logger.info).toHaveBeenCalledWith('Result:', mockResponse);
-  //   expect(result).toEqual(mockResponse);
-  // });
-
   test('getForms should handle empty response data', async () => {
     // @ts-ignore
     axios.mockResolvedValue({ data: null, status: 200 });
@@ -64,33 +42,9 @@ describe('formsController Tests', () => {
       },
     });
 
-    expect(logger.info).toHaveBeenCalledWith('HTTP Status:', 200);
     expect(logger.error).toHaveBeenCalledWith('HubSpot forms were not retrieved');
     expect(result).toBeNull();
   });
-
-  // test('createForm should create form successfully', async () => {
-  //   const mockResponse = { id: '1', name: 'Example Form' };
-  //   // @ts-ignore
-  //   axios.mockResolvedValue({ data: mockResponse, status: 201 });
-
-  //   const result = await formsController.createForm(hubToken, mockFormData);
-
-  //   expect(axios).toHaveBeenCalledWith({
-  //     method: 'post',
-  //     url: 'https://api.hubapi.com/marketing/v3/forms/',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Authorization': `Bearer ${hubToken.access_token}`,
-  //     },
-  //     data: JSON.stringify(mockFormData),
-  //   });
-
-  //   expect(logger.info).toHaveBeenCalledWith('HTTP Status:', 201);
-  //   expect(logger.info).toHaveBeenCalledWith('HubSpot form has successfully been created');
-  //   expect(logger.info).toHaveBeenCalledWith('Result:', mockResponse);
-  //   expect(result).toEqual(mockResponse);
-  // });
 
   test('createForm should handle empty response data', async () => {
     // @ts-ignore
@@ -108,7 +62,6 @@ describe('formsController Tests', () => {
       data: JSON.stringify(mockFormData),
     });
 
-    expect(logger.info).toHaveBeenCalledWith('HTTP Status:', 201);
     expect(logger.error).toHaveBeenCalledWith('HubSpot form was not created');
     expect(result).toBeNull();
   });
