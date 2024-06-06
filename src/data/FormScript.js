@@ -73,8 +73,8 @@ const companySearch = () => {
               console.log(error);
               loader.remove();
               hiddenCheckDossier.value = 'Niet beschikbaar';
-              // hiddenCheckEstablishment.value = 'Niet beschikbaar';
-              // hiddenCheckEstablishment.dispatchEvent(new Event('input', { bubbles: true }));
+              hiddenCheckEstablishment.value = 'Niet beschikbaar';
+              hiddenCheckEstablishment.dispatchEvent(new Event('input', { bubbles: true }));
               hiddenCheckDossier.dispatchEvent(new Event('input', { bubbles: true }));
             });
       };
