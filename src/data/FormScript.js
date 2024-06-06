@@ -62,8 +62,8 @@ const companySearch = () => {
               if (result.body.message) {
                 loader.remove();
                 hiddenCheckDossier.value = 'Niet beschikbaar';
-                // hiddenCheckEstablishment.value = 'Niet beschikbaar';
-                // hiddenCheckEstablishment.dispatchEvent(new Event('input', { bubbles: true }));
+                hiddenCheckEstablishment.value = 'Niet beschikbaar';
+                hiddenCheckEstablishment.dispatchEvent(new Event('input', { bubbles: true }));
                 hiddenCheckDossier.dispatchEvent(new Event('input', { bubbles: true }));
               } else if (result.body.item) {
                 generateSelect(result.body.item, input);
