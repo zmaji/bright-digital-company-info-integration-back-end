@@ -92,7 +92,7 @@ router.post('/company', async (req: Request, res: Response) => {
                           companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD, establishmentNumber);
                         } else {
                           // eslint-disable-next-line
-                          logger.info(`No establishment number found, updating with dossier number ${event.propertyValue}..`);
+                          logger.info(`No establishment number found, updating with dossier number ${dossierNumber}..`);
                           // eslint-disable-next-line
                           companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
                         }
@@ -104,7 +104,7 @@ router.post('/company', async (req: Request, res: Response) => {
                           companyData = { ...companyData, last_sync: formattedDate };
 
                           // eslint-disable-next-line
-                          logger.success(`Successfully retrieved data for company with dossier number ${event.propertyValue}`);
+                          logger.success(`Successfully retrieved data for company with dossier number ${establishmentNumber}`);
 
                           const properties = await formatCompanyData(companyData);
 
