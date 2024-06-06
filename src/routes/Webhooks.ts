@@ -48,21 +48,20 @@ const parseDate = (dateString: string) => {
   const [day, month, year] = datePart.split('-').map(Number);
   const [hours, minutes, seconds] = timePart.split(':').map(Number);
 
-  return new Date(day, month - 1, year, hours, minutes, seconds);
+  return new Date(year, month - 1, day, hours, minutes, seconds);
 };
 
 const isLessThan10SecondsAgo = (lastSyncString: string) => {
   const lastSyncDate = parseDate(lastSyncString);
   const currentDate = new Date();
 
-  console.log('currentDate')
-  console.log(currentDate)
+  console.log('currentDate');
+  console.log(currentDate);
   
-  console.log('lastSyncDate')
-  console.log(lastSyncDate)
+  console.log('lastSyncDate');
+  console.log(lastSyncDate);
 
-  // @ts-expect-error date types
-  const timeDifferenceInSeconds = (currentDate - lastSyncDate) / 1000;
+  const timeDifferenceInSeconds = (currentDate.getTime() - lastSyncDate.getTime()) / 1000;
 
   return timeDifferenceInSeconds < 10;
 };
