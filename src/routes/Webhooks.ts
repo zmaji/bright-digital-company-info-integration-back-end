@@ -18,13 +18,29 @@ let COMPANY_INFO_PASSWORD: string;
 let currentUser: User | null;
 let companyId: string;
 
-const formatDate = (date) => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  const seconds = String(date.getSeconds()).padStart(2, '0');
+// @ts-ignore
+const formatDate = (date: any) => {
+  const options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+    timeZone: 'Europe/Amsterdam'
+  };
+
+  // @ts-ignore
+  const formattedDateParts = new Intl.DateTimeFormat('en-GB', options).formatToParts(date);
+
+  const day = formattedDateParts.find(part => part.type === 'day').value;
+  const month = formattedDateParts.find(part => part.type === 'month').value;
+  const year = formattedDateParts.find(part => part.type === 'year').value;
+  const hours = formattedDateParts.find(part => part.type === 'hour').value;
+  const minutes = formattedDateParts.find(part => part.type === 'minute').value;
+  const seconds = formattedDateParts.find(part => part.type === 'second').value;
+
   return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
 };
 
