@@ -8,7 +8,6 @@ import logger from '../utils/Logger';
 
 const companyInfoURL = 'https://ws1.webservices.nl/soap_doclit?wsdl';
 
-// eslint-disable-next-line
 const getCompanies = async (tradeName: string, companyInfoUsername: string, companyInfoPassword: string): Promise<Company[] | null> => {
   const headerArguments = { username: companyInfoUsername, password: companyInfoPassword };
 
@@ -41,7 +40,6 @@ const getCompanies = async (tradeName: string, companyInfoUsername: string, comp
   }
 };
 
-// eslint-disable-next-line
 const getCompanyInfo = async (dossierNumber: string, companyInfoUsername: string, companyInfoPassword: string, establishmentNumber?: string): Promise<CompanyDetail | null> => {
   logger.info('Trying to get company info');
   const headerArguments = { username: companyInfoUsername, password: companyInfoPassword };
@@ -141,7 +139,6 @@ const getHubSpotCompany = async (accessToken: string, companyId: string) => {
 
   try {
     const response: AxiosResponse = await axios.get(
-        // eslint-disable-next-line
         `https://api.hubapi.com/crm/v3/objects/companies/${companyId}?properties=establishment_number,dossier_number`, {
           headers: {
             'Authorization': `Bearer ${accessToken}`,

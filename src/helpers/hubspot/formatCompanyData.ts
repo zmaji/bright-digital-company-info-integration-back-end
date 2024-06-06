@@ -1,6 +1,7 @@
-//@ts-ignore
+// @ts-ignore
 function formatDateToUTC(year, month, day) {
   const date = new Date(Date.UTC(year, month - 1, day));
+
   return date.toISOString().slice(0, 10);
 }
 
@@ -75,7 +76,7 @@ export const formatCompanyData = async (companyData) => {
     // assets_currency: companyData.annual_financial_statement_summary && companyData.annual_financial_statement_summary.assets && companyData.annual_financial_statement_summary.assets.currency ? companyData.annual_financial_statement_summary.assets.currency : ''
 
     last_sync: companyData.last_sync ? companyData.last_sync : '',
-  }
+  };
 
   return data;
-}
+};

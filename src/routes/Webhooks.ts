@@ -47,8 +47,7 @@ router.post('/company', async (req: Request, res: Response) => {
         for (const event of events) {
           if (event.propertyName === 'dossier_number' || event.propertyName === 'establishment_number') {
             logger.info(
-                // eslint-disable-next-line
-              `Property ${event.propertyName} has changed to ${event.propertyValue} for company ${event.objectId}, retrieving company details..`,
+                `Property ${event.propertyName} has changed to ${event.propertyValue} for company ${event.objectId}, retrieving company details..`,
             );
 
             if (event.propertyValue) {
@@ -60,41 +59,22 @@ router.post('/company', async (req: Request, res: Response) => {
                   COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
 
                   if (COMPANY_INFO_USERNAME && COMPANY_INFO_PASSWORD) {
-                    // eslint-disable-next-line
                     const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
                     if (hubToken) {
-                      // eslint-disable-next-line
                       const hubSpotCompany = await companiesController.getHubSpotCompany(hubToken.access_token, event.objectId);
 
-                      console.log('hubSpotCompany');
-                      console.log(hubSpotCompany);
-
-                      // eslint-disable-next-line
-                      let dossierNumber = event.propertyName === 'dossier_number' ? event.propertyValue : hubSpotCompany.properties.dossier_number;
-                      // eslint-disable-next-line
+                      const dossierNumber = event.propertyName === 'dossier_number' ? event.propertyValue : hubSpotCompany.properties.dossier_number;
                       const establishmentNumber = event.propertyName === 'establishment_number' ? event.propertyValue : hubSpotCompany.properties.establishment_number;
-
-                      console.log('dossierNumber');
-                      console.log(dossierNumber);
-
-                      console.log('establishmentNumber');
-                      console.log(establishmentNumber);
-
-                      // TAKE CARE: UNCOMMENT/COMMENT TO TRIGGER POSSIBILITY TO SEARCH WITH ESTABLISHMENT NUMBER!
-                      // establishmentNumber = undefined;
 
                       if (hubSpotCompany) {
                         let companyData: CompanyDetail;
-                        // eslint-disable-next-line
+
                         if (establishmentNumber !== '' || establishmentNumber !== null || establishmentNumber !== undefined) {
                           logger.info(`Establishment number ${establishmentNumber} found, updating accordingly..`);
-                          // eslint-disable-next-line
                           companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD, establishmentNumber);
                         } else {
-                          // eslint-disable-next-line
                           logger.info(`No establishment number found, updating with dossier number ${dossierNumber}..`);
-                          // eslint-disable-next-line
                           companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
                         }
 
@@ -104,19 +84,16 @@ router.post('/company', async (req: Request, res: Response) => {
 
                           companyData = { ...companyData, last_sync: formattedDate };
 
-                          // eslint-disable-next-line
                           logger.success(`Successfully retrieved data for company with dossier number ${establishmentNumber}`);
 
                           const properties = await formatCompanyData(companyData);
 
                           if (properties) {
-                            // eslint-disable-next-line
                             const result = await companiesController.updateCompany(hubToken, event.objectId, properties);
 
                             if (result) {
                               res.status(StatusCodes.OK).json(result);
                             } else {
-                              // eslint-disable-next-line
                               res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'No company has been updated' });
                             }
                           } else {
@@ -164,7 +141,6 @@ router.put('/sync', async (req: Request, res: Response) => {
 
           if (currentUser && companyId && companyData) {
             if (companyId && companyId !== '' && Object.keys(companyData).length > 0) {
-              // eslint-disable-next-line
               let company = await companiesController.getCompanyInfo(companyData.dossier_number, currentUser.companyInfoUserName, currentUser.companyInfoPassword, companyData.establishment_number);
 
               const syncDate = new Date();
@@ -215,7 +191,6 @@ router.put('/update', async (req: Request, res: Response) => {
         COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
         COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
 
-        // eslint-disable-next-line
         let companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
 
         const syncDate = new Date();

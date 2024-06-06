@@ -27,9 +27,7 @@ module.exports = {
     'linebreak-style': 0,
     'new-cap': 'off',
     'object-curly-spacing': ['error', 'always'],
-    'max-len': ['error', {
-      code: 120,
-    }],
+    'max-len': 'off',
     'no-multiple-empty-lines': ['error', { 'max': 1, 'maxEOF': 1 }],
     'padding-line-between-statements': [
       'error',
@@ -47,7 +45,6 @@ module.exports = {
     'apidoc',
     'src/helpers/hubspot/formatCompanyData.ts',
     'src/data/FormScript.js',
-    'src/helpers/sendActivationEmail.ts',
   ],
   overrides: [
     {

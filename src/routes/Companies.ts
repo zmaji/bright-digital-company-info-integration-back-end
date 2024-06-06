@@ -65,7 +65,6 @@ router.get('', isLoggedIn, async (req: Request, res: Response) => {
         const tradeName = req.query.tradeName ? String(req.query.tradeName) : undefined;
 
         if (tradeName) {
-          // eslint-disable-next-line
           const result = await companiesController.getCompanies(tradeName, currentUser.companyInfoUserName, currentUser.companyInfoPassword);
 
           if (result) {
@@ -106,7 +105,6 @@ router.get('/info', isLoggedIn, async (req: Request, res: Response) => {
         const establishmentNumber = req.query.establishmentNumber ? req.query.establishmentNumber as string : undefined;
 
         if (dossierNumber) {
-          // eslint-disable-next-line
           const result = await companiesController.getCompanyInfo(dossierNumber, currentUser.companyInfoUserName, currentUser.companyInfoPassword, establishmentNumber);
           const formattedResult = await formatCompanyData(result);
 
