@@ -86,11 +86,12 @@ router.post('/company', async (req: Request, res: Response) => {
                         let companyData: CompanyDetail;
                         // eslint-disable-next-line
                         if (establishmentNumber !== '' || establishmentNumber !== null || establishmentNumber !== undefined) {
-                          logger.info(`Establishment number ${establishmentNumber} found, updating accordingly..`)
+                          logger.info(`Establishment number ${establishmentNumber} found, updating accordingly..`);
                           // eslint-disable-next-line
                           companyData = await companiesController.getCompanyInfo(event.propertyValue, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD, establishmentNumber);
                         } else {
-                          logger.info(`No establishment number found, updating with dossier number ${event.propertyValue}..`)
+                          // eslint-disable-next-line
+                          logger.info(`No establishment number found, updating with dossier number ${event.propertyValue}..`);
                           // eslint-disable-next-line
                           companyData = await companiesController.getCompanyInfo(event.propertyValue, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
                         }
