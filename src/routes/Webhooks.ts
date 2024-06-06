@@ -97,7 +97,7 @@ router.post('/company', async (req: Request, res: Response) => {
                         const wasRecentlySynced = isLessThan10SecondsAgo(lastSynced);
 
                         if (wasRecentlySynced) {
-                          console.error('Company was recently synced, webhook stopped');
+                          logger.error('Company was recently synced, webhook stopped');
                           return;
                         }
 
