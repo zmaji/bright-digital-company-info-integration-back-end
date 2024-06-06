@@ -89,7 +89,7 @@ const companySearch = () => {
           const element = document.createElement('div');
           element.setAttribute('class', 'c-company-select__element');
           element.dataset.dossier = item.dossier_number;
-          // element.dataset.establishment = item.establishment_number;
+          element.dataset.establishment = item.establishment_number;
           element.dataset.name = item.name;
           element.innerHTML = item.name;
 
