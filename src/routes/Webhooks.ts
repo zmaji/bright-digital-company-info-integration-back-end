@@ -106,6 +106,7 @@ router.post('/company', async (req: Request, res: Response) => {
                 }
               }
             } else {
+              logger.error('No dossier number found..')
               res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'No dossier number' });
             }
           } else {
