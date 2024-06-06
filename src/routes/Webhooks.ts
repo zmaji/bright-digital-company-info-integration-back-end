@@ -55,17 +55,8 @@ const isLessThan10SecondsAgo = (lastSyncString: string) => {
   const lastSyncDate = parseDate(lastSyncString);
   const currentDate = new Date();
 
-  console.log('lastSyncDate.getTime()');
-  console.log(lastSyncDate.toISOString());
-  console.log('currentDate.getTime()');
-  console.log(currentDate.toISOString());
-
   const timeDifferenceInSeconds = (currentDate.getTime() - lastSyncDate.getTime()) / 1000;
 
-  console.log('timeDifferenceInSeconds');
-  console.log(timeDifferenceInSeconds);
-
-  // Check if the time difference is within the last 10 seconds and not negative
   return timeDifferenceInSeconds >= 0 && timeDifferenceInSeconds < 10;
 };
 
@@ -107,6 +98,7 @@ router.post('/company', async (req: Request, res: Response) => {
 
                         if (wasRecentlySynced) {
                           logger.error('Company was recently synced, webhook stopped');
+
                           return;
                         }
 
