@@ -263,7 +263,6 @@ router.get('/datarequest', async (req: Request, res: Response) => {
       let buttonUri: string;
       let primaryAction: object;
       let secondaryActions: object[];
-      let dossierDataType = 'NUMERIC';
 
       const createButtonUri = (baseUri: string, params: Record<string, string>) => {
         const queryParams = new URLSearchParams(params).toString();
@@ -304,7 +303,6 @@ router.get('/datarequest', async (req: Request, res: Response) => {
         buttonLabel = 'Sync with Company.info';
         dossierNumber = 'Unknown';
         establishmentNumber = 'Unknown';
-        dossierDataType = 'STRING';
         buttonUri = createButtonUri('https://company-info-bright-c6c99ec34e11.herokuapp.com/webhooks/search', {
           portalId,
           tradeName,
@@ -326,12 +324,12 @@ router.get('/datarequest', async (req: Request, res: Response) => {
             'properties': [
               {
                 'label': 'Dossier number',
-                'dataType': dossierDataType,
+                'dataType': 'STRING',
                 'value': dossierNumber,
               },
               {
                 'label': 'Establishment number',
-                'dataType': dossierDataType,
+                'dataType': 'STRING',
                 'value': establishmentNumber,
               },
               {
