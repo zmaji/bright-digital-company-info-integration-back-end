@@ -98,7 +98,7 @@ router.post('/company', async (req: Request, res: Response) => {
 
                         if (wasRecentlySynced) {
                           logger.error('Company was recently synced, webhook stopped');
-
+                          res.status(StatusCodes.OK);
                           return;
                         }
 
