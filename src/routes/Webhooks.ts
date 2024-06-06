@@ -67,9 +67,6 @@ router.post('/company', async (req: Request, res: Response) => {
                       // eslint-disable-next-line
                       const hubSpotCompany = await companiesController.getHubSpotCompany(hubToken.access_token, event.objectId);
 
-                      console.log('hubSpotCompany');
-                      console.log(hubSpotCompany);
-
                       // eslint-disable-next-line
                       let dossierNumber = event.propertyName === 'dossier_number' ? event.propertyValue : hubSpotCompany.properties.dossier_number;
                       let establishmentNumber = event.propertyName === 'establishment_number' ? event.propertyValue : hubSpotCompany.properties.establishment_number;
