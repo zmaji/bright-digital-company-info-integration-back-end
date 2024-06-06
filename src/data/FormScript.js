@@ -107,8 +107,8 @@ const companySearch = () => {
             input.dispatchEvent(new Event('input', { bubbles: true }));
 
             hiddenCheckDossier.value = e.currentTarget.dataset.dossier;
-            // hiddenCheckEstablishment.value = e.currentTarget.dataset.establishment;
-            // hiddenCheckEstablishment.dispatchEvent(new Event('input', { bubbles: true }));
+            hiddenCheckEstablishment.value = e.currentTarget.dataset.establishment;
+            hiddenCheckEstablishment.dispatchEvent(new Event('input', { bubbles: true }));
             hiddenCheckDossier.dispatchEvent(new Event('input', { bubbles: true }));
             input.parentElement.removeChild(wrapper);
           });
