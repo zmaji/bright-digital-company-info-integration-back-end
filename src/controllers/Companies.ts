@@ -193,11 +193,8 @@ const createCompany = async (hubToken: HubToken, companyData: CompanyDetail): Pr
       data: JSON.stringify({ properties: updatedCompanyData }),
     });
 
-    logger.info('HTTP Status:', response.status);
-
     if (response && response.data) {
       logger.success('HubSpot company has successfully been created');
-      logger.info('Result:', response.data);
 
       return response.data;
     } else {

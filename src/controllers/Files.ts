@@ -18,11 +18,8 @@ const getFiles = async (hubToken: HubToken) => {
       },
     });
 
-    logger.info('HTTP Status:', response.status);
-
     if (response && response.data) {
       logger.success('HubSpot files have successfully been retrieved');
-      logger.info('Result:', response.data);
 
       return response.data;
     } else {
