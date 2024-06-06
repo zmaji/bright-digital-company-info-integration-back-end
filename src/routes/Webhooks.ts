@@ -79,17 +79,18 @@ router.post('/company', async (req: Request, res: Response) => {
                       console.log('establishmentNumber');
                       console.log(establishmentNumber);
 
+                      // TAKE CARE: UNCOMMENT/COMMENT TO TRIGGER POSSIBILITY TO SEARCH WITH ESTABLISHMENT NUMBER!
                       // establishmentNumber = undefined;
 
                       if (hubSpotCompany) {
                         let companyData: CompanyDetail;
                         // eslint-disable-next-line
                         if (establishmentNumber !== '' || establishmentNumber !== null || establishmentNumber !== undefined) {
-                          logger.info('Establishment number found, updating accordingly..')
+                          logger.info(`Establishment number ${establishmentNumber} found, updating accordingly..`)
                           // eslint-disable-next-line
                           companyData = await companiesController.getCompanyInfo(event.propertyValue, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD, establishmentNumber);
                         } else {
-                          logger.info('No establishment number found, updating with dossier number..')
+                          logger.info(`No establishment number found, updating with dossier number ${event.propertyValue}..`)
                           // eslint-disable-next-line
                           companyData = await companiesController.getCompanyInfo(event.propertyValue, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
                         }
