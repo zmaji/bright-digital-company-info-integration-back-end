@@ -18,8 +18,7 @@ let COMPANY_INFO_PASSWORD: string;
 let currentUser: User | null;
 let companyId: string;
 
-// @ts-ignore
-const formatDate = (date: any) => {
+const formatDate = (date: Date) => {
   const options = {
     year: 'numeric',
     month: '2-digit',
@@ -28,18 +27,18 @@ const formatDate = (date: any) => {
     minute: '2-digit',
     second: '2-digit',
     hour12: false,
-    timeZone: 'Europe/Amsterdam'
+    timeZone: 'Europe/Amsterdam',
   };
 
-  // @ts-ignore
+  // @ts-expect-error options not part of..
   const formattedDateParts = new Intl.DateTimeFormat('en-GB', options).formatToParts(date);
 
-  const day = formattedDateParts.find(part => part.type === 'day').value;
-  const month = formattedDateParts.find(part => part.type === 'month').value;
-  const year = formattedDateParts.find(part => part.type === 'year').value;
-  const hours = formattedDateParts.find(part => part.type === 'hour').value;
-  const minutes = formattedDateParts.find(part => part.type === 'minute').value;
-  const seconds = formattedDateParts.find(part => part.type === 'second').value;
+  const day = formattedDateParts.find((part) => part.type === 'day').value;
+  const month = formattedDateParts.find((part) => part.type === 'month').value;
+  const year = formattedDateParts.find((part) => part.type === 'year').value;
+  const hours = formattedDateParts.find((part) => part.type === 'hour').value;
+  const minutes = formattedDateParts.find((part) => part.type === 'minute').value;
+  const seconds = formattedDateParts.find((part) => part.type === 'second').value;
 
   return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
 };
@@ -115,7 +114,7 @@ router.post('/company', async (req: Request, res: Response) => {
                 }
               }
             } else {
-              logger.error('No dossier number found..')
+              logger.error('No dossier number found..');
               res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'No dossier number' });
             }
           } else {
