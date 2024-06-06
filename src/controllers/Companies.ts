@@ -141,7 +141,7 @@ const getHubSpotCompany = async (accessToken: string, companyId: string) => {
 
   try {
     const response: AxiosResponse = await axios.get(
-      // eslint-disable-next-line
+        // eslint-disable-next-line
         `https://api.hubapi.com/crm/v3/objects/companies/${companyId}?properties=establishment_number,dossier_number`, {
           headers: {
             'Authorization': `Bearer ${accessToken}`,

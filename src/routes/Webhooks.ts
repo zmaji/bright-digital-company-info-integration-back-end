@@ -47,7 +47,7 @@ router.post('/company', async (req: Request, res: Response) => {
         for (const event of events) {
           if (event.propertyName === 'dossier_number' || event.propertyName === 'establishment_number') {
             logger.info(
-              // eslint-disable-next-line
+                // eslint-disable-next-line
               `Property ${event.propertyName} has changed to ${event.propertyValue} for company ${event.objectId}, retrieving company details..`,
             );
 
@@ -72,7 +72,8 @@ router.post('/company', async (req: Request, res: Response) => {
 
                       // eslint-disable-next-line
                       let dossierNumber = event.propertyName === 'dossier_number' ? event.propertyValue : hubSpotCompany.properties.dossier_number;
-                      let establishmentNumber = event.propertyName === 'establishment_number' ? event.propertyValue : hubSpotCompany.properties.establishment_number;
+                      // eslint-disable-next-line
+                      const establishmentNumber = event.propertyName === 'establishment_number' ? event.propertyValue : hubSpotCompany.properties.establishment_number;
 
                       console.log('dossierNumber');
                       console.log(dossierNumber);
