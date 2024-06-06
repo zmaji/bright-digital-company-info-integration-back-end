@@ -238,7 +238,6 @@ const updateCompany = async (hubToken: HubToken, companyId: string, companyData:
 
     if (response && response.data) {
       logger.success('HubSpot company has successfully been updated');
-      logger.info('Result:', response.data);
 
       return response.data;
     } else {
