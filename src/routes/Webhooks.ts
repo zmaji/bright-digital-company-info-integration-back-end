@@ -74,22 +74,22 @@ router.post('/company', async (req: Request, res: Response) => {
                       let establishmentNumber = hubSpotCompany.properties.establishment_number ? hubSpotCompany.properties.establishment_number : undefined;
 
                       console.log('dossierNumber');
-                      console.log('dossierNumber');
                       console.log(event.propertyValue);
 
                       console.log('establishmentNumber');
-                      console.log('establishmentNumber');
                       console.log(establishmentNumber);
 
-                      establishmentNumber = undefined;
+                      // establishmentNumber = undefined;
 
                       if (hubSpotCompany) {
                         let companyData: CompanyDetail;
                         // eslint-disable-next-line
                         if (establishmentNumber !== '' || establishmentNumber !== null || establishmentNumber !== undefined) {
+                          logger.info('Establishment number found, updating accordingly..')
                           // eslint-disable-next-line
                           companyData = await companiesController.getCompanyInfo(event.propertyValue, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD, establishmentNumber);
                         } else {
+                          logger.info('No establishment number found, updating with dossier number..')
                           // eslint-disable-next-line
                           companyData = await companiesController.getCompanyInfo(event.propertyValue, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
                         }
