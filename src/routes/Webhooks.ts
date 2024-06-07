@@ -99,7 +99,7 @@ router.post('/company', async (req: Request, res: Response) => {
                         if (wasRecentlySynced) {
                           logger.success('Company was recently synced, webhook stopped');
 
-                          return res.status(200).send('Event already processed');
+                          return res.status(200).send('Event already processed, aborting webhook..');
                         }
 
                         let companyData: CompanyDetail;
@@ -140,8 +140,8 @@ router.post('/company', async (req: Request, res: Response) => {
                 }
               }
             } else {
-              logger.error('No dossier number found..');
-              res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'No dossier number' });
+              logger.success('Emptied dossier number, aborting webhook..');
+              res.status(StatusCodes.OK).json({ error: 'No dossier number' });
             }
           } else {
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'No company data found' });
