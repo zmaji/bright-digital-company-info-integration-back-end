@@ -372,8 +372,6 @@ router.get('/datarequest', async (req: Request, res: Response) => {
       };
 
       if (lastSync) {
-        console.log(lastSync);
-        console.log(typeof(lastSync));
         cardInformation.results[0].properties.push({
           label: 'Last sync',
           dataType: 'STRING',
