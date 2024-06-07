@@ -97,10 +97,8 @@ router.post('/company', async (req: Request, res: Response) => {
                         const wasRecentlySynced = isLessThan10SecondsAgo(lastSynced);
 
                         if (wasRecentlySynced) {
-                          logger.error('Company was recently synced, webhook stopped');
-                          res.status(StatusCodes.OK);
-
-                          return;
+                          logger.success('Company was recently synced, webhook stopped');
+                          return res.status(200).send('Event already processed');
                         }
 
                         let companyData: CompanyDetail;
