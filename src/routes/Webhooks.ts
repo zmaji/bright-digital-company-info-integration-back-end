@@ -370,13 +370,13 @@ router.get('/datarequest', async (req: Request, res: Response) => {
         primaryAction,
       };
 
-      if (lastSync) {
-        cardInformation.results[0].properties.push({
-          label: 'Last sync',
-          dataType: 'STRING',
-          value: lastSync,
-        });
-      }
+      // if (lastSync) {
+      //   cardInformation.results[0].properties.push({
+      //     label: 'Last sync',
+      //     dataType: 'STRING',
+      //     value: lastSync,
+      //   });
+      // }
 
       if (status === 'Synced') {
         // @ts-expect-error secondaryActions is not part of Type cardInformation
