@@ -81,11 +81,12 @@ router.post('/company', async (req: Request, res: Response) => {
       }
 
       logger.info(
-        `Property ${event.propertyName} has changed to ${event.propertyValue} for company ${event.objectId}, retrieving company details..`,
+          `Property ${event.propertyName} has changed to ${event.propertyValue} for company ${event.objectId}, retrieving company details..`,
       );
 
       if (!event.propertyValue) {
         logger.success('Emptied dossier number, aborting webhook..');
+
         return res.status(StatusCodes.OK).json({ error: 'No dossier number' });
       }
 
@@ -111,6 +112,7 @@ router.post('/company', async (req: Request, res: Response) => {
 
                 if (wasRecentlySynced) {
                   logger.success('Company was recently synced, webhook stopped');
+
                   return res.status(200).send('Event already processed, aborting webhook..');
                 }
 
