@@ -262,6 +262,8 @@ router.put('/update', async (req: Request, res: Response) => {
                   .json({ error: 'No company or data provided' });
             }
           }
+        } else {
+          return res.status(StatusCodes.OK).json({ error: 'Webhook aborted from retrying..' });
         }
       }
     }
