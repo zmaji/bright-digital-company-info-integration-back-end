@@ -65,96 +65,97 @@ router.post('/company', async (req: Request, res: Response) => {
   try {
     const verified = await verifySignature(req);
 
-    if (verified) {
-      const events = req.body;
+    if (!verified) {
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Signature has not been verified' });
+    }
 
-      if (events) {
-        for (const event of events) {
-          if (event.propertyName === 'dossier_number' || event.propertyName === 'establishment_number') {
-            logger.info(
-                `Property ${event.propertyName} has changed to ${event.propertyValue} for company ${event.objectId}, retrieving company details..`,
-            );
+    const events = req.body;
 
-            if (event.propertyValue) {
-              if (event.portalId) {
-                const currentUser: User | null = await usersController.getUser(event.portalId);
+    if (!events) {
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'No events found' });
+    }
 
-                if (currentUser) {
-                  COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
-                  COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
+    for (const event of events) {
+      if (event.propertyName !== 'dossier_number' && event.propertyName !== 'establishment_number') {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'No company data found' });
+      }
 
-                  if (COMPANY_INFO_USERNAME && COMPANY_INFO_PASSWORD) {
-                    const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
+      logger.info(
+        `Property ${event.propertyName} has changed to ${event.propertyValue} for company ${event.objectId}, retrieving company details..`,
+      );
 
-                    if (hubToken) {
-                      const hubSpotCompany = await companiesController.getHubSpotCompany(hubToken.access_token, event.objectId);
+      if (!event.propertyValue) {
+        logger.success('Emptied dossier number, aborting webhook..');
+        return res.status(StatusCodes.OK).json({ error: 'No dossier number' });
+      }
 
-                      if (hubSpotCompany) {
-                        const dossierNumber = event.propertyName === 'dossier_number' ? event.propertyValue : hubSpotCompany.properties.dossier_number;
-                        const establishmentNumber = event.propertyName === 'establishment_number' ? event.propertyValue : hubSpotCompany.properties.establishment_number;
+      if (event.portalId) {
+        const currentUser: User | null = await usersController.getUser(event.portalId);
 
-                        const lastSynced = hubSpotCompany.properties.last_sync;
-                        const wasRecentlySynced = isLessThan10SecondsAgo(lastSynced);
+        if (currentUser) {
+          COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
+          COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
 
-                        if (wasRecentlySynced) {
-                          logger.success('Company was recently synced, webhook stopped');
+          if (COMPANY_INFO_USERNAME && COMPANY_INFO_PASSWORD) {
+            const hubToken: HubToken | null = await authController.retrieveHubToken(currentUser.hubSpotPortalId);
 
-                          return res.status(200).send('Event already processed, aborting webhook..');
-                        }
+            if (hubToken) {
+              const hubSpotCompany = await companiesController.getHubSpotCompany(hubToken.access_token, event.objectId);
 
-                        let companyData: CompanyDetail;
+              if (hubSpotCompany) {
+                const dossierNumber = event.propertyName === 'dossier_number' ? event.propertyValue : hubSpotCompany.properties.dossier_number;
+                const establishmentNumber = event.propertyName === 'establishment_number' ? event.propertyValue : hubSpotCompany.properties.establishment_number;
 
-                        if (establishmentNumber !== '' || establishmentNumber !== null || establishmentNumber !== undefined) {
-                          logger.info(`Establishment number ${establishmentNumber} found, updating accordingly..`);
-                          companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD, establishmentNumber);
-                        } else {
-                          logger.info(`No establishment number found, updating with dossier number ${dossierNumber}..`);
-                          companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
-                        }
+                const lastSynced = hubSpotCompany.properties.last_sync;
+                const wasRecentlySynced = isLessThan10SecondsAgo(lastSynced);
 
-                        if (companyData) {
-                          const syncDate = new Date();
-                          const formattedDate = formatDate(syncDate);
+                if (wasRecentlySynced) {
+                  logger.success('Company was recently synced, webhook stopped');
+                  return res.status(200).send('Event already processed, aborting webhook..');
+                }
 
-                          companyData = { ...companyData, last_sync: formattedDate };
+                let companyData: CompanyDetail;
 
-                          logger.success(`Successfully retrieved data for company with dossier number ${establishmentNumber}`);
+                if (establishmentNumber) {
+                  logger.info(`Establishment number ${establishmentNumber} found, updating accordingly..`);
+                  companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD, establishmentNumber);
+                } else {
+                  logger.info(`No establishment number found, updating with dossier number ${dossierNumber}..`);
+                  companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
+                }
 
-                          const properties = await formatCompanyData(companyData);
+                if (companyData) {
+                  const syncDate = new Date();
+                  const formattedDate = formatDate(syncDate);
 
-                          if (properties) {
-                            const result = await companiesController.updateCompany(hubToken, event.objectId, properties);
+                  companyData = { ...companyData, last_sync: formattedDate };
 
-                            if (result) {
-                              res.status(StatusCodes.OK).json(result);
-                            } else {
-                              res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'No company has been updated' });
-                            }
-                          } else {
-                            res.status(StatusCodes.UNAUTHORIZED).json({ error: 'No HubToken found' });
-                          }
-                        }
-                      }
+                  logger.success(`Successfully retrieved data for company with dossier number ${establishmentNumber}`);
+
+                  const properties = await formatCompanyData(companyData);
+
+                  if (properties) {
+                    const result = await companiesController.updateCompany(hubToken, event.objectId, properties);
+
+                    if (result) {
+                      return res.status(StatusCodes.OK).json(result);
+                    } else {
+                      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'No company has been updated' });
                     }
+                  } else {
+                    return res.status(StatusCodes.UNAUTHORIZED).json({ error: 'No HubToken found' });
                   }
                 }
               }
-            } else {
-              logger.success('Emptied dossier number, aborting webhook..');
-              res.status(StatusCodes.OK).json({ error: 'No dossier number' });
             }
-          } else {
-            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'No company data found' });
           }
         }
-      } else {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'No events found' });
       }
-    } else {
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Signature has not been verified' });
     }
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'An error occurred processing the webhook' });
+    if (!res.headersSent) {
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'An error occurred processing the webhook' });
+    }
   }
 });
 
