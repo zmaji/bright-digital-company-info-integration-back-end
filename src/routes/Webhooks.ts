@@ -147,6 +147,8 @@ router.post('/company', async (req: Request, res: Response) => {
                   } else {
                     return res.status(StatusCodes.UNAUTHORIZED).json({ error: 'No HubToken found' });
                   }
+                } else {
+                  return res.status(StatusCodes.OK).json({ error: 'Webhook aborted from retrying..' });
                 }
               }
             }
