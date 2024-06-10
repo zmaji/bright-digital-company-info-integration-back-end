@@ -284,7 +284,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
       const tradeName = req.query.name as string;
       const objectId = req.query.associatedObjectId;
 
-      logger.info(`Loaded CRM carf for ${objectId}`);
+      logger.success(`Loading CRM card for company with id ${objectId}`);
 
       let dossierNumber = req.query.dossier_number as string;
       let establishmentNumber = req.query.establishment_number as string;
