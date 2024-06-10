@@ -74,9 +74,10 @@ const createFile = async (hubToken: HubToken, title: string) => {
     });
 
     if (response && response.data) {
+      logger.success('Successfully created file');
       return response.data;
     } else {
-      console.error('Failed to create the file');
+      logger.error('Failed to create the file');
 
       return null;
     }
@@ -84,15 +85,15 @@ const createFile = async (hubToken: HubToken, title: string) => {
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
       if (error.response) {
-        console.error(
+        logger.error(
             // eslint-disable-next-line
             `Error creating file - Status: ${error.response.status}, Message: ${error.response.statusText}, Data: ${JSON.stringify(error.response.data)}`,
         );
       } else {
-        console.error(`Error creating file - Message: ${error.message}`);
+        logger.error(`Error creating file - Message: ${error.message}`);
       }
     } else {
-      console.error('An unexpected error occurred:', error.toString());
+      logger.error('An unexpected error occurred:', error.toString());
     }
 
     return null;
