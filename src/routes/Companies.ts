@@ -24,9 +24,7 @@ router.get('/webhook', async (req: Request, res: Response) => {
 
       soap.createClient(url, async (err, client) => {
         if (err) {
-          res.send({ body: err, statusCode: 400 });
-
-          return;
+          return res.status(400).send({ message: 'Error creating SOAP client', error: err.toString() });
         }
 
         const soapHeader = {
@@ -37,21 +35,21 @@ router.get('/webhook', async (req: Request, res: Response) => {
           trade_name: req.query.name,
         }, (err, result) => {
           if (err) {
-            res.send({ body: err, statusCode: 400 });
+            return res.status(400).send({ message: 'SOAP request error', error: err.toString() });
           } else {
-            if (result.out.results) {
-              res.send({ body: result.out.results, statusCode: 200 });
+            if (result && result.out && result.out.results) {
+              return res.status(200).send({ body: result.out.results });
             } else {
-              res.send({ body: { message: 'No results' }, statusCode: 200 });
+              return res.status(200).send({ body: { message: 'No results' } });
             }
           }
         });
       });
     } else {
-      res.status(404).send({ message: 'User not found' });
+      return res.status(404).send({ message: 'User not found' });
     }
   } else {
-    res.status(400).send({ message: 'Invalid portalId' });
+    return res.status(400).send({ message: 'Invalid portalId' });
   }
 });
 

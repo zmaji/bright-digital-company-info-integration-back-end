@@ -42,23 +42,28 @@ const companySearch = () => {
       });
 
       const getCompanies = (target, input) => {
-        // If results allready exist, whipe those
+        // If results already exist, wipe those
         if (document.querySelector('.c-company-select')) {
           document.querySelector('.c-company-select').remove();
         }
-
+      
         input.parentElement.appendChild(loader);
-
+      
         window
-            fetch(`https://company-info-bright-c6c99ec34e11.herokuapp.com/companies/webhook?name=${encodeURIComponent(target)}&portalId=${encodeURIComponent(portalId)}`, {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'text/plain',
-              },
-            })
-            .then((response) => response.json())
-            .then((result) => {
-              console.log(result);
+          .fetch(`https://company-info-bright-c6c99ec34e11.herokuapp.com/companies/webhook?name=${encodeURIComponent(target)}&portalId=${encodeURIComponent(portalId)}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'text/plain',
+            },
+          })
+          .then(async (response) => {
+            const text = await response.text();
+            console.log('Raw response:', text);
+      
+            try {
+              const result = JSON.parse(text);
+              console.log('Parsed response:', result);
+      
               if (result.body.message) {
                 loader.remove();
                 hiddenCheckDossier.value = 'Niet beschikbaar';
@@ -68,16 +73,24 @@ const companySearch = () => {
               } else if (result.body.item) {
                 generateSelect(result.body.item, input);
               }
-            })
-            .catch((error) => {
-              console.log(error);
+            } catch (error) {
+              console.error('Failed to parse JSON:', error);
               loader.remove();
               hiddenCheckDossier.value = 'Niet beschikbaar';
               hiddenCheckEstablishment.value = 'Niet beschikbaar';
               hiddenCheckEstablishment.dispatchEvent(new Event('input', { bubbles: true }));
               hiddenCheckDossier.dispatchEvent(new Event('input', { bubbles: true }));
-            });
-      };
+            }
+          })
+          .catch((error) => {
+            console.error('Fetch error:', error);
+            loader.remove();
+            hiddenCheckDossier.value = 'Niet beschikbaar';
+            hiddenCheckEstablishment.value = 'Niet beschikbaar';
+            hiddenCheckEstablishment.dispatchEvent(new Event('input', { bubbles: true }));
+            hiddenCheckDossier.dispatchEvent(new Event('input', { bubbles: true }));
+          });
+      };      
       
       const generateSelect = (items, input) => {
         input.setAttribute('autocomplete', 'off');
