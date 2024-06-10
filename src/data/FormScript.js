@@ -105,6 +105,7 @@ const companySearch = () => {
             console.log('Raw response:', text);
       
             try {
+              console.log('test')
               const result = JSON.parse(text);
               console.log('Parsed response:', result);
       
