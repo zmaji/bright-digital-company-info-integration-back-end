@@ -95,6 +95,11 @@ const companySearch = () => {
             },
           })
           .then(async (response) => {
+            console.log('response')
+            console.log('response')
+            console.log('response')
+            console.log('response')
+            console.log(response)
             const text = await response.text();
             console.log('Raw response:', text);
       
