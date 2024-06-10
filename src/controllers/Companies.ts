@@ -82,17 +82,19 @@ const getCompanyInfo = async (dossierNumber: string, companyInfoUsername: string
 
     if (result && result.out) {
       logger.success(`Successfully found company with dossier number ${dossierNumber}`);
+
       return result.out;
     } else {
       logger.info(`No company found with dossier number ${dossierNumber}`);
+
       return null;
     }
   } catch (error) {
     logger.error('Something went wrong getting company information', error);
+
     return null;
   }
 };
-
 
 const getHubSpotCompanies = async (accessToken: string) => {
   logger.info(`Getting all companies..`);
