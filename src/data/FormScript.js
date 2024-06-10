@@ -42,6 +42,11 @@ const companySearch = () => {
       });
 
       const getCompanies = (target, input) => {
+        console.log('Trying to get companies')
+        console.log('Trying to get companies')
+        console.log('Trying to get companies')
+        console.log('Trying to get companies')
+        console.log('Trying to get companies')
         // If results allready exist, whipe those
         if (document.querySelector('.c-company-select')) {
           document.querySelector('.c-company-select').remove();
