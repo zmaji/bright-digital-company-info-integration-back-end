@@ -70,7 +70,6 @@ const getCompanyInfo = async (dossierNumber: string, companyInfoUsername: string
       client.dutchBusinessGetDossierV3(searchParameters, (err: any, result: any) => {
         if (err) {
           if (err.message.includes('user\'s account does not have enough credits')) {
-            logger.error('Not enough credits to perform the action');
             reject(new Error('Not enough credits'));
           } else {
             reject(err);
