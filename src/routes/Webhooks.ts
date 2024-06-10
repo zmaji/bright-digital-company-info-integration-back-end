@@ -273,7 +273,6 @@ router.put('/update', async (req: Request, res: Response) => {
 });
 
 router.get('/datarequest', async (req: Request, res: Response) => {
-  logger.info('Entered datarequest webhook route!');
   try {
     // @ts-expect-error unknown Ts request error
     const verified = await basicVerification(req);
@@ -284,6 +283,8 @@ router.get('/datarequest', async (req: Request, res: Response) => {
       const portalId = req.query.portalId as string;
       const tradeName = req.query.name as string;
       const objectId = req.query.associatedObjectId;
+
+      logger.info(`Loaded CRM carf for ${objectId}`);
 
       let dossierNumber = req.query.dossier_number as string;
       let establishmentNumber = req.query.establishment_number as string;
