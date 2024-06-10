@@ -75,6 +75,7 @@ const createFile = async (hubToken: HubToken, title: string) => {
 
     if (response && response.data) {
       logger.success('Successfully created file');
+
       return response.data;
     } else {
       logger.error('Failed to create the file');
