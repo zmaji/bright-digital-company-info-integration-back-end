@@ -52,8 +52,7 @@ const getCompanyInfo = async (dossierNumber: string, companyInfoUsername: string
 
     client.addSoapHeader(soapHeader);
 
-    const searchParameters = {
-    };
+    const searchParameters = {};
 
     if (dossierNumber) {
       // @ts-expect-error dossier_number not part of SearchParameters
@@ -70,7 +69,12 @@ const getCompanyInfo = async (dossierNumber: string, companyInfoUsername: string
       // eslint-disable-next-line
       client.dutchBusinessGetDossierV3(searchParameters, (err: any, result: any) => {
         if (err) {
-          reject(err);
+          if (err.message.includes('user\'s account does not have enough credits')) {
+            logger.error('Not enough credits to perform the action');
+            reject(new Error('Not enough credits'));
+          } else {
+            reject(err);
+          }
         } else {
           resolve(result);
         }
@@ -79,19 +83,17 @@ const getCompanyInfo = async (dossierNumber: string, companyInfoUsername: string
 
     if (result && result.out) {
       logger.success(`Successfully found company with dossier number ${dossierNumber}`);
-
       return result.out;
     } else {
       logger.info(`No company found with dossier number ${dossierNumber}`);
-
       return null;
     }
   } catch (error) {
     logger.error('Something went wrong getting company information', error);
-
     return null;
   }
 };
+
 
 const getHubSpotCompanies = async (accessToken: string) => {
   logger.info(`Getting all companies..`);
