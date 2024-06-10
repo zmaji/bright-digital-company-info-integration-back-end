@@ -58,11 +58,9 @@ const companySearch = () => {
           })
           .then(async (response) => {
             const text = await response.text();
-            console.log('Raw response:', text);
       
             try {
               const result = JSON.parse(text);
-              console.log('Parsed response:', result);
       
               if (result.body.message) {
                 loader.remove();
