@@ -85,9 +85,9 @@ router.post('/company', async (req: Request, res: Response) => {
       );
 
       if (!event.propertyValue) {
-        logger.success('Emptied dossier number, aborting webhook..');
+        logger.success(`Emptied ${event.propertyName}, aborting webhook..`);
 
-        return res.status(StatusCodes.OK).json({ error: 'No dossier number' });
+        return res.status(StatusCodes.OK).json({ error: `No ${event.propertyName}` });
       }
 
       if (event.portalId) {
