@@ -244,12 +244,14 @@ router.put('/update', async (req: Request, res: Response) => {
           if (hubSpotCompany) {
             let companyData;
 
-            if (hubSpotCompany.establishment_number) {
+            console.log(hubSpotCompany);
+
+            if (hubSpotCompany.properties.establishment_number) {
               logger.info('Establishment number found, updating accordingly..')
-              companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD, hubSpotCompany.establishment_number);
+              companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD, hubSpotCompany.properties.establishment_number);
             } else {
               logger.info('No establishment number found, updating with dossier number..')
-              companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD, hubSpotCompany.establishment_number);
+              companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
             }
 
             const syncDate = new Date();
