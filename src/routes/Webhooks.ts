@@ -166,7 +166,7 @@ router.put('/sync', async (req: Request, res: Response) => {
     const portalId = parseInt(req.body.portalId as string, 10);
     const companyId = req.body.companyId as string;
     const companyData = req.body.companyData;
-    
+
     if (portalId) {
       const hubToken: HubToken | null = await authController.retrieveHubToken(portalId);
 
@@ -239,10 +239,10 @@ router.put('/update', async (req: Request, res: Response) => {
             let companyData: CompanyDetail;
 
             if (hubSpotCompany.properties.establishment_number) {
-              logger.info(`Establishment number ${hubSpotCompany.properties.establishment_number} found, updating accordingly..`)
+              logger.info(`Establishment number ${hubSpotCompany.properties.establishment_number} found, updating accordingly..`);
               companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD, hubSpotCompany.properties.establishment_number);
             } else {
-              logger.info('No establishment number found, updating with dossier number..')
+              logger.info('No establishment number found, updating with dossier number..');
               companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
             }
 
@@ -252,26 +252,26 @@ router.put('/update', async (req: Request, res: Response) => {
             companyData = { ...companyData, last_sync: formattedDate };
 
             if (companyData) {
-                  const formattedCompany = await formatCompanyData(companyData);
-                  const result = await companiesController.updateCompany(hubToken, companyId, formattedCompany);
+              const formattedCompany = await formatCompanyData(companyData);
+              const result = await companiesController.updateCompany(hubToken, companyId, formattedCompany);
 
-                  if (result) {
-                    res
-                        .status(StatusCodes.OK)
-                        .json(result);
-                  } else {
-                    res
-                        .status(StatusCodes.NOT_FOUND)
-                        .json({ error: `Unable to update a company with id ${companyId}` });
-                  }
-                } else {
-                  res
-                      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-                      .json({ error: 'No company or data provided' });
+              if (result) {
+                res
+                    .status(StatusCodes.OK)
+                    .json(result);
+              } else {
+                res
+                    .status(StatusCodes.NOT_FOUND)
+                    .json({ error: `Unable to update a company with id ${companyId}` });
               }
+            } else {
+              res
+                  .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                  .json({ error: 'No company or data provided' });
             }
-          } else {
-            return res.status(StatusCodes.OK).json({ error: 'Webhook aborted from retrying..' });
+          }
+        } else {
+          return res.status(StatusCodes.OK).json({ error: 'Webhook aborted from retrying..' });
         }
       }
     }
