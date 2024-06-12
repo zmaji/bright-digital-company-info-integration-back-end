@@ -16,7 +16,7 @@ const getUser = async (identifier: string | number): Promise<User | null> => {
       });
 
       if (existingUser) {
-        logger.success(`User succeesfully retrieved!`);
+        logger.success(`User succesfully retrieved!`);
 
         return existingUser;
       } else {
