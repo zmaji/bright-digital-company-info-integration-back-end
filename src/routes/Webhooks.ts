@@ -106,8 +106,8 @@ router.post('/company', async (req: Request, res: Response) => {
 
               if (hubSpotCompany) {
                 logger.error('hallo1');
-                const dossierNumber = event.propertyName === 'dossier_number' ? event.propertyValue : hubSpotCompany.properties.dossier_number;
-                const establishmentNumber = event.propertyName === 'establishment_number' ? event.propertyValue : hubSpotCompany.properties.establishment_number;
+                const dossierNumber = event.propertyName === 'dossier_number' ? event.propertyValue : (hubSpotCompany.properties.dossier_number || '');
+                const establishmentNumber = event.propertyName === 'establishment_number' ? event.propertyValue : (hubSpotCompany.properties.establishment_number || '');
 
                 const lastSynced = hubSpotCompany.properties.last_sync;
                 const wasRecentlySynced = isLessThan10SecondsAgo(lastSynced);
