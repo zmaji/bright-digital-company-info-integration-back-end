@@ -118,9 +118,12 @@ router.post('/company', async (req: Request, res: Response) => {
 
                 let companyData: CompanyDetail;
 
-                if (establishmentNumber) {
+                if (establishmentNumber && dossierNumber) {
                   logger.info(`Establishment number ${establishmentNumber} found, updating accordingly..`);
                   companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD, establishmentNumber);
+                } else if (establishmentNumber && !dossierNumber) {
+                  logger.info(`No dossier number found, aborting webhook...`);
+                  return res.status(StatusCodes.OK).json({ error: 'Webhook aborted from retrying..' });
                 } else {
                   logger.info(`No establishment number found, updating with dossier number ${dossierNumber}..`);
                   companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
