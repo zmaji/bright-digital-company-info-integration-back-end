@@ -77,6 +77,7 @@ router.post('/company', async (req: Request, res: Response) => {
 
     for (const event of events) {
       if (event.propertyName !== 'dossier_number' && event.propertyName !== 'establishment_number') {
+        logger.error('Event is not related to dossier number or establishment number');
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'No company data found' });
       }
 
@@ -143,6 +144,7 @@ router.post('/company', async (req: Request, res: Response) => {
                     if (result) {
                       return res.status(StatusCodes.OK).json(result);
                     } else {
+                      logger.error('Company has not been updated (no result)');
                       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'No company has been updated' });
                     }
                   } else {
@@ -159,6 +161,7 @@ router.post('/company', async (req: Request, res: Response) => {
     }
   } catch (error) {
     if (!res.headersSent) {
+      logger.error('Unknown error has occurred');
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'An error occurred processing the webhook' });
     }
   }
