@@ -227,6 +227,7 @@ router.put('/update', async (req: Request, res: Response) => {
   try {
     const dossierNumber = req.query.dossierNumber ? req.query.dossierNumber as string : undefined;
     const portalId = parseInt(req.query.portalId as string, 10);
+    const companyId = req.query.companyId as string;
 
     if (portalId) {
       currentUser = await usersController.getUser(portalId);
@@ -235,39 +236,48 @@ router.put('/update', async (req: Request, res: Response) => {
         COMPANY_INFO_USERNAME = currentUser.companyInfoUserName;
         COMPANY_INFO_PASSWORD = currentUser.companyInfoPassword;
 
-        let companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
+        const hubToken: HubToken | null = await authController.retrieveHubToken(portalId);
 
-        const syncDate = new Date();
-        const formattedDate = formatDate(syncDate);
+        if (hubToken) {
+          const hubSpotCompany = await companiesController.getHubSpotCompany(hubToken.access_token, companyId);
 
-        companyData = { ...companyData, last_sync: formattedDate };
+          if (hubSpotCompany) {
+            let companyData;
 
-        if (companyData) {
-          const hubToken: HubToken | null = await authController.retrieveHubToken(portalId);
-          const companyId = req.query.companyId as string;
-
-          if (hubToken && companyId && companyData) {
-            if (companyId && companyId !== '') {
-              const formattedCompany = await formatCompanyData(companyData);
-              const result = await companiesController.updateCompany(hubToken, companyId, formattedCompany);
-
-              if (result) {
-                res
-                    .status(StatusCodes.OK)
-                    .json(result);
-              } else {
-                res
-                    .status(StatusCodes.NOT_FOUND)
-                    .json({ error: `Unable to update a company with id ${companyId}` });
-              }
+            if (hubSpotCompany.establishment_number) {
+              logger.info('Establishment number found, updating accordingly..')
+              companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD, hubSpotCompany.establishment_number);
             } else {
-              res
-                  .status(StatusCodes.INTERNAL_SERVER_ERROR)
-                  .json({ error: 'No company or data provided' });
+              logger.info('No establishment number found, updating with dossier number..')
+              companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD, hubSpotCompany.establishment_number);
             }
-          }
-        } else {
-          return res.status(StatusCodes.OK).json({ error: 'Webhook aborted from retrying..' });
+
+            const syncDate = new Date();
+            const formattedDate = formatDate(syncDate);
+
+            companyData = { ...companyData, last_sync: formattedDate };
+
+            if (companyData) {
+                  const formattedCompany = await formatCompanyData(companyData);
+                  const result = await companiesController.updateCompany(hubToken, companyId, formattedCompany);
+
+                  if (result) {
+                    res
+                        .status(StatusCodes.OK)
+                        .json(result);
+                  } else {
+                    res
+                        .status(StatusCodes.NOT_FOUND)
+                        .json({ error: `Unable to update a company with id ${companyId}` });
+                  }
+                } else {
+                  res
+                      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                      .json({ error: 'No company or data provided' });
+              }
+            }
+          } else {
+            return res.status(StatusCodes.OK).json({ error: 'Webhook aborted from retrying..' });
         }
       }
     }
@@ -290,7 +300,7 @@ router.get('/datarequest', async (req: Request, res: Response) => {
       const tradeName = req.query.name as string;
       const objectId = req.query.associatedObjectId;
 
-      logger.success(`Loading CRM card for company with id ${objectId}`);
+      logger.info(`Loading CRM card for company with id ${objectId}`);
 
       let dossierNumber = req.query.dossier_number as string;
       let establishmentNumber = req.query.establishment_number as string;
