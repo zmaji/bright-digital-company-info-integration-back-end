@@ -47,7 +47,7 @@ const companySearch = () => {
         input.parentElement.appendChild(loader)
 
         window
-          .fetch(`https://iris-company-info-3521328f734f.herokuapp.com/get-companies?name=${encodeURIComponent(target)}`, {
+        .fetch(`https://company-info-bright-c6c99ec34e11.herokuapp.com/companies/webhook?name=${encodeURIComponent(target)}&portalId=${encodeURIComponent(portalId)}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'text/plain',
