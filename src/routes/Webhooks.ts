@@ -166,13 +166,7 @@ router.put('/sync', async (req: Request, res: Response) => {
     const portalId = parseInt(req.body.portalId as string, 10);
     const companyId = req.body.companyId as string;
     const companyData = req.body.companyData;
-
-    console.log('portalId')
-    console.log('portalId')
-    console.log('portalId')
-    console.log('portalId')
-    console.log(portalId)
-
+    
     if (portalId) {
       const hubToken: HubToken | null = await authController.retrieveHubToken(portalId);
 
