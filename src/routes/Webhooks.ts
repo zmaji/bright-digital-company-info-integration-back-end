@@ -105,6 +105,7 @@ router.post('/company', async (req: Request, res: Response) => {
               const hubSpotCompany = await companiesController.getHubSpotCompany(hubToken.access_token, event.objectId);
 
               if (hubSpotCompany) {
+                logger.error('hallo1');
                 const dossierNumber = event.propertyName === 'dossier_number' ? event.propertyValue : hubSpotCompany.properties.dossier_number;
                 const establishmentNumber = event.propertyName === 'establishment_number' ? event.propertyValue : hubSpotCompany.properties.establishment_number;
 
@@ -118,6 +119,11 @@ router.post('/company', async (req: Request, res: Response) => {
                 }
 
                 let companyData: CompanyDetail;
+
+                console.log('dossierNumber')
+                console.log(dossierNumber)
+                console.log('establishmentNumber')
+                console.log(establishmentNumber)
 
                 if (establishmentNumber && dossierNumber) {
                   logger.info(`Establishment number ${establishmentNumber} found, updating accordingly..`);
