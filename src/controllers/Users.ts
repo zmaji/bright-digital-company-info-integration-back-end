@@ -16,7 +16,7 @@ const getUser = async (identifier: string | number): Promise<User | null> => {
       });
 
       if (existingUser) {
-        logger.success(`User with email: ${identifier} found!`);
+        logger.success(`User succeesfully retrieved!`);
 
         return existingUser;
       } else {
@@ -38,8 +38,6 @@ const getUser = async (identifier: string | number): Promise<User | null> => {
       );
 
       if (userWithCompanyInfo) {
-        logger.info(`User with hubSpotPortalId: ${identifier} and company info found!`);
-
         return userWithCompanyInfo;
       } else {
         logger.warn(`No user with hubSpotPortalId: ${identifier} has both companyInfoUserName and companyInfoPassword`);
