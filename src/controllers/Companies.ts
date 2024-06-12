@@ -99,16 +99,20 @@ const getCompanyInfo = async (dossierNumber: string, companyInfoUsername: string
 const getHubSpotCompanies = async (accessToken: string) => {
   logger.info(`Getting all companies..`);
 
-  const limit = 10;
   const archived = false;
 
   try {
     const response: AxiosResponse = await axios.get(
-        `https://api.hubapi.com/crm/v3/objects/companies?limit=${limit}&archived=${archived}`, {
+        `https://api.hubapi.com/crm/v3/objects/companies?archived=${archived}`, {
           headers: {
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
           },
+          // @ts-expect-error properties does not exist on AxiosResponse
+          properties: [
+            "dossier_number",
+            "establishment_number"
+          ]
         });
 
     const result = response.data;
