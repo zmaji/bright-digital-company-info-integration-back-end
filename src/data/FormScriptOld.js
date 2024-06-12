@@ -13,7 +13,7 @@ const companySearch = () => {
     if (event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormReady') {
       const input = document.querySelector('input[name="company"]');
       const hiddenCheckDossier = document.querySelector('input[name="0-2/dossier_number"]');
-      const portalId = event.source.hsVars.portal_id
+      const portalId = event.source.hsVars.portal_id;
 
       if (!input || !hiddenCheckDossier) return;
 
@@ -44,44 +44,44 @@ const companySearch = () => {
         if (document.querySelector('.c-company-select')) {
           document.querySelector('.c-company-select').remove();
         }
-      
+
         input.parentElement.appendChild(loader);
-      
+
         window
-          .fetch(`https://company-info-bright-c6c99ec34e11.herokuapp.com/companies/webhook?name=${encodeURIComponent(target)}&portalId=${encodeURIComponent(portalId)}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'text/plain',
-            },
-          })
-          .then(async (response) => {
-            const text = await response.text();
-      
-            try {
-              const result = JSON.parse(text);
-      
-              if (result.body.message) {
+            .fetch(`https://company-info-bright-c6c99ec34e11.herokuapp.com/companies/webhook?name=${encodeURIComponent(target)}&portalId=${encodeURIComponent(portalId)}`, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'text/plain',
+              },
+            })
+            .then(async (response) => {
+              const text = await response.text();
+
+              try {
+                const result = JSON.parse(text);
+
+                if (result.body.message) {
+                  loader.remove();
+                  hiddenCheckDossier.value = 'Niet beschikbaar';
+                  hiddenCheckDossier.dispatchEvent(new Event('input', { bubbles: true }));
+                } else if (result.body.item) {
+                  generateSelect(result.body.item, input);
+                }
+              } catch (error) {
+                console.error('Failed to parse JSON:', error);
                 loader.remove();
                 hiddenCheckDossier.value = 'Niet beschikbaar';
                 hiddenCheckDossier.dispatchEvent(new Event('input', { bubbles: true }));
-              } else if (result.body.item) {
-                generateSelect(result.body.item, input);
               }
-            } catch (error) {
-              console.error('Failed to parse JSON:', error);
+            })
+            .catch((error) => {
+              console.error('Fetch error:', error);
               loader.remove();
               hiddenCheckDossier.value = 'Niet beschikbaar';
               hiddenCheckDossier.dispatchEvent(new Event('input', { bubbles: true }));
-            }
-          })
-          .catch((error) => {
-            console.error('Fetch error:', error);
-            loader.remove();
-            hiddenCheckDossier.value = 'Niet beschikbaar';
-            hiddenCheckDossier.dispatchEvent(new Event('input', { bubbles: true }));
-          });
-      };      
-      
+            });
+      };
+
       const generateSelect = (items, input) => {
         input.setAttribute('autocomplete', 'off');
 

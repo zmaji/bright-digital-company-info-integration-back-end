@@ -78,6 +78,7 @@ router.post('/company', async (req: Request, res: Response) => {
     for (const event of events) {
       if (event.propertyName !== 'dossier_number' && event.propertyName !== 'establishment_number') {
         logger.error('Event is not related to dossier number or establishment number');
+
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'No company data found' });
       }
 
@@ -105,8 +106,8 @@ router.post('/company', async (req: Request, res: Response) => {
               const hubSpotCompany = await companiesController.getHubSpotCompany(hubToken.access_token, event.objectId);
 
               if (hubSpotCompany) {
-                const dossierNumber = event.propertyName === 'dossier_number' ? event.propertyValue : hubSpotCompany.properties.dossier_number
-                const establishmentNumber = event.propertyName === 'establishment_number' ? event.propertyValue : hubSpotCompany.properties.establishment_number
+                const dossierNumber = event.propertyName === 'dossier_number' ? event.propertyValue : hubSpotCompany.properties.dossier_number;
+                const establishmentNumber = event.propertyName === 'establishment_number' ? event.propertyValue : hubSpotCompany.properties.establishment_number;
 
                 const lastSynced = hubSpotCompany.properties.last_sync ? hubSpotCompany.properties.last_sync : '';
 
@@ -126,11 +127,12 @@ router.post('/company', async (req: Request, res: Response) => {
                   logger.info(`Establishment number ${establishmentNumber} found, updating accordingly..`);
                   companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD, establishmentNumber);
                 } else if (establishmentNumber && !dossierNumber) {
-                    logger.info(`No dossier number found, aborting webhook...`);
-                    return res.status(StatusCodes.OK).json({ error: 'Webhook aborted from retrying..' });
+                  logger.info(`No dossier number found, aborting webhook...`);
+
+                  return res.status(StatusCodes.OK).json({ error: 'Webhook aborted from retrying..' });
                 } else {
-                    logger.info(`No establishment number found, updating with dossier number ${dossierNumber}..`);
-                    companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
+                  logger.info(`No establishment number found, updating with dossier number ${dossierNumber}..`);
+                  companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
                 }
 
                 if (companyData) {
@@ -148,6 +150,7 @@ router.post('/company', async (req: Request, res: Response) => {
                       return res.status(StatusCodes.OK).json(result);
                     } else {
                       logger.error('Company has not been updated (no result)');
+
                       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'No company has been updated' });
                     }
                   } else {
@@ -165,6 +168,7 @@ router.post('/company', async (req: Request, res: Response) => {
   } catch (error) {
     if (!res.headersSent) {
       logger.error('Unknown error has occurred');
+
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'An error occurred processing the webhook' });
     }
   }
