@@ -105,44 +105,32 @@ router.post('/company', async (req: Request, res: Response) => {
               const hubSpotCompany = await companiesController.getHubSpotCompany(hubToken.access_token, event.objectId);
 
               if (hubSpotCompany) {
-                logger.error('hallo1');
-                const dossierNumber = event.propertyName === 'dossier_number' ? event.propertyValue : (hubSpotCompany.properties.dossier_number || '');
-                const establishmentNumber = event.propertyName === 'establishment_number' ? event.propertyValue : (hubSpotCompany.properties.establishment_number || '');
+                const dossierNumber = event.propertyName === 'dossier_number' ? event.propertyValue : hubSpotCompany.properties.dossier_number
+                const establishmentNumber = event.propertyName === 'establishment_number' ? event.propertyValue : hubSpotCompany.properties.establishment_number
 
-                console.log('dossierNumber')
-                console.log(dossierNumber)
-                console.log('establishmentNumber')
-                console.log(establishmentNumber)
+                const lastSynced = hubSpotCompany.properties.last_sync ? hubSpotCompany.properties.last_sync : '';
 
-                logger.error('hallo2');
+                if (lastSynced !== '') {
+                  const wasRecentlySynced = isLessThan10SecondsAgo(lastSynced);
 
-                const lastSynced = hubSpotCompany.properties.last_sync;
-                const wasRecentlySynced = isLessThan10SecondsAgo(lastSynced);
+                  if (wasRecentlySynced) {
+                    logger.success('Company was recently synced, webhook stopped');
 
-                if (wasRecentlySynced) {
-                  logger.success('Company was recently synced, webhook stopped');
-
-                  return res.status(200).send('Event already processed, aborting webhook..');
+                    return res.status(200).send('Event already processed, aborting webhook..');
+                  }
                 }
 
-                let companyData;
-
-                logger.error('hallo3');
-
-                console.log('dossierNumber')
-                console.log(dossierNumber)
-                console.log('establishmentNumber')
-                console.log(establishmentNumber)
+                let companyData: CompanyDetail;
 
                 if (establishmentNumber && dossierNumber) {
                   logger.info(`Establishment number ${establishmentNumber} found, updating accordingly..`);
                   companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD, establishmentNumber);
                 } else if (establishmentNumber && !dossierNumber) {
-                  logger.info(`No dossier number found, aborting webhook...`);
-                  return res.status(StatusCodes.OK).json({ error: 'Webhook aborted from retrying..' });
+                    logger.info(`No dossier number found, aborting webhook...`);
+                    return res.status(StatusCodes.OK).json({ error: 'Webhook aborted from retrying..' });
                 } else {
-                  logger.info(`No establishment number found, updating with dossier number ${dossierNumber}..`);
-                  companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
+                    logger.info(`No establishment number found, updating with dossier number ${dossierNumber}..`);
+                    companyData = await companiesController.getCompanyInfo(dossierNumber, COMPANY_INFO_USERNAME, COMPANY_INFO_PASSWORD);
                 }
 
                 if (companyData) {
