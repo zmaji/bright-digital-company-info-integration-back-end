@@ -13,10 +13,9 @@ const companySearch = () => {
     if (event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormReady') {
       const input = document.querySelector('input[name="company"]');
       const hiddenCheckDossier = document.querySelector('input[name="0-2/dossier_number"]');
-      const hiddenCheckEstablishment = document.querySelector('input[name="0-2/establishment_number"]');
       const portalId = event.source.hsVars.portal_id
 
-      if (!input || !hiddenCheckDossier || !hiddenCheckEstablishment) return;
+      if (!input || !hiddenCheckDossier) return;
 
       let typeDelay;
       const loader = document.createElement('div');
@@ -25,7 +24,6 @@ const companySearch = () => {
 
       input.parentElement.style.position = 'relative';
       hiddenCheckDossier.parentElement.parentElement.style.display = 'none';
-      hiddenCheckEstablishment.parentElement.parentElement.style.display = 'none';
 
       input.addEventListener('input', (e) => {
         if (!e.isTrusted) return; // If the event is not triggered by the user but by JS, do not proceed
@@ -65,8 +63,6 @@ const companySearch = () => {
               if (result.body.message) {
                 loader.remove();
                 hiddenCheckDossier.value = 'Niet beschikbaar';
-                hiddenCheckEstablishment.value = 'Niet beschikbaar';
-                hiddenCheckEstablishment.dispatchEvent(new Event('input', { bubbles: true }));
                 hiddenCheckDossier.dispatchEvent(new Event('input', { bubbles: true }));
               } else if (result.body.item) {
                 generateSelect(result.body.item, input);
@@ -75,8 +71,6 @@ const companySearch = () => {
               console.error('Failed to parse JSON:', error);
               loader.remove();
               hiddenCheckDossier.value = 'Niet beschikbaar';
-              hiddenCheckEstablishment.value = 'Niet beschikbaar';
-              hiddenCheckEstablishment.dispatchEvent(new Event('input', { bubbles: true }));
               hiddenCheckDossier.dispatchEvent(new Event('input', { bubbles: true }));
             }
           })
@@ -84,8 +78,6 @@ const companySearch = () => {
             console.error('Fetch error:', error);
             loader.remove();
             hiddenCheckDossier.value = 'Niet beschikbaar';
-            hiddenCheckEstablishment.value = 'Niet beschikbaar';
-            hiddenCheckEstablishment.dispatchEvent(new Event('input', { bubbles: true }));
             hiddenCheckDossier.dispatchEvent(new Event('input', { bubbles: true }));
           });
       };      
@@ -100,7 +92,6 @@ const companySearch = () => {
           const element = document.createElement('div');
           element.setAttribute('class', 'c-company-select__element');
           element.dataset.dossier = item.dossier_number;
-          element.dataset.establishment = item.establishment_number;
           element.dataset.name = item.name;
           element.innerHTML = item.name;
 
@@ -118,8 +109,6 @@ const companySearch = () => {
             input.dispatchEvent(new Event('input', { bubbles: true }));
 
             hiddenCheckDossier.value = e.currentTarget.dataset.dossier;
-            hiddenCheckEstablishment.value = e.currentTarget.dataset.establishment;
-            hiddenCheckEstablishment.dispatchEvent(new Event('input', { bubbles: true }));
             hiddenCheckDossier.dispatchEvent(new Event('input', { bubbles: true }));
             input.parentElement.removeChild(wrapper);
           });
