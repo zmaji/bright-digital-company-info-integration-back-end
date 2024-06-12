@@ -109,6 +109,13 @@ router.post('/company', async (req: Request, res: Response) => {
                 const dossierNumber = event.propertyName === 'dossier_number' ? event.propertyValue : (hubSpotCompany.properties.dossier_number || '');
                 const establishmentNumber = event.propertyName === 'establishment_number' ? event.propertyValue : (hubSpotCompany.properties.establishment_number || '');
 
+                console.log('dossierNumber')
+                console.log(dossierNumber)
+                console.log('establishmentNumber')
+                console.log(establishmentNumber)
+
+                logger.error('hallo2');
+
                 const lastSynced = hubSpotCompany.properties.last_sync;
                 const wasRecentlySynced = isLessThan10SecondsAgo(lastSynced);
 
@@ -118,7 +125,9 @@ router.post('/company', async (req: Request, res: Response) => {
                   return res.status(200).send('Event already processed, aborting webhook..');
                 }
 
-                let companyData: CompanyDetail;
+                let companyData;
+
+                logger.error('hallo3');
 
                 console.log('dossierNumber')
                 console.log(dossierNumber)
