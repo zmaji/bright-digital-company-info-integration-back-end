@@ -110,9 +110,9 @@ const getHubSpotCompanies = async (accessToken: string) => {
           },
           // @ts-expect-error properties does not exist on AxiosResponse
           properties: [
-            "dossier_number",
-            "establishment_number"
-          ]
+            'dossier_number',
+            'establishment_number',
+          ],
         });
 
     const result = response.data;
