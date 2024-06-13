@@ -11,6 +11,7 @@ import propertyRoutes from '../routes/Properties';
 import webhookRoutes from '../routes/Webhooks';
 import formRoutes from '../routes/Forms';
 import fileRoutes from '../routes/Files';
+import workflowRoutes from '../routes/Workflows';
 
 const createServer = () => {
   const app: Express = express();
@@ -27,6 +28,7 @@ const createServer = () => {
   app.use('/webhooks', webhookRoutes);
   app.use('/forms', formRoutes);
   app.use('/files', fileRoutes);
+  app.use('/workflows', workflowRoutes);
 
   return app;
 };
