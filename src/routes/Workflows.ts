@@ -20,17 +20,17 @@ router.post('/definition', async (req: Request, res: Response) => {
     const verified = await verifySignature(req);
 
     if (verified) {
-        const source = req.body.context.source;
-        const sourceId = req.body.context.workflowId;
-        const actionDefinitionId = req.body.origin.actionDefinitionId;
-        const objectType = req.body.object.properties.objectType;
-        const objectId = req.body.object.objectId;
+        const source = req.body?.context?.source;
+        const sourceId = req.body?.context?.workflowId;
+        const actionDefinitionId = req.body?.origin?.actionDefinitionId;
+        const objectType = req.body?.object?.objectType;
+        const objectId = req.body?.object?.objectId;
         
         logger.info(`Processing ${source} with id ${sourceId} and action ${actionDefinitionId} targeting object ${objectType} with id ${objectId}`)
 
-        const portalId = req.body.origin.portalId;
-        const dossierNumber = req.body.object.properties.dossier_number;
-        const establishmentNumber = req.body.object.properties.establishment_number;
+        const portalId = req.body?.origin?.portalId;
+        const dossierNumber = req.body?.object?.properties?.dossier_number;
+        const establishmentNumber = req.body?.object?.properties?.establishment_number;
 
         console.log('portalId');
         console.log(portalId);
@@ -39,6 +39,7 @@ router.post('/definition', async (req: Request, res: Response) => {
         console.log('establishmentNumber');
         console.log(establishmentNumber);
 
+        return res.status(StatusCodes.OK);
     } else {
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Signature has not been verified' });
     }
