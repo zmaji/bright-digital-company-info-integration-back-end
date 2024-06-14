@@ -18,6 +18,7 @@ router.post('/definition', async (req: Request, res: Response) => {
 
     if (verified) {
         console.log('req')
+        console.log(req);
 
 
         console.log('req data')
