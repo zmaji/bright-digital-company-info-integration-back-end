@@ -23,14 +23,14 @@ router.post('/definition', async (req: Request, res: Response) => {
         const source = req.body.context.source;
         const sourceId = req.body.context.workflowId;
         const actionDefinitionId = req.body.origin.actionDefinitionId;
-        const objectType = req.body.objectType;
+        const objectType = req.body.object.properties.objectType;
         const objectId = req.body.object.objectId;
         
         logger.info(`Processing ${source} with id ${sourceId} and action ${actionDefinitionId} targeting object ${objectType} with id ${objectId}`)
 
         const portalId = req.body.origin.portalId;
-        const dossierNumber = req.body.properties.dossier_number;
-        const establishmentNumber = req.body.properties.establishment_number;
+        const dossierNumber = req.body.object.properties.dossier_number;
+        const establishmentNumber = req.body.object.properties.establishment_number;
 
         console.log('portalId');
         console.log(portalId);
