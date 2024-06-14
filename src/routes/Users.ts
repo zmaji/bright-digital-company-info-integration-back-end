@@ -30,6 +30,22 @@ router.get('', isLoggedIn, async (req: Request, res: Response) => {
   }
 });
 
+router.get('/all', isLoggedIn, async (req: Request, res: Response) => {
+  try {
+    const users = await userController.getUsers();
+
+    if (users) {
+      res
+        .status(StatusCodes.OK)
+        .json('Successfully retrieved all users');
+    }
+  } catch {
+    res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: 'An error occurred retrieving all users' });
+  }
+});
+
 router.get('/verify', async (req: Request, res: Response) => {
   try {
     if (req && req.query && req.query.activationCode && req.query.userId) {

@@ -53,6 +53,21 @@ const getUser = async (identifier: string | number): Promise<User | null> => {
   }
 };
 
+const getUsers = async (): Promise<User[] | null> => {
+  try {
+    const users = await prisma.user.findMany();
+
+    if (users) {
+      return users;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    logger.error('Something went wrong getting all users', error);
+    throw error;
+  }
+};
+
 const verifyUser = async (userId: number, activationCode: string): Promise<boolean> => {
   logger.info('Verifying activation code');
 
@@ -80,7 +95,7 @@ const verifyUser = async (userId: number, activationCode: string): Promise<boole
 
 const createUser = async (userData: User): Promise<User | null> => {
   try {
-    const { firstName, lastName, emailAddress, password } = userData;
+    const { firstName, lastName, emailAddress, password, roles } = userData;
     const hashedPassword = await bcrypt.hash(password, 12);
     const activationToken = uuidv4();
 
@@ -128,6 +143,7 @@ const updateUser = async (userId: number, updateFields: Partial<User>): Promise<
 
 const usersController = {
   getUser,
+  getUsers,
   createUser,
   updateUser,
   verifyUser,
