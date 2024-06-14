@@ -26,60 +26,32 @@ router.post('/definition', async (req: Request, res: Response) => {
     }
 });
 
-  router.get('', async (req: Request, res: Response) => {
+router.get('', async (req: Request, res: Response) => {
     try {
-      const response = await axios.get(
-          `https://api.hubspot.com/automation/v4/actions/${HUBSPOT_APP_ID}`,
-          {
+        const response = await axios.get(
+            `https://api.hubspot.com/automation/v4/actions/${HUBSPOT_APP_ID}`,
+            {
             params: {
-              hapikey: HUBSPOT_APP_DEVELOPER_KEY,
+                hapikey: HUBSPOT_APP_DEVELOPER_KEY,
             },
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
-          },
-      );
-  
-      if (response && response.data) {
+            },
+        );
+
+        if (response && response.data) {
         logger.success(`Successfully retrieved workflow actions`);
         res.status(StatusCodes.OK).json({ status: 'success', data: response.data });
-      }
+        }
     } catch (error) {
-      logger.error('Error while retrieving workflow actions', error);
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ status: 'error', message: error.message });
+        logger.error('Error while retrieving workflow actions', error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ status: 'error', message: error.message });
     }
 });
 
 router.post('', async (req: Request, res: Response) => {
     try {
-    //   const data = {
-    //     actionUrl: 'https://company-info-bright-c6c99ec34e11.herokuapp.com/workflows/definition',
-    //     objectTypes: ['COMPANY'],
-    //     objectRequestOptions: {
-    //       properties: [
-    //         'portalId',
-    //         'dossier_number',
-    //         'establishment_number',
-    //       ],
-    //     },
-    //     labels: {
-    //       en: {
-    //         actionName: 'Update company',
-    //         actionDescription: 'Update the current company with Company.info',
-    //         appDisplayName: 'Company.info Integration',
-    //         actionCardContent: 'Company.info action',
-    //       },
-    //     },
-    //     functions: [
-    //       {
-    //         functionType: 'PRE_FETCH_OPTIONS',
-    //         functionSource: '...',
-    //       },
-    //     ],
-    //     published: true,
-    //   };
-
-    // !!HUBSPOT EXAMPLE ACTION DEFINTION!!
     const data = {
         "published":"true",
         "actionUrl":"https://company-info-bright-c6c99ec34e11.herokuapp.com/workflows/definition",
@@ -94,10 +66,10 @@ router.post('', async (req: Request, res: Response) => {
         },
         "labels":{
           "en":{
-            "actionName":"My Extension!!",
-            "actionDescription":"My Extension Description!!",
-            "appDisplayName":"My App Display Name!!",
-            "actionCardContent":"My Action Card Content!!"
+            "actionName":"Update Company.info",
+            "actionDescription":"Update company based on available dossier number and/or establishment number",
+            "appDisplayName":"Company.info integration",
+            "actionCardContent":"Company.info action"
           }
         },
         "functions":[
