@@ -12,7 +12,10 @@ const HUBSPOT_APP_ID = process.env.HUBSPOT_APP_ID;
 const HUBSPOT_APP_DEVELOPER_KEY = process.env.HUBSPOT_APP_DEVELOPER_KEY;
 
 router.post('/definition', async (req: Request, res: Response) => {
-    console.log('Workflow has been triggered..');
+    logger.info('Workflow has been triggered..');
+
+    console.log('req body')
+    console.log(req.body);
 
     const verified = await verifySignature(req);
 
@@ -22,7 +25,7 @@ router.post('/definition', async (req: Request, res: Response) => {
         const actionDefinitionId = req.body.origin.actionDefinitionId;
         const objectType = req.body.objectType;
         const objectId = req.body.object.objectId;
-
+        
         logger.info(`Processing ${source} with id ${sourceId} and action ${actionDefinitionId} targeting object ${objectType} with id ${objectId}`)
 
         const portalId = req.body.origin.portalId;
