@@ -16,36 +16,34 @@ router.post('/definition', async (req: Request, res: Response) => {
 
     console.log('req body')
     console.log(req.body);
-
-    const verified = await verifySignature(req);
-
-    if (verified) {
-        const source = req.body?.context?.source;
-        const sourceId = req.body?.context?.workflowId;
-        const actionDefinitionId = req.body?.origin?.actionDefinitionId;
-        const objectType = req.body?.object?.objectType;
-        const objectId = req.body?.object?.objectId;
-        
-        logger.info(`Processing ${source} with id ${sourceId} and action ${actionDefinitionId} targeting object ${objectType} with id ${objectId}`)
-
-        const portalId = req.body?.origin?.portalId;
-        const dossierNumber = req.body?.object?.properties?.dossier_number;
-        const establishmentNumber = req.body?.object?.properties?.establishment_number;
-
-        console.log('portalId');
-        console.log(portalId);
-        console.log('dossierNumber');
-        console.log(dossierNumber);
-        console.log('establishmentNumber');
-        console.log(establishmentNumber);
-
-        return res.status(StatusCodes.OK);
-    } else {
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Signature has not been verified' });
-    }
-
+    
     try {
-        res.status(StatusCodes.CREATED);
+        const verified = await verifySignature(req);
+
+        if (verified) {
+            const source = req.body?.context?.source;
+            const sourceId = req.body?.context?.workflowId;
+            const actionDefinitionId = req.body?.origin?.actionDefinitionId;
+            const objectType = req.body?.object?.objectType;
+            const objectId = req.body?.object?.objectId;
+            
+            logger.info(`Processing ${source} with id ${sourceId} and action ${actionDefinitionId} targeting object ${objectType} with id ${objectId}`)
+
+            const portalId = req.body?.origin?.portalId;
+            const dossierNumber = req.body?.object?.properties?.dossier_number;
+            const establishmentNumber = req.body?.object?.properties?.establishment_number;
+
+            console.log('portalId');
+            console.log(portalId);
+            console.log('dossierNumber');
+            console.log(dossierNumber);
+            console.log('establishmentNumber');
+            console.log(establishmentNumber);
+
+            return res.status(StatusCodes.OK);
+        } else {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Signature has not been verified' });
+        }
     } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ status: 'error', message: error.message });
     }
