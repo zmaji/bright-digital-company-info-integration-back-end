@@ -20,15 +20,8 @@ router.post('/definition', async (req: Request, res: Response) => {
         console.log('req')
         console.log(req);
 
-
-        console.log('req data')
-        // @ts-ignore
-        console.log(req.data)
-
-
-        console.log('req object')
-        // @ts-ignore
-        console.log(req.object)
+        console.log('req body')
+        console.log(req.body);
     } else {
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Signature has not been verified' });
     }
