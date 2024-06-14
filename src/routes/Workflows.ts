@@ -11,7 +11,16 @@ const HUBSPOT_APP_ID = process.env.HUBSPOT_APP_ID;
 const HUBSPOT_APP_DEVELOPER_KEY = process.env.HUBSPOT_APP_DEVELOPER_KEY;
 
 router.get('/definition', async (req: Request, res: Response) => {
-    console.log('Entered action url..');
+    console.log('Entered action url GET..');
+    try {
+        res.status(StatusCodes.OK)
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ status: 'error', message: error.message });
+    }
+});
+
+router.post('/definition', async (req: Request, res: Response) => {
+    console.log('Entered action url GET..');
     try {
         res.status(StatusCodes.OK)
     } catch (error) {
