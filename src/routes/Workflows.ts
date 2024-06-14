@@ -175,6 +175,12 @@ router.post('', async (req: Request, res: Response) => {
             "actionCardContent":"Company.info action"
           }
         },
+        "functions":[
+          {
+            "functionType":"POST_ACTION_EXECUTION",
+            "functionSource":"exports.main = (event) => {});\r\n"
+          },
+        ]
       }
   
       const response = await axios.post(
