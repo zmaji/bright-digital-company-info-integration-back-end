@@ -12,20 +12,33 @@ const HUBSPOT_APP_ID = process.env.HUBSPOT_APP_ID;
 const HUBSPOT_APP_DEVELOPER_KEY = process.env.HUBSPOT_APP_DEVELOPER_KEY;
 
 router.post('/definition', async (req: Request, res: Response) => {
-    console.log('Entered action url POST..');
+    console.log('Workflow has been triggered..');
 
     const verified = await verifySignature(req);
 
     if (verified) {
-        console.log('req')
-        console.log(req);
+        const source = req.body.context.source;
+        const sourceId = req.body.context.workflowId;
+        const actionDefinitionId = req.body.origin.actionDefinitionId;
+        const objectType = req.body.objectType;
+        const objectId = req.body.object.objectId;
 
-        console.log('req body')
-        console.log(req.body);
+        logger.info(`Processing ${source} with id ${sourceId} and action ${actionDefinitionId} targeting object ${objectType} with id ${objectId}`)
+
+        const portalId = req.body.origin.portalId;
+        const dossierNumber = req.body.properties.dossier_number;
+        const establishmentNumber = req.body.properties.establishment_number;
+
+        console.log('portalId');
+        console.log(portalId);
+        console.log('dossierNumber');
+        console.log(dossierNumber);
+        console.log('establishmentNumber');
+        console.log(establishmentNumber);
+
     } else {
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Signature has not been verified' });
     }
-
 
     try {
         res.status(StatusCodes.CREATED);
