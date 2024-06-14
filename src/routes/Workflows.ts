@@ -20,9 +20,9 @@ router.get('/definition', async (req: Request, res: Response) => {
 });
 
 router.post('/definition', async (req: Request, res: Response) => {
-    console.log('Entered action url GET..');
+    console.log('Entered action url POST..');
     try {
-        res.status(StatusCodes.OK)
+        res.status(StatusCodes.CREATED);
     } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ status: 'error', message: error.message });
     }
