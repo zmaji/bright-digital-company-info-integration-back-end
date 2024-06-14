@@ -175,12 +175,6 @@ router.post('', async (req: Request, res: Response) => {
             "actionCardContent":"Company.info action"
           }
         },
-        "functions":[
-          {
-            "functionType":"POST_ACTION_EXECUTION",
-            "functionSource":"exports.main = (event, callback) => {\r\n  callback({\r\n    \"data\": {\r\n      \"field\": \"email\",\r\n      \"phone\": \"1234567890\" \r\n    }\r\n  });\r\n"
-          },
-        ]
       }
   
       const response = await axios.post(
