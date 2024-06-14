@@ -45,6 +45,7 @@ module.exports = {
     'apidoc',
     'src/helpers/hubspot/formatCompanyData.ts',
     'src/data/FormScript.js',
+    'src/routes/Workflows.ts',
   ],
   overrides: [
     {

@@ -101,7 +101,7 @@ const formatDate = (date: Date) => {
                                     const result = await companiesController.updateCompany(hubToken, objectId, properties);
 
                                     if (result) {
-                                        return res.status(StatusCodes.OK).json({ message: `Company with ID ${objectId} has been successfully updated through workflow ` });
+                                        return res.status(StatusCodes.OK).json({ message: `Company with ID ${objectId} has been successfully updated through workflow with id ${sourceId} and action with id ${actionDefinitionId}` });
                                     } else {
                                         logger.error('Company has not been updated (no result)');
                                         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'No company has been updated' });
