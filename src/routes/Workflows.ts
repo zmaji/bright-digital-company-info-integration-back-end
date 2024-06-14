@@ -3,6 +3,7 @@ import logger from '../utils/Logger';
 import dotenv from 'dotenv';
 import axios from 'axios';
 import { StatusCodes } from 'http-status-codes';
+import { verifySignature } from '../helpers/hubspot/verifySignature';
 
 dotenv.config();
 const router = Router();
@@ -13,11 +14,24 @@ const HUBSPOT_APP_DEVELOPER_KEY = process.env.HUBSPOT_APP_DEVELOPER_KEY;
 router.post('/definition', async (req: Request, res: Response) => {
     console.log('Entered action url POST..');
 
-    console.log('req')
-    console.log('req')
-    console.log('req')
-    console.log('req')
-    console.log(req)
+    const verified = await verifySignature(req);
+
+    if (verified) {
+        console.log('req')
+
+
+        console.log('req data')
+        // @ts-ignore
+        console.log(req.data)
+
+
+        console.log('req object')
+        // @ts-ignore
+        console.log(req.object)
+    } else {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Signature has not been verified' });
+    }
+
 
     try {
         res.status(StatusCodes.CREATED);
@@ -75,12 +89,8 @@ router.post('', async (req: Request, res: Response) => {
         "functions":[
           {
             "functionType":"POST_ACTION_EXECUTION",
-            "functionSource":"exports.main = (event, callback) => {\r\n  callback({\r\n    outputFields: {\r\n      myOutput: \"example output value\"\r\n    }\r\n  });\r\n}"
+            "functionSource":"exports.main = (event, callback) => {\r\n  callback({\r\n    \"data\": {\r\n      \"field\": \"email\",\r\n      \"phone\": \"1234567890\" \r\n    }\r\n  });\r\n"
           },
-          {
-            "functionType":"POST_FETCH_OPTIONS",
-            "functionSource":"exports.main = (event, callback) => {\r\n  callback({\r\n    \"options\": [{\r\n        \"label\": \"Big Widget\",\r\n        \"description\": \"Big Widget\",\r\n        \"value\": \"10\"\r\n      },\r\n      {\r\n        \"label\": \"Small Widget\",\r\n        \"description\": \"Small Widget\",\r\n        \"value\": \"1\"\r\n      }\r\n    ]\r\n  });\r\n}"
-          }
         ]
       }
   
