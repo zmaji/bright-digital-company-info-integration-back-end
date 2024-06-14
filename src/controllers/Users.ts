@@ -55,11 +55,12 @@ const getUser = async (identifier: string | number): Promise<User | null> => {
 
 const getUsers = async (): Promise<User[] | null> => {
   try {
-    const users = await prisma.user.findMany();
+    const result = await prisma.user.findMany();
 
-    if (users) {
+    if (result) {
       logger.success('Succesfully retrieved all users');
-      return users;
+      // @ts-expect-error data not part of result
+      return result.data;
     } else {
       logger.error('Couldn\`t retrieve all users');
       return null;
