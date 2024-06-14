@@ -37,7 +37,7 @@ router.get('/all', isLoggedIn, async (req: Request, res: Response) => {
     if (users) {
       res
         .status(StatusCodes.OK)
-        .json('Successfully retrieved all users');
+        .json(users);
     }
   } catch {
     res
