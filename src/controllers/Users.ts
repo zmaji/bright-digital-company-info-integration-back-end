@@ -59,6 +59,7 @@ const getUsers = async (): Promise<User[] | null> => {
 
     if (result) {
       logger.success('Succesfully retrieved all users');
+      console.log(result);
       // @ts-expect-error data not part of result
       return result.data;
     } else {
