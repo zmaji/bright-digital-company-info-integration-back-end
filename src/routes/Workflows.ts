@@ -46,9 +46,6 @@ const formatDate = (date: Date) => {
   router.post('/definition', async (req: Request, res: Response) => {
     logger.info('Workflow has been triggered..');
 
-    console.log('req body');
-    console.log(req.body);
-
     try {
         const verified = await verifySignature(req);
 
@@ -88,9 +85,9 @@ const formatDate = (date: Date) => {
                                 return res.status(StatusCodes.OK).json({ error: 'Workflow aborted from retrying..' });
                             } else {
                                 logger.info(`No establishment number found, updating with dossier number ${dossierNumber}..`);
-                                
+
                                 companyData = await companiesController.getCompanyInfo(dossierNumber, companyInfoUserName, companyInfoPassword);
-                            }
+                            };
 
                             if (companyData) {
                                 const syncDate = new Date();
@@ -104,7 +101,7 @@ const formatDate = (date: Date) => {
                                     const result = await companiesController.updateCompany(hubToken, objectId, properties);
 
                                     if (result) {
-                                        return res.status(StatusCodes.OK).json(result);
+                                        return res.status(StatusCodes.OK).json({ message: `Company with ID ${objectId} has been successfully updated through workflow ` });
                                     } else {
                                         logger.error('Company has not been updated (no result)');
                                         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'No company has been updated' });
