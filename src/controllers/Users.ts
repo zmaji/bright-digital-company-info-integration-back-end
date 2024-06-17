@@ -54,6 +54,11 @@ const getUser = async (identifier: string | number): Promise<User | null> => {
 };
 
 const getUserById = async (userId: number): Promise<User | null> => {
+  logger.info('userId')
+  logger.info('userId')
+  logger.info('userId')
+  logger.info('userId')
+  logger.info(userId)
   try {
     const existingUser = await prisma.user.findUnique({
       where: { id: userId },
