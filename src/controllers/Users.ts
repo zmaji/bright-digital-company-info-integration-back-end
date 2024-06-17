@@ -53,6 +53,19 @@ const getUser = async (identifier: string | number): Promise<User | null> => {
   }
 };
 
+const getUserById = async (userId: number): Promise<User | null> => {
+  try {
+    const existingUser = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    return existingUser;
+  } catch (error) {
+    logger.error('Something went wrong getting a user', error);
+    throw error;
+  }
+};
+
 const getUsers = async (): Promise<User[] | null> => {
   try {
     const result = await prisma.user.findMany();
@@ -145,6 +158,7 @@ const updateUser = async (userId: number, updateFields: Partial<User>): Promise<
 
 const usersController = {
   getUser,
+  getUserById,
   getUsers,
   createUser,
   updateUser,

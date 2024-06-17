@@ -20,7 +20,7 @@ router.get('', isLoggedIn, async (req: Request, res: Response) => {
       } else {
         res
             .status(StatusCodes.NOT_FOUND)
-            .json({ error: `Unable to get user with ID ${emailAddress}` });
+            .json({ error: `Unable to get user with identifier ${emailAddress}` });
       }
     }
   } catch {
@@ -29,6 +29,30 @@ router.get('', isLoggedIn, async (req: Request, res: Response) => {
         .json({ error: 'An error occurred retrieving a user' });
   }
 });
+
+router.get('/:userId', isLoggedIn, async (req: Request, res: Response) => {
+  try {
+    if (req.user) {
+      const userId: number | undefined = req.params.userId ? parseInt(req.params.userId, 10) : undefined;
+      const result: User | null = await userController.getUserById(userId);
+
+      if (result) {
+        res
+            .status(StatusCodes.OK)
+            .json(result);
+      } else {
+        res
+            .status(StatusCodes.NOT_FOUND)
+            .json({ error: `Unable to get user with ID ${userId}` });
+      }
+    }
+  } catch {
+    res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: 'An error occurred retrieving a user' });
+  }
+});
+
 
 router.get('/all', isLoggedIn, async (req: Request, res: Response) => {
   try {
