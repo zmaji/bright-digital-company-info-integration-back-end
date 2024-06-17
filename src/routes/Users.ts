@@ -33,23 +33,39 @@ router.get('', isLoggedIn, async (req: Request, res: Response) => {
 router.get('/:userId', isLoggedIn, async (req: Request, res: Response) => {
   try {
     if (req.user) {
+      console.log('req.params.userId')
+      console.log('req.params.userId')
+      console.log('req.params.userId')
+      console.log('req.params.userId')
+      console.log(req.params.userId)
       const userId: number | undefined = req.params.userId ? parseInt(req.params.userId, 10) : undefined;
-      const result: User | null = await userController.getUserById(userId);
+
+      if (userId === undefined || isNaN(userId)) {
+        return res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ error: 'Invalid user ID' });
+      }
+
+      const result = await userController.getUserById(userId);
 
       if (result) {
         res
-            .status(StatusCodes.OK)
-            .json(result);
+          .status(StatusCodes.OK)
+          .json(result);
       } else {
         res
-            .status(StatusCodes.NOT_FOUND)
-            .json({ error: `Unable to get user with ID ${userId}` });
+          .status(StatusCodes.NOT_FOUND)
+          .json({ error: `Unable to get user with ID ${userId}` });
       }
+    } else {
+      res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json({ error: 'User not authenticated' });
     }
-  } catch {
+  } catch (error) {
     res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: 'An error occurred retrieving a user' });
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: 'An error occurred retrieving a user' });
   }
 });
 
