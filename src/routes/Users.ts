@@ -60,6 +60,8 @@ router.get('/:userId', isLoggedIn, async (req: Request, res: Response) => {
       const result = await userController.getUserById(userId);
 
       if (result) {
+        logger.success(`Succesfully retrieved user with ID: ${userId}`);
+
         res
             .status(StatusCodes.OK)
             .json(result);
@@ -151,10 +153,10 @@ router.post('', async (req: Request, res: Response) => {
 });
 
 router.put('', isLoggedIn, async (req: Request, res: Response) => {
-  logger.info('Updating a user..');
-
   try {
     if (req.user && req.user.id && req.body.updateFields) {
+      logger.info(`Trying to update user with ID: ${req.params.userId}`);
+
       const updateFields = req.body.updateFields;
 
       if (updateFields.hubSpotPortalId) {
@@ -174,6 +176,10 @@ router.put('', isLoggedIn, async (req: Request, res: Response) => {
               .json({ error: `Unable to update user with ID ${req.user.id}` });
         }
       }
+    } else {
+      res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .json({ error: 'Mandatory fields not received' });
     }
   } catch {
     res
@@ -183,10 +189,10 @@ router.put('', isLoggedIn, async (req: Request, res: Response) => {
 });
 
 router.put('/:userId', isLoggedIn, async (req: Request, res: Response) => {
-  logger.info('Updating a user..');
-
   try {
     if (req.user && req.params.userId && req.body.updateFields) {
+      logger.info(`Trying to update user with ID: ${req.params.userId}`);
+
       const updateFields = req.body.updateFields;
       const userId: number | undefined = req.params.userId ? parseInt(req.params.userId, 10) : undefined;
 
@@ -204,7 +210,7 @@ router.put('/:userId', isLoggedIn, async (req: Request, res: Response) => {
         const result: User | null = await userController.updateUser(userId, updateFields);
 
         if (result) {
-          logger.success('Succesfully updated a user!');
+          logger.success(`Succesfully updated user with ID: ${req.params.userId}`);
           res
               .status(StatusCodes.OK)
               .json(result);
@@ -214,6 +220,10 @@ router.put('/:userId', isLoggedIn, async (req: Request, res: Response) => {
               .json({ error: `Unable to update user with ID ${userId}` });
         }
       }
+    } else {
+      res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .json({ error: 'Mandatory fields not received' });
     }
   } catch {
     res
