@@ -31,8 +31,6 @@ router.get('', isLoggedIn, async (req: Request, res: Response) => {
 });
 
 router.get('/all', isLoggedIn, async (req: Request, res: Response) => {
-  logger.info('entered all users route');
-
   try {
     const users = await userController.getUsers();
 
@@ -174,6 +172,46 @@ router.put('', isLoggedIn, async (req: Request, res: Response) => {
           res
               .status(StatusCodes.NOT_FOUND)
               .json({ error: `Unable to update user with ID ${req.user.id}` });
+        }
+      }
+    }
+  } catch {
+    res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: 'An error occurred updating a user' });
+  }
+});
+
+router.put('/:userId', isLoggedIn, async (req: Request, res: Response) => {
+  logger.info('Updating a user..');
+
+  try {
+    if (req.user && req.params.userId && req.body.updateFields) {
+      const updateFields = req.body.updateFields;
+      const userId: number | undefined = req.params.userId ? parseInt(req.params.userId, 10) : undefined;
+
+      if (userId === undefined || isNaN(userId)) {
+        return res
+            .status(StatusCodes.BAD_REQUEST)
+            .json({ error: 'Invalid user ID' });
+      }
+
+      if (updateFields.hubSpotPortalId) {
+        updateFields.hubSpotPortalId = parseInt(updateFields.hubSpotPortalId);
+      }
+
+      if (updateFields) {
+        const result: User | null = await userController.updateUser(userId, updateFields);
+
+        if (result) {
+          logger.success('Succesfully updated a user!');
+          res
+              .status(StatusCodes.OK)
+              .json(result);
+        } else {
+          res
+              .status(StatusCodes.NOT_FOUND)
+              .json({ error: `Unable to update user with ID ${userId}` });
         }
       }
     }

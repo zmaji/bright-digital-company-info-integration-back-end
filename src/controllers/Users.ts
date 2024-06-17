@@ -68,10 +68,7 @@ const getUserById = async (userId: number): Promise<User | null> => {
 
 const getUsers = async (): Promise<User[] | null> => {
   try {
-    console.log('Trying to get Users!!');
     const result = await prisma.user.findMany();
-
-    console.log('Users found!!!!');
 
     if (result) {
       logger.success('Succesfully retrieved all users');
