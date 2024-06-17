@@ -54,15 +54,10 @@ const getUser = async (identifier: string | number): Promise<User | null> => {
 };
 
 const getUserById = async (userId: number): Promise<User | null> => {
-  logger.info('userId')
-  logger.info('userId')
-  logger.info('userId')
-  logger.info('userId')
-  logger.info(userId)
   try {
     const existingUser = await prisma.user.findUnique({
       where: { id: userId },
-    });
+    })
 
     return existingUser;
   } catch (error) {
@@ -73,7 +68,10 @@ const getUserById = async (userId: number): Promise<User | null> => {
 
 const getUsers = async (): Promise<User[] | null> => {
   try {
+    console.log('Trying to get Users!!')
     const result = await prisma.user.findMany();
+
+    console.log('Users found!!!!')
 
     if (result) {
       logger.success('Succesfully retrieved all users');

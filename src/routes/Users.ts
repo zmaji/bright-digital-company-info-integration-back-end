@@ -30,14 +30,27 @@ router.get('', isLoggedIn, async (req: Request, res: Response) => {
   }
 });
 
+router.get('/all', isLoggedIn, async (req: Request, res: Response) => {
+  logger.info('entered all users route');
+
+  try {
+    const users = await userController.getUsers();
+
+    if (users) {
+      res
+        .status(StatusCodes.OK)
+        .json(users);
+    }
+  } catch {
+    res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: 'An error occurred retrieving all users' });
+  }
+});
+
 router.get('/:userId', isLoggedIn, async (req: Request, res: Response) => {
   try {
     if (req.user) {
-      console.log('req.params.userId')
-      console.log('req.params.userId')
-      console.log('req.params.userId')
-      console.log('req.params.userId')
-      console.log(req.params.userId)
       const userId: number | undefined = req.params.userId ? parseInt(req.params.userId, 10) : undefined;
 
       if (userId === undefined || isNaN(userId)) {
@@ -66,28 +79,6 @@ router.get('/:userId', isLoggedIn, async (req: Request, res: Response) => {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ error: 'An error occurred retrieving a user' });
-  }
-});
-
-
-router.get('/all', isLoggedIn, async (req: Request, res: Response) => {
-  logger.info('entered all users route');
-
-  try {
-    const users = await userController.getUsers();
-
-    logger.info('users')
-    logger.info(users)
-
-    if (users) {
-      res
-        .status(StatusCodes.OK)
-        .json(users);
-    }
-  } catch {
-    res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: 'An error occurred retrieving all users' });
   }
 });
 
