@@ -71,8 +71,13 @@ router.get('/:userId', isLoggedIn, async (req: Request, res: Response) => {
 
 
 router.get('/all', isLoggedIn, async (req: Request, res: Response) => {
+  logger.info('entered all users route');
+
   try {
     const users = await userController.getUsers();
+
+    logger.info('users')
+    logger.info(users)
 
     if (users) {
       res
