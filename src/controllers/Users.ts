@@ -57,7 +57,7 @@ const getUserById = async (userId: number): Promise<User | null> => {
   try {
     const existingUser = await prisma.user.findUnique({
       where: { id: userId },
-    })
+    });
 
     return existingUser;
   } catch (error) {
@@ -68,16 +68,18 @@ const getUserById = async (userId: number): Promise<User | null> => {
 
 const getUsers = async (): Promise<User[] | null> => {
   try {
-    console.log('Trying to get Users!!')
+    console.log('Trying to get Users!!');
     const result = await prisma.user.findMany();
 
-    console.log('Users found!!!!')
+    console.log('Users found!!!!');
 
     if (result) {
       logger.success('Succesfully retrieved all users');
+
       return result;
     } else {
-      logger.error('Couldn\`t retrieve all users');
+      logger.error('Couldn\'t retrieve all users');
+
       return null;
     }
   } catch (error) {
@@ -113,9 +115,14 @@ const verifyUser = async (userId: number, activationCode: string): Promise<boole
 
 const createUser = async (userData: User): Promise<User | null> => {
   try {
-    const { firstName, lastName, emailAddress, password, roles } = userData;
+    const { firstName, lastName, emailAddress, password } = userData;
     const hashedPassword = await bcrypt.hash(password, 12);
     const activationToken = uuidv4();
+    let roles = userData.roles;
+
+    if (!roles) {
+      roles = ['Gebruiker'];
+    }
 
     await sendActivationEmail(firstName, lastName, emailAddress, activationToken);
 
@@ -126,7 +133,7 @@ const createUser = async (userData: User): Promise<User | null> => {
         emailAddress: emailAddress,
         password: hashedPassword,
         secret: uuidv4(),
-        roles: ['Gebruiker'],
+        roles: roles,
         isActive: false,
         activationToken: activationToken,
       },
