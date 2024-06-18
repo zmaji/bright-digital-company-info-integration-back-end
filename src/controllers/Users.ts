@@ -114,20 +114,19 @@ const verifyUser = async (userId: number, activationCode: string): Promise<boole
   }
 };
 
-const createUser = async (userData: User): Promise<User | null> => {
+const createUser = async (userData) => {
   try {
     const { firstName, lastName, emailAddress, password } = userData;
+
     const hashedPassword = await bcrypt.hash(password, 12);
     const activationToken = uuidv4();
-    let roles = userData.roles;
+    const roles = userData.roles ? userData.roles : ['Gebruiker'];
 
-    if (!roles) {
-      roles = ['Gebruiker'];
+    if (userData.sendValidationEmail !== false) {
+      await sendActivationEmail(firstName, lastName, emailAddress, activationToken);
     }
 
-    await sendActivationEmail(firstName, lastName, emailAddress, activationToken);
-
-    const newUser: User = await prisma.user.create({
+    const newUser = await prisma.user.create({
       data: {
         firstName: firstName,
         lastName: lastName,
