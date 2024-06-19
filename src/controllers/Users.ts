@@ -166,6 +166,23 @@ const updateUser = async (userId: number, updateFields: Partial<User>): Promise<
   }
 };
 
+const deleteUserById = async (userId: number): Promise<boolean> => {
+  logger.info(`Trying to delete a user by ID: ${userId}`);
+
+  try {
+    await prisma.user.delete({
+      where: { id: userId },
+    });
+
+    logger.info(`Successfully deleted user with ID: ${userId}`);
+
+    return true;
+  } catch (error) {
+    logger.error('Something went wrong deleting a user', error);
+    throw error;
+  }
+};
+
 const usersController = {
   getUser,
   getUserById,
@@ -173,6 +190,7 @@ const usersController = {
   createUser,
   updateUser,
   verifyUser,
+  deleteUserById,
 };
 
 export default usersController;

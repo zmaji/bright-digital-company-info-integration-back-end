@@ -240,4 +240,39 @@ router.put('/:userId', isLoggedIn, async (req: Request, res: Response) => {
   }
 });
 
+router.delete('/:userId', isLoggedIn, async (req: Request, res: Response) => {
+  try {
+    if (req.user) {
+      const userId: number | undefined = req.params.userId ? parseInt(req.params.userId, 10) : undefined;
+
+      if (userId === undefined || isNaN(userId)) {
+        return res
+            .status(StatusCodes.BAD_REQUEST)
+            .json({ error: 'Invalid user ID' });
+      }
+
+      const deleted = await userController.deleteUserById(userId);
+
+      if (deleted) {
+        logger.success(`Successfully deleted user with ID: ${userId}`);
+
+        res
+            .status(StatusCodes.OK)
+            .json({ message: `User with ID ${userId} has been deleted` });
+      } else {
+        res
+            .status(StatusCodes.NOT_FOUND)
+            .json({ error: `Unable to delete user with ID ${userId}` });
+      }
+    } else {
+      res
+          .status(StatusCodes.UNAUTHORIZED)
+          .json({ error: 'User not authenticated' });
+    }
+  } catch (error) {
+    res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: 'An error occurred deleting a user' });
+  }
+});
 export default router;
