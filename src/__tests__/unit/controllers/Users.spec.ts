@@ -142,7 +142,7 @@ describe('Users Controller Tests', () => {
     const result = await usersController.verifyUser(userId, activationCode);
 
     expect(result).toBe(true);
-    expect(logger.info).toHaveBeenCalledWith('Matching activation token found found!');
+    expect(logger.success).toHaveBeenCalledWith('Matching activation token found found!');
   });
 
   test('should return false if no matching activation token is found', async () => {
