@@ -100,7 +100,7 @@ const verifyUser = async (userId: number, activationCode: string): Promise<boole
     });
 
     if (existingUser && existingUser.activationToken === activationCode) {
-      logger.info(`Matching activation token found found!`);
+      logger.success(`Matching activation token found found!`);
 
       return true;
     } else {
