@@ -46,6 +46,50 @@ router.get('/all', isLoggedIn, async (req: Request, res: Response) => {
   }
 });
 
+router.get('/verify', async (req: Request, res: Response) => {
+  try {
+    if (req && req.query && req.query.activationCode && req.query.userId) {
+      const activationCode: string | undefined = req.query.activationCode as string;
+      const userId: string | undefined = req.query.userId as string;
+      const userIdNumber: number | undefined = userId ? parseInt(userId, 10) : undefined;
+
+      if (userIdNumber) {
+        const result: boolean | null = await userController.verifyUser(userIdNumber, activationCode);
+
+        if (result) {
+          const updateFields = {
+            isActive: true,
+          };
+
+          const updatedUser = await userController.updateUser(userIdNumber, updateFields);
+
+          if (updatedUser) {
+            res
+                .status(StatusCodes.OK)
+                .json('Successfully entered activation code');
+          } else {
+            res
+                .status(StatusCodes.NOT_FOUND)
+                .json({ error: 'Wrong activation code entered' });
+          }
+        } else {
+          res
+              .status(StatusCodes.INTERNAL_SERVER_ERROR)
+              .json({ error: 'No matching token!' });
+        }
+      }
+    } else {
+      res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .json({ error: 'Activation code not provided' });
+    }
+  } catch {
+    res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: 'An error occurred verifying a user' });
+  }
+});
+
 router.get('/:userId', isLoggedIn, async (req: Request, res: Response) => {
   try {
     if (req.user) {
@@ -79,42 +123,6 @@ router.get('/:userId', isLoggedIn, async (req: Request, res: Response) => {
     res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ error: 'An error occurred retrieving a user' });
-  }
-});
-
-router.get('/verify', async (req: Request, res: Response) => {
-  try {
-    if (req && req.query && req.query.activationCode && req.query.userId) {
-      const activationCode: string | undefined = req.query.activationCode as string;
-      const userId: string | undefined = req.query.userId as string;
-      const userIdNumber: number | undefined = userId ? parseInt(userId, 10) : undefined;
-
-      if (userIdNumber) {
-        const result: boolean | null = await userController.verifyUser(userIdNumber, activationCode);
-
-        if (result) {
-          const updateFields = {
-            isActive: true,
-          };
-
-          const updatedUser = await userController.updateUser(userIdNumber, updateFields);
-
-          if (updatedUser) {
-            res
-                .status(StatusCodes.OK)
-                .json('Successfully entered activation code');
-          } else {
-            res
-                .status(StatusCodes.NOT_FOUND)
-                .json({ error: 'Wrong activation code entered' });
-          }
-        }
-      }
-    }
-  } catch {
-    res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: 'An error occurred verifying a user' });
   }
 });
 
