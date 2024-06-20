@@ -180,6 +180,9 @@ router.post('/hubspot', isLoggedIn, async (req: Request, res: Response) => {
         if (hubToken && req.body.companyData) {
           const companyData = req.body.companyData;
 
+          console.log('companyData');
+          console.log(companyData);
+
           if (companyData && Object.keys(companyData).length > 0) {
             const result = await companiesController.createCompany(hubToken, companyData);
 
