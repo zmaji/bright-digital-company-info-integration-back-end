@@ -163,7 +163,7 @@ router.post('', async (req: Request, res: Response) => {
 router.put('', isLoggedIn, async (req: Request, res: Response) => {
   try {
     if (req.user && req.user.id && req.body.updateFields) {
-      logger.info(`Trying to update user with ID: ${req.params.userId}`);
+      logger.info(`Trying to update user with ID: ${req.user.id}`);
 
       const updateFields = req.body.updateFields;
 
@@ -197,6 +197,7 @@ router.put('', isLoggedIn, async (req: Request, res: Response) => {
 });
 
 router.put('/:userId', isLoggedIn, async (req: Request, res: Response) => {
+  console.log('hallo1');
   try {
     if (req.user && req.params.userId && req.body.updateFields) {
       logger.info(`Trying to update user with ID: ${req.params.userId}`);

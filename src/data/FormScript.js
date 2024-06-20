@@ -1,3 +1,5 @@
+let portalId;
+
 const domReady = (fn)  => {
   //See if DOM is already available
   if (document.readyState === 'complete' || document.readyState === 'interactive') {
@@ -13,6 +15,7 @@ const companySearch = () => {
     if (event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormReady') {
       const input = document.querySelector('input[name="company"]')
       const hiddenCheck = document.querySelector('input[name="0-2/dossier_number"]')
+      portalId = event.source.options.portalId
 
       if (!input || !hiddenCheck) return
 
